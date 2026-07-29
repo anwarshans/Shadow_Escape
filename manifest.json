@@ -1,0 +1,21 @@
+{
+  "name": "Shadow Escape – Adventure Game | Anwarsha N S - Game | Shadow Escape Game | Shanu Game",
+  "short_name": "Shadow Escape",
+  "description": "Shadow Escape game by Shanu (Anwarsha N S), a 2.5D cyber platformer built with HTML5 Canvas and vanilla JS.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#070814",
+  "theme_color": "#00f3ff",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+/* ==========================================================================
+   Shadow Escape - Particle System (Visual FX Engine)
+   ========================================================================== */
+
+class Particle {
+    constructor(x, y, vx, vy, color, size, lifeMax, shape = 'circle') {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.color = color;
+        this.size = size;
+        this.lifeMax = lifeMax;
+        this.life = lifeMax;
+        this.shape = shape;
+        this.alpha = 1;
+        this.gravity = 0;
+    }
+
+    update(dt) {
+        this.x += this.vx * dt * 60;
+        this.y += this.vy * dt * 60;
+        this.vy += this.gravity * dt * 60;
+        this.life -= dt;
+        this.alpha = Math.max(0, this.life / this.lifeMax);
+    }
+
+    draw(ctx, cameraOffset) {
+        if (this.alpha <= 0) return;
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 8;
+
+        const drawX = this.x - cameraOffset.x;
+        const drawY = this.y - cameraOffset.y;
+
+        if (this.shape === 'rect') {
+            ctx.fillRect(drawX - this.size / 2, drawY - this.size / 2, this.size, this.size);
+        } else {
+            ctx.beginPath();
+            ctx.arc(drawX, drawY, Math.max(1, this.size * this.alpha), 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.restore();
+    }
+}
+
+class ParticleSystem {
+    constructor() {
+        this.particles = [];
+        this.dashGhosts = [];
+    }
+
+    // Spawn Jump Dust
+    createJumpDust(x, y) {
+        for (let i = 0; i < 8; i++) {
+            const vx = (Math.random() - 0.5) * 3;
+            const vy = -Math.random() * 2 - 1;
+            this.particles.push(new Particle(x, y, vx, vy, '#00f3ff', 3 + Math.random() * 3, 0.4));
+        }
+    }
+
+    // Spawn Dash Trail
+    createDashGhost(x, y, width, height, isFacingRight) {
+        this.dashGhosts.push({
+            x, y, width, height, isFacingRight,
+            life: 0.25, lifeMax: 0.25
+        });
+    }
+
+    // Spawn Crystal Collect Sparkles
+    createCrystalBurst(x, y) {
+        const colors = ['#00f3ff', '#b026ff', '#ffffff'];
+        for (let i = 0; i < 15; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 2 + Math.random() * 4;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            this.particles.push(new Particle(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed, color, 4, 0.5));
+        }
+    }
+
+    // Spawn Explosion Bits
+    createExplosion(x, y) {
+        const colors = ['#ff007f', '#ff3366', '#ffcf25'];
+        for (let i = 0; i < 25; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 3 + Math.random() * 6;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const p = new Particle(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed, color, 4 + Math.random() * 4, 0.6, 'rect');
+            p.gravity = 0.2;
+            this.particles.push(p);
+        }
+    }
+
+    // Spawn Laser Spark Emitters
+    createLaserSparks(x, y) {
+        if (Math.random() > 0.4) return;
+        const vx = (Math.random() - 0.5) * 2;
+        const vy = (Math.random() - 0.5) * 2;
+        this.particles.push(new Particle(x, y, vx, vy, '#ff007f', 2, 0.3));
+    }
+
+    update(dt) {
+        // Update particles
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            this.particles[i].update(dt);
+            if (this.particles[i].life <= 0) {
+                this.particles.splice(i, 1);
+            }
+        }
+
+        // Update dash ghost trails
+        for (let i = this.dashGhosts.length - 1; i >= 0; i--) {
+            this.dashGhosts[i].life -= dt;
+            if (this.dashGhosts[i].life <= 0) {
+                this.dashGhosts.splice(i, 1);
+            }
+        }
+    }
+
+    draw(ctx, cameraOffset) {
+        // Draw Dash Ghosts
+        this.dashGhosts.forEach(g => {
+            ctx.save();
+            ctx.globalAlpha = (g.life / g.lifeMax) * 0.5;
+            ctx.fillStyle = '#00f3ff';
+            ctx.shadowColor = '#00f3ff';
+            ctx.shadowBlur = 15;
+            const drawX = g.x - cameraOffset.x;
+            const drawY = g.y - cameraOffset.y;
+            ctx.fillRect(drawX, drawY, g.width, g.height);
+            ctx.restore();
+        });
+
+        // Draw Normal Particles
+        this.particles.forEach(p => p.draw(ctx, cameraOffset));
+    }
+
+    reset() {
+        this.particles = [];
+        this.dashGhosts = [];
+    }
+}
+
+const particleSystem = new ParticleSystem();
+window.particleSystem = particleSystem;

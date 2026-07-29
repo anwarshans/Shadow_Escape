@@ -1,0 +1,284 @@
+/* ==========================================================================
+   Shadow Escape - UI Components Stylesheet
+   ========================================================================== */
+
+/* Buttons */
+.cyber-btn {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.85rem 2rem;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(176, 38, 255, 0.25));
+    border: 1px solid var(--primary-cyan);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-normal);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.cyber-btn:focus-visible {
+    outline: 2px solid rgba(0, 243, 255, 0.95);
+    outline-offset: 3px;
+}
+
+.cyber-btn:hover {
+    background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+    color: var(--bg-dark);
+    box-shadow: 0 0 25px var(--primary-cyan), 0 0 10px var(--primary-purple);
+    transform: translateY(-2px);
+}
+
+.cyber-btn:active {
+    transform: translateY(1px);
+}
+
+.cyber-btn.secondary {
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 10px rgba(176, 38, 255, 0.2);
+}
+
+.cyber-btn.secondary:hover {
+    background: linear-gradient(135deg, var(--primary-purple), var(--primary-magenta));
+    color: #fff;
+    box-shadow: 0 0 25px var(--primary-purple);
+}
+
+.cyber-btn.danger {
+    border-color: var(--accent-red);
+    box-shadow: 0 0 10px rgba(255, 51, 102, 0.2);
+}
+
+.cyber-btn.danger:hover {
+    background: var(--accent-red);
+    color: #fff;
+    box-shadow: 0 0 25px var(--accent-red);
+}
+
+.cyber-btn-lg {
+    padding: 1.1rem 3rem;
+    font-size: 1.25rem;
+}
+
+/* Glassmorphism Cards */
+.cyber-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--bg-card-border);
+    border-radius: var(--border-radius-md);
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 243, 255, 0.05);
+    position: relative;
+}
+
+.cyber-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
+}
+
+/* Section Header */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(90deg, #fff, var(--primary-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+}
+
+.section-subtitle {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+/* Modal Dialogs */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(4, 6, 15, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition-normal);
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: rgba(12, 16, 32, 0.95);
+    border: 1px solid var(--primary-cyan);
+    border-radius: var(--border-radius-md);
+    padding: 2.5rem;
+    width: 90%;
+    max-width: 520px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0, 243, 255, 0.25);
+    transform: scale(0.9);
+    transition: transform var(--transition-normal);
+}
+
+.modal-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 0.8rem;
+}
+
+.modal-close-btn {
+    background: rgba(0, 243, 255, 0.08);
+    border: 1px solid rgba(0, 243, 255, 0.45);
+    color: var(--primary-cyan);
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal), background var(--transition-normal);
+}
+
+.modal-close-btn:hover {
+    background: rgba(0, 243, 255, 0.18);
+    box-shadow: 0 0 16px rgba(0, 243, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.modal-close-btn:focus-visible {
+    outline: 2px solid rgba(0, 243, 255, 0.95);
+    outline-offset: 3px;
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-title {
+    font-size: 2rem;
+    color: var(--primary-cyan);
+    margin-bottom: 1rem;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.form-label {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    color: var(--primary-cyan);
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.form-input, .form-textarea {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    background: rgba(5, 8, 20, 0.7);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    border-radius: var(--border-radius-sm);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition-fast);
+}
+
+.form-input:focus, .form-textarea:focus {
+    border-color: var(--primary-cyan);
+    box-shadow: var(--shadow-cyan);
+}
+
+/* Leaderboard & Stat Tables */
+.cyber-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.cyber-table th, .cyber-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+}
+
+.cyber-table th {
+    font-family: var(--font-heading);
+    color: var(--primary-cyan);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.cyber-table tr:hover td {
+    background: rgba(0, 243, 255, 0.05);
+}
+
+.rank-badge {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.rank-badge.top-1 { background: var(--accent-gold); color: #000; }
+.rank-badge.top-2 { background: #cbd5e1; color: #000; }
+.rank-badge.top-3 { background: #b45309; color: #fff; }
+.rank-badge.top-other { background: rgba(255,255,255,0.1); color: var(--text-muted); }
+
+@media (max-width: 640px) {
+    .modal-content {
+        padding: 1.25rem;
+        width: 94%;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+    }
+
+    .modal-title {
+        font-size: 1.45rem;
+    }
+
+    .modal-close-btn {
+        width: 34px;
+        height: 34px;
+    }
+
+    .cyber-table th, .cyber-table td {
+        padding: 0.7rem;
+        font-size: 0.84rem;
+    }
+}

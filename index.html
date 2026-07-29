@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shadow Escape – Adventure Game | Anwarsha N S - Game | Shadow Escape Game | Shanu Game</title>
+    <meta name="description" content="Play Shadow Escape game by Anwarsha N S (Shanu) - a fast 2.5D cyber platformer built with HTML5 Canvas and vanilla JavaScript. Escape lasers, guards, and reactor meltdown across 5 levels.">
+    <meta name="keywords" content="Anwarsha N S - Game, Shadow Escape game, shanu game, Shadow Escape, browser game, HTML5 platformer, vanilla JS game">
+    <meta name="author" content="Anwarsha N S (Shanu)">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="https://shadow-escape.vercel.app/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Shadow Escape Game">
+    <meta property="og:url" content="https://shadow-escape.vercel.app/">
+    <meta property="og:title" content="Shadow Escape – Adventure Game | Anwarsha N S - Game | Shadow Escape Game">
+    <meta property="og:description" content="Shadow Escape game by Anwarsha N S (Shanu): a 2.5D cyber platformer with laser grids, human guards, and 5 action levels.">
+    <meta property="og:image" content="uploads/logo.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Shadow Escape – Adventure Game | Anwarsha N S - Game | Shadow Escape Game">
+    <meta property="twitter:description" content="Play Shadow Escape game by Shanu (Anwarsha N S): pure JavaScript 2.5D platformer with smooth movement, guards, and neon traps.">
+    <meta property="twitter:image" content="uploads/logo.png">
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/game.css">
+
+        <!-- SEO Structured Data: WebSite + Game + Creator -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Shadow Escape Game",
+            "alternateName": ["Shadow Escape", "Shanu Game", "Anwarsha N S - Game"],
+            "url": "https://shadow-escape.vercel.app/",
+            "description": "Shadow Escape game by Anwarsha N S (Shanu)."
+        }
+        </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+            "name": "Shadow Escape Game",
+            "alternateName": ["Shadow Escape", "Shanu Game"],
+            "description": "Shadow Escape game is a high-performance 2.5D cyber platformer built with HTML5 Canvas and vanilla JavaScript by Anwarsha N S (Shanu).",
+      "genre": ["Platformer", "Action", "Adventure"],
+      "gamePlatform": "Web Browser",
+      "applicationCategory": "Game",
+            "operatingSystem": "Any",
+            "url": "https://shadow-escape.vercel.app/",
+            "author": {
+                "@type": "Person",
+                "name": "Anwarsha N S",
+                "alternateName": "Shanu"
+            },
+            "creator": {
+                "@type": "Person",
+                "name": "Anwarsha N S",
+                "alternateName": "Shanu"
+            }
+    }
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation Header -->
+        <header class="navbar">
+            <a href="#" onclick="showView('homeView'); return false;" class="nav-brand">
+                <div class="logo-icon">
+                    <img src="uploads/logo.png" alt="Shadow Escape logo" class="logo-image">
+                </div>
+                <span class="logo-text">SHADOW ESCAPE</span>
+            </a>
+            <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" onclick="showView('homeView'); return false;" class="nav-link active" id="navHome">Home</a></li>
+                <li><a href="#" onclick="showView('gameView'); return false;" class="nav-link" id="navPlay">Play Game</a></li>
+                <li><a href="#" onclick="openModal('modalLeaderboard'); return false;" class="nav-link">Leaderboard</a></li>
+                <li><a href="#" onclick="openModal('modalAbout'); return false;" class="nav-link">About</a></li>
+                <li><a href="#" onclick="openModal('modalContact'); return false;" class="nav-link">Contact</a></li>
+            </ul>
+        </header>
+
+        <!-- VIEW 1: HOME LANDING SCREEN -->
+        <main id="homeView" class="spa-view home-view" style="display: flex;">
+            <div class="home-hero-layout">
+                
+                <!-- Left Column: Content & Controls -->
+                <div class="cyber-card home-content-card">
+                    <span class="hero-kicker">HTML5 CANVAS • VANILLA JS • 2.5D PERSPECTIVE</span>
+                    <h1 class="section-title hero-title">SHADOW ESCAPE</h1>
+                    <p class="section-subtitle hero-copy">
+                        Shadow Escape is a futuristic browser-based platform adventure game developed by Anwarsha N S using HTML5 Canvas, CSS3, and vanilla JavaScript. Explore an abandoned research facility, avoid security guards, solve puzzles, collect energy crystals, and escape before the reactor collapses.
+                    </p>
+
+                    <div class="hero-cta-row">
+                        <button onclick="showView('gameView')" class="cyber-btn cyber-btn-lg">▶ PLAY NOW</button>
+                        <button onclick="openModal('modalAbout')" class="cyber-btn secondary cyber-btn-lg">📖 GAME GUIDE</button>
+                        <button onclick="openModal('modalLeaderboard')" class="cyber-btn secondary hero-score-btn">🏆 SCORES</button>
+                    </div>
+
+                    <!-- Feature Cards Grid -->
+                    <div class="hero-feature-grid">
+                        <div class="feature-tile feature-tile-cyan">
+                            <h4 class="feature-title">2.5D PERSPECTIVE</h4>
+                            <p>Extruded platform blocks & depth shadows.</p>
+                        </div>
+                        <div class="feature-tile feature-tile-purple">
+                            <h4 class="feature-title">HUMAN CHARACTERS</h4>
+                            <p>Human runner persona & security guard patrols.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: org_person.png Hero Showcase Card -->
+                <div class="hero-showcase-card float-animation">
+                    <img src="uploads/org_person.png" alt="Shadow Escape Hero Runner Persona" class="hero-showcase-img">
+                    <div class="hero-persona-badge">
+                        <div>
+                            <span style="display: block; font-family: var(--font-heading); font-size: 0.75rem; color: var(--primary-cyan); letter-spacing: 1px;">HERO RUNNER PERSONA</span>
+                            <strong style="font-family: var(--font-heading); font-size: 1.1rem; color: #fff;">AGENT SHADOW</strong>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="display: inline-block; width: 10px; height: 10px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green); margin-right: 6px;"></span>
+                            <span style="font-family: var(--font-heading); font-size: 0.85rem; color: var(--accent-green);">SYSTEM ACTIVE</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- VIEW 2: GAMEPLAY SCREEN -->
+        <main id="gameView" class="spa-view game-page-container" style="display: none;">
+            <div class="game-screen-wrapper" id="gameWrapper">
+                <div class="shake-target" id="shakeContainer">
+                    <canvas id="gameCanvas" width="1280" height="720"></canvas>
+                </div>
+
+                <!-- HUD Overlay -->
+                <div class="game-hud">
+                    <div class="hud-group">
+                        <div class="hud-health-box">
+                            <span class="hud-label">HP SYSTEM</span>
+                            <div class="health-bar-container">
+                                <div class="health-bar-fill" id="hudHealthFill"></div>
+                            </div>
+                        </div>
+
+                        <div class="hud-item">
+                            <span style="color: var(--primary-cyan); font-weight: bold;">💎</span>
+                            <span class="hud-value" id="hudCrystalsVal">0/0</span>
+                        </div>
+
+                        <div class="hud-item key-indicator" id="hudKeyIndicator">
+                            <span style="color: var(--accent-gold); font-weight: bold;">🔑 KEY</span>
+                        </div>
+                    </div>
+
+                    <div class="level-banner" id="hudLevelTitle">Level 1: Facility Security Entrance</div>
+
+                    <div class="hud-group">
+                        <div class="hud-item">
+                            <span style="color: var(--text-muted);">TIME:</span>
+                            <span class="hud-value" id="hudTimerVal">00:00</span>
+                        </div>
+
+                        <div class="hud-item">
+                            <span style="color: var(--accent-gold);">SCORE:</span>
+                            <span class="hud-value" id="hudScoreVal">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Touch Controls -->
+                <div class="touch-controls" id="touchControls">
+                    <div class="touch-cluster">
+                        <button class="touch-btn" id="btnTouchLeft">◄</button>
+                        <button class="touch-btn" id="btnTouchRight">►</button>
+                    </div>
+                    <div class="touch-cluster">
+                        <button class="touch-btn dash-btn" id="btnTouchDash">⚡</button>
+                        <button class="touch-btn" id="btnTouchJump">▲</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls-hint">
+                Laptop Controls: <b style="color: var(--primary-cyan);">A/D</b> or <b style="color: var(--primary-cyan);">Arrows</b> to move | <b style="color: var(--primary-cyan);">W/Space/Up</b> to Jump & Double-jump | <b style="color: var(--primary-purple);">Shift/K</b> to Dash | <b style="color: var(--text-main);">P/Esc</b> to Pause
+            </div>
+        </main>
+
+        <!-- MODAL: LEADERBOARD -->
+        <div class="modal-overlay" id="modalLeaderboard">
+            <div class="modal-content" style="max-width: 720px; text-align: left;">
+                <div class="modal-header-row">
+                    <h2 class="modal-title" style="margin: 0;">LEADERBOARD & STATS</h2>
+                    <button onclick="closeModal('modalLeaderboard')" class="modal-close-btn" aria-label="Close leaderboard">✕</button>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="background: rgba(5,8,20,0.7); border: 1px solid var(--primary-cyan); padding: 1rem; border-radius: var(--border-radius-sm); text-align: center;">
+                        <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-heading);">HIGH SCORE</span>
+                        <div id="statHighScore" style="font-size: 1.8rem; font-family: var(--font-heading); color: var(--primary-cyan); font-weight: 800; margin-top: 4px;">0</div>
+                    </div>
+                    <div style="background: rgba(5,8,20,0.7); border: 1px solid var(--primary-purple); padding: 1rem; border-radius: var(--border-radius-sm); text-align: center;">
+                        <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-heading);">CRYSTALS COLLECTED</span>
+                        <div id="statCrystals" style="font-size: 1.8rem; font-family: var(--font-heading); color: var(--primary-purple); font-weight: 800; margin-top: 4px;">0</div>
+                    </div>
+                </div>
+                <h4 style="color: var(--primary-cyan); margin-bottom: 0.8rem;">STAGE SPEEDRUN BEST TIMES</h4>
+                <table class="cyber-table">
+                    <thead>
+                        <tr>
+                            <th>STAGE</th>
+                            <th>STATUS</th>
+                            <th>BEST TIME</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBestTimes"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MODAL: ABOUT & GUIDE -->
+        <div class="modal-overlay" id="modalAbout">
+            <div class="modal-content" style="max-width: 680px; text-align: left;">
+                <div class="modal-header-row">
+                    <h2 class="modal-title" style="margin: 0;">ABOUT SHADOW ESCAPE</h2>
+                    <button onclick="closeModal('modalAbout')" class="modal-close-btn" aria-label="Close about dialog">✕</button>
+                </div>
+                <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
+                    In Sector 7 of an abandoned subterranean research laboratory, an experimental containment breach triggered automated lockdowns. You play as a human runner persona escaping human security guard patrols, flying drones, and laser traps across 5 stages.
+                </p>
+                <h4 style="color: var(--primary-cyan); margin-bottom: 0.5rem;">TECH STACK HIGHLIGHTS</h4>
+                <ul style="color: var(--text-muted); margin-bottom: 1.5rem; padding-left: 1.2rem; line-height: 1.8;">
+                    <li><b>HTML5 Canvas:</b> 2.5D block projections & depth shadows.</li>
+                    <li><b>Vanilla JavaScript (ES6+):</b> Zero external game engine dependencies.</li>
+                    <li><b>Web Audio API:</b> Dynamic synthesized audio generator for SFX and synthwave BGM.</li>
+                    <li><b>Uploads Directory:</b> Custom PNG sprite assets for human runner, human security guards, and hero portrait.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MODAL: CONTACT -->
+        <div class="modal-overlay" id="modalContact">
+            <div class="modal-content" style="max-width: 580px; text-align: left;">
+                <div class="modal-header-row">
+                    <h2 class="modal-title" style="margin: 0;">CONTACT DEVELOPER</h2>
+                    <button onclick="closeModal('modalContact')" class="modal-close-btn" aria-label="Close contact dialog">✕</button>
+                </div>
+                <form onsubmit="event.preventDefault(); alert('Message sent! Thank you for reaching out.'); closeModal('modalContact');">
+                    <div class="form-group">
+                        <label class="form-label">YOUR NAME</label>
+                        <input type="text" class="form-input" placeholder="e.g. Alex Mercer" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">EMAIL ADDRESS</label>
+                        <input type="email" class="form-input" placeholder="e.g. alex@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">MESSAGE</label>
+                        <textarea class="form-textarea" rows="4" placeholder="Write your message here..." required></textarea>
+                    </div>
+                    <button type="submit" class="cyber-btn cyber-btn-lg" style="width: 100%;">SEND MESSAGE</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- GAMEPLAY MODALS -->
+        <div class="modal-overlay" id="pauseModal">
+            <div class="modal-content">
+                <h2 class="modal-title">SYSTEM PAUSED</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">Take a breath before stepping back into the facility.</p>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <button class="cyber-btn" id="btnResume">RESUME GAME</button>
+                    <button class="cyber-btn secondary" id="btnRestart">RESTART LEVEL</button>
+                    <button class="cyber-btn danger" onclick="showView('homeView'); window.uiManager.hideAllModals();">EXIT TO MAIN MENU</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="gameOverModal">
+            <div class="modal-content" style="border-color: var(--accent-red);">
+                <h2 class="modal-title" style="color: var(--accent-red);">CRITICAL FAILURE</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">Security guards or hazards eliminated your runner.</p>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <button class="cyber-btn danger" id="btnGameOverRestart">RETRY LEVEL</button>
+                    <button class="cyber-btn secondary" onclick="showView('homeView'); window.uiManager.hideAllModals();">MAIN MENU</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="levelClearModal">
+            <div class="modal-content">
+                <h2 class="modal-title" style="color: var(--accent-green);">STAGE CLEARED!</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1rem;">Security gate unlocked. Proceeding to next facility sector.</p>
+                <p style="font-size: 1.4rem; color: var(--accent-gold); font-family: var(--font-heading); margin-bottom: 2rem;">
+                    SCORE: <span id="levelClearScore">0</span>
+                </p>
+                <button class="cyber-btn" id="btnNextLevel">NEXT LEVEL ►</button>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="victoryModal">
+            <div class="modal-content" style="border-color: var(--accent-gold);">
+                <h2 class="modal-title" style="color: var(--accent-gold);">FACILITY ESCAPED!</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Congratulations! You bypassed all 5 security sectors and survived.</p>
+                <p style="font-size: 1.8rem; color: var(--primary-cyan); font-family: var(--font-heading); margin-bottom: 2rem;">
+                    FINAL SCORE: <span id="victoryScore">0</span>
+                </p>
+                <button class="cyber-btn" onclick="openModal('modalLeaderboard'); closeModal('victoryModal');">VIEW LEADERBOARD</button>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>© 2026 Shadow Escape. Developed by Anwarsha N S.<br>Built using HTML5, CSS3 and JavaScript.</p>
+        </footer>
+    </div>
+
+    <!-- Modular JS Engine Load Order -->
+    <script src="js/storage.js"></script>
+    <script src="js/engine/audio.js"></script>
+    <script src="js/engine/camera.js"></script>
+    <script src="js/engine/input.js"></script>
+    <script src="js/engine/physics.js"></script>
+    <script src="js/engine/particles.js"></script>
+    <script src="js/game/renderer2D3D.js"></script>
+    <script src="js/game/player.js"></script>
+    <script src="js/game/enemy.js"></script>
+    <script src="js/game/traps.js"></script>
+    <script src="js/game/collectibles.js"></script>
+    <script src="js/game/levelData.js"></script>
+    <script src="js/game/gameEngine.js"></script>
+    <script src="js/ui/uiManager.js"></script>
+    <script>
+        // SPA View & Modal Router
+        function showView(viewId) {
+            document.querySelectorAll('.spa-view').forEach(v => v.style.display = 'none');
+            const target = document.getElementById(viewId);
+            if (target) {
+                target.style.display = 'flex';
+            }
+
+            document.getElementById('navHome').classList.toggle('active', viewId === 'homeView');
+            document.getElementById('navPlay').classList.toggle('active', viewId === 'gameView');
+
+            if (viewId === 'gameView') {
+                if (!window.gameEngine.canvas) {
+                    window.gameEngine.init('gameCanvas');
+                } else {
+                    window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
+                }
+            }
+        }
+
+        function openModal(modalId) {
+            const m = document.getElementById(modalId);
+            if (m) m.classList.add('active');
+            if (modalId === 'modalLeaderboard') populateLeaderboard();
+        }
+
+        function closeModal(modalId) {
+            const m = document.getElementById(modalId);
+            if (m) m.classList.remove('active');
+        }
+
+        function populateLeaderboard() {
+            const data = window.storage ? window.storage.data : {};
+            document.getElementById('statHighScore').innerText = data.highScore || 0;
+            document.getElementById('statCrystals').innerText = data.totalCrystals || 0;
+
+            const stageNames = [
+                "1. Facility Entrance",
+                "2. Storage Room",
+                "3. Research Lab",
+                "4. Reactor Core",
+                "5. Final Escape"
+            ];
+
+            const tbody = document.getElementById('tableBestTimes');
+            if (!tbody) return;
+            tbody.innerHTML = stageNames.map((name, i) => {
+                const lvlId = i + 1;
+                const isUnlocked = lvlId <= (data.unlockedLevel || 1);
+                const timeSec = data.levelTimes ? data.levelTimes[lvlId] : null;
+
+                let timeStr = '—';
+                if (timeSec) {
+                    const m = Math.floor(timeSec / 60).toString().padStart(2, '0');
+                    const s = (timeSec % 60).toString().padStart(2, '0');
+                    timeStr = `${m}:${s}`;
+                }
+
+                return `
+                    <tr>
+                        <td><b>${name}</b></td>
+                        <td><span style="color: ${isUnlocked ? 'var(--accent-green)' : 'var(--text-muted)'}">${isUnlocked ? 'UNLOCKED' : 'LOCKED'}</span></td>
+                        <td style="color: var(--accent-gold); font-family: var(--font-heading);">${timeStr}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
