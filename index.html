@@ -114,7 +114,7 @@
         <!-- VIEW 2: GAMEPLAY SCREEN -->
         <main id="gameView" class="spa-view game-page-container" style="display: none;">
             <div class="game-screen-wrapper" id="gameWrapper">
-                <button class="fullscreen-toggle" id="btnFullscreenToggle" type="button" aria-label="Toggle fullscreen">⤢</button>
+                <button class="fullscreen-toggle" id="btnFullscreenToggle" type="button" aria-label="Enter fullscreen" hidden>⤢</button>
                 <div class="shake-target" id="shakeContainer">
                     <canvas id="gameCanvas" width="1280" height="720"></canvas>
                 </div>
@@ -353,14 +353,45 @@
                     window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
                 }
 
-                requestGameFullscreen();
                 document.body.classList.add('game-active');
+                showGameFullscreenControl();
+                if (isMobileDevice()) {
+                    requestMobileGameMode();
+                }
             } else {
                 exitGameFullscreen();
                 document.body.classList.remove('game-active');
+                hideGameFullscreenControl();
             }
 
             checkOrientation();
+        }
+
+        function isMobileDevice() {
+            return window.matchMedia('(max-width: 950px)').matches || window.matchMedia('(pointer: coarse)').matches;
+        }
+
+        function showGameFullscreenControl() {
+            const fullscreenToggle = document.getElementById('btnFullscreenToggle');
+            if (!fullscreenToggle) return;
+            fullscreenToggle.hidden = false;
+            updateFullscreenToggleLabel();
+        }
+
+        function hideGameFullscreenControl() {
+            const fullscreenToggle = document.getElementById('btnFullscreenToggle');
+            if (!fullscreenToggle) return;
+            fullscreenToggle.hidden = true;
+        }
+
+        function updateFullscreenToggleLabel() {
+            const fullscreenToggle = document.getElementById('btnFullscreenToggle');
+            if (!fullscreenToggle) return;
+
+            const isFullscreen = Boolean(document.fullscreenElement);
+            fullscreenToggle.textContent = isFullscreen ? '✕' : '⤢';
+            fullscreenToggle.setAttribute('aria-label', isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen');
+            fullscreenToggle.classList.toggle('exit-mode', isFullscreen);
         }
 
         async function requestGameFullscreen() {
@@ -373,6 +404,18 @@
                 }
             } catch (error) {
                 console.warn('Fullscreen request failed:', error);
+            }
+        }
+
+        async function requestMobileGameMode() {
+            await requestGameFullscreen();
+
+            try {
+                if (screen.orientation && screen.orientation.lock) {
+                    await screen.orientation.lock('landscape');
+                }
+            } catch (error) {
+                console.warn('Orientation lock failed:', error);
             }
         }
 
@@ -390,12 +433,17 @@
             if (document.fullscreenElement) {
                 exitGameFullscreen();
             } else {
-                requestGameFullscreen();
+                if (isMobileDevice()) {
+                    requestMobileGameMode();
+                } else {
+                    requestGameFullscreen();
+                }
             }
         }
 
         document.addEventListener('fullscreenchange', () => {
             document.body.classList.toggle('is-fullscreen-game', Boolean(document.fullscreenElement));
+            updateFullscreenToggleLabel();
         });
 
         window.addEventListener('keydown', (event) => {
