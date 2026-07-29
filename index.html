@@ -114,6 +114,7 @@
         <!-- VIEW 2: GAMEPLAY SCREEN -->
         <main id="gameView" class="spa-view game-page-container" style="display: none;">
             <div class="game-screen-wrapper" id="gameWrapper">
+                <button class="fullscreen-toggle" id="btnFullscreenToggle" type="button" aria-label="Toggle fullscreen">⤢</button>
                 <div class="shake-target" id="shakeContainer">
                     <canvas id="gameCanvas" width="1280" height="720"></canvas>
                 </div>
@@ -351,9 +352,62 @@
                 } else {
                     window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
                 }
+
+                requestGameFullscreen();
+                document.body.classList.add('game-active');
+            } else {
+                exitGameFullscreen();
+                document.body.classList.remove('game-active');
             }
 
             checkOrientation();
+        }
+
+        async function requestGameFullscreen() {
+            const fullscreenElement = document.getElementById('gameWrapper');
+            if (!fullscreenElement || document.fullscreenElement) return;
+
+            try {
+                if (fullscreenElement.requestFullscreen) {
+                    await fullscreenElement.requestFullscreen();
+                }
+            } catch (error) {
+                console.warn('Fullscreen request failed:', error);
+            }
+        }
+
+        async function exitGameFullscreen() {
+            if (!document.fullscreenElement) return;
+
+            try {
+                await document.exitFullscreen();
+            } catch (error) {
+                console.warn('Exit fullscreen failed:', error);
+            }
+        }
+
+        function toggleGameFullscreen() {
+            if (document.fullscreenElement) {
+                exitGameFullscreen();
+            } else {
+                requestGameFullscreen();
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            document.body.classList.toggle('is-fullscreen-game', Boolean(document.fullscreenElement));
+        });
+
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'F11') {
+                event.preventDefault();
+                toggleGameFullscreen();
+            }
+        });
+
+        const fullscreenToggle = document.getElementById('btnFullscreenToggle');
+        if (fullscreenToggle) {
+            fullscreenToggle.addEventListener('click', toggleGameFullscreen);
         }
 
         function openModal(modalId) {
