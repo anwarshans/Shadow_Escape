@@ -59,32 +59,32 @@
         </header>
 
         <!-- VIEW 1: HOME LANDING SCREEN -->
-        <main id="homeView" class="spa-view" style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2.5rem 1.5rem;">
-            <div style="max-width: 1200px; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; align-items: center;">
+        <main id="homeView" class="spa-view" style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 1.5rem; overflow-y: auto;">
+            <div style="max-width: 1200px; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: center;">
                 
                 <!-- Left Column: Content & Controls -->
-                <div class="cyber-card" style="padding: 3rem 2.5rem;">
-                    <span style="display: inline-block; padding: 4px 16px; background: rgba(0,243,255,0.12); border: 1px solid var(--primary-cyan); border-radius: 20px; color: var(--primary-cyan); font-size: 0.85rem; font-family: var(--font-heading); margin-bottom: 1.5rem; letter-spacing: 2px;">HTML5 CANVAS • VANILLA JS • 2.5D PERSPECTIVE</span>
-                    <h1 class="section-title" style="font-size: 3rem; margin-bottom: 1rem;">SHADOW ESCAPE</h1>
-                    <p class="section-subtitle" style="margin-bottom: 2rem; line-height: 1.7; font-size: 1.15rem;">
+                <div class="cyber-card" style="padding: 2.5rem 2rem;">
+                    <span style="display: inline-block; padding: 4px 16px; background: rgba(0,243,255,0.12); border: 1px solid var(--primary-cyan); border-radius: 20px; color: var(--primary-cyan); font-size: 0.85rem; font-family: var(--font-heading); margin-bottom: 1.2rem; letter-spacing: 2px;">HTML5 CANVAS • VANILLA JS • 2.5D PERSPECTIVE</span>
+                    <h1 class="section-title" style="font-size: 2.8rem; margin-bottom: 0.8rem;">SHADOW ESCAPE</h1>
+                    <p class="section-subtitle" style="margin-bottom: 1.8rem; line-height: 1.6; font-size: 1.05rem;">
                         You wake up inside an abandoned research facility after a failed experiment. Human security guards patrol the sectors, laser grids block corridors, and the reactor core is critical. Escape through 5 levels before facility lockdown!
                     </p>
 
-                    <div style="display: flex; gap: 1.2rem; flex-wrap: wrap; margin-bottom: 2.5rem;">
+                    <div style="display: flex; gap: 1.2rem; flex-wrap: wrap; margin-bottom: 2rem;">
                         <button onclick="showView('gameView')" class="cyber-btn cyber-btn-lg">▶ PLAY NOW</button>
                         <button onclick="openModal('modalAbout')" class="cyber-btn secondary cyber-btn-lg">📖 GAME GUIDE</button>
                         <button onclick="openModal('modalLeaderboard')" class="cyber-btn secondary" style="padding: 0.85rem 1.5rem;">🏆 SCORES</button>
                     </div>
 
                     <!-- Feature Cards Grid -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; text-align: left;">
-                        <div style="background: rgba(5,8,20,0.6); padding: 1rem; border-radius: var(--border-radius-sm); border-left: 3px solid var(--primary-cyan);">
-                            <h4 style="color: var(--primary-cyan); margin-bottom: 0.3rem; font-size: 0.95rem;">2.5D PERSPECTIVE</h4>
-                            <p style="font-size: 0.85rem; color: var(--text-muted);">Extruded platform blocks & depth shadows.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem; text-align: left;">
+                        <div style="background: rgba(5,8,20,0.6); padding: 0.85rem; border-radius: var(--border-radius-sm); border-left: 3px solid var(--primary-cyan);">
+                            <h4 style="color: var(--primary-cyan); margin-bottom: 0.2rem; font-size: 0.9rem;">2.5D PERSPECTIVE</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">Extruded platform blocks & depth shadows.</p>
                         </div>
-                        <div style="background: rgba(5,8,20,0.6); padding: 1rem; border-radius: var(--border-radius-sm); border-left: 3px solid var(--primary-purple);">
-                            <h4 style="color: var(--primary-purple); margin-bottom: 0.3rem; font-size: 0.95rem;">HUMAN CHARACTERS</h4>
-                            <p style="font-size: 0.85rem; color: var(--text-muted);">Human runner persona & security guard patrols.</p>
+                        <div style="background: rgba(5,8,20,0.6); padding: 0.85rem; border-radius: var(--border-radius-sm); border-left: 3px solid var(--primary-purple);">
+                            <h4 style="color: var(--primary-purple); margin-bottom: 0.2rem; font-size: 0.9rem;">HUMAN CHARACTERS</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">Human runner persona & security guard patrols.</p>
                         </div>
                     </div>
                 </div>
@@ -95,7 +95,7 @@
                     <div class="hero-persona-badge">
                         <div>
                             <span style="display: block; font-family: var(--font-heading); font-size: 0.75rem; color: var(--primary-cyan); letter-spacing: 1px;">HERO RUNNER PERSONA</span>
-                            <strong style="font-family: var(--font-heading); font-size: 1.1rem; color: #fff;">AGENT SHADOW</strong>
+                            <strong style="font-family: var(--font-heading); font-size: 1.05rem; color: #fff;">AGENT SHADOW</strong>
                         </div>
                         <div style="text-align: right;">
                             <span style="display: inline-block; width: 10px; height: 10px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green); margin-right: 6px;"></span>
@@ -114,9 +114,9 @@
                     <canvas id="gameCanvas" width="1280" height="720"></canvas>
                 </div>
 
-                <!-- HUD Overlay -->
+                <!-- HUD Overlay - Clean 3-Column Grid -->
                 <div class="game-hud">
-                    <div class="hud-group">
+                    <div class="hud-group left">
                         <div class="hud-health-box">
                             <span class="hud-label">HP SYSTEM</span>
                             <div class="health-bar-container">
@@ -136,7 +136,7 @@
 
                     <div class="level-banner" id="hudLevelTitle">Level 1: Facility Security Entrance</div>
 
-                    <div class="hud-group">
+                    <div class="hud-group right">
                         <div class="hud-item">
                             <span style="color: var(--text-muted);">TIME:</span>
                             <span class="hud-value" id="hudTimerVal">00:00</span>
@@ -160,10 +160,6 @@
                         <button class="touch-btn" id="btnTouchJump">▲</button>
                     </div>
                 </div>
-            </div>
-
-            <div style="margin-top: 1rem; color: var(--text-muted); font-size: 0.85rem; text-align: center;">
-                Laptop Controls: <b style="color: var(--primary-cyan);">A/D</b> or <b style="color: var(--primary-cyan);">Arrows</b> to move | <b style="color: var(--primary-cyan);">W/Space/Up</b> to Jump & Double-jump | <b style="color: var(--primary-purple);">Shift/K</b> to Dash | <b style="color: var(--text-main);">P/Esc</b> to Pause
             </div>
         </main>
 
@@ -297,10 +293,6 @@
                 <button class="cyber-btn" onclick="openModal('modalLeaderboard'); closeModal('victoryModal');">VIEW LEADERBOARD</button>
             </div>
         </div>
-
-        <footer class="footer">
-            <p>© 2026 Shadow Escape — Single Page Developer Portfolio Showcase.</p>
-        </footer>
     </div>
 
     <!-- Modular JS Engine Load Order -->
