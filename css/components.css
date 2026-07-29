@@ -638,6 +638,7 @@
     }
 
     .home-mobile-features {
-        display: none;
+        display: grid;
+        margin-top: 0.15rem;
     }
 }
