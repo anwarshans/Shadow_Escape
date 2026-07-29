@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Shadow Escape - Game Canvas, HUD, and Mobile Touch Controls Stylesheet
+   Shadow Escape - Game Canvas, HUD & Mobile Landscape Controls
    ========================================================================== */
 
 .game-page-container {
@@ -7,9 +7,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 80px);
-    padding: 1rem;
+    min-height: calc(100vh - 75px);
+    padding: 0.5rem;
     position: relative;
+    width: 100%;
 }
 
 /* Aspect Ratio Locked Game Screen */
@@ -49,7 +50,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    padding: 1rem 1.5rem;
+    padding: 0.6rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -61,26 +62,26 @@
 .hud-group {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 0.8rem;
 }
 
 /* Health Bar */
 .hud-health-box {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
 }
 
 .hud-label {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: var(--primary-cyan);
     letter-spacing: 1px;
 }
 
 .health-bar-container {
-    width: 180px;
-    height: 16px;
-    background: rgba(0, 0, 0, 0.6);
+    width: 130px;
+    height: 12px;
+    background: rgba(0, 0, 0, 0.65);
     border: 1px solid var(--primary-cyan);
     border-radius: 4px;
     overflow: hidden;
@@ -99,21 +100,17 @@
 .hud-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(10, 15, 30, 0.7);
+    gap: 6px;
+    background: rgba(10, 15, 30, 0.75);
     border: 1px solid rgba(0, 243, 255, 0.3);
-    padding: 6px 14px;
-    border-radius: 20px;
+    padding: 4px 10px;
+    border-radius: 16px;
     backdrop-filter: blur(4px);
-}
-
-.hud-icon {
-    width: 20px;
-    height: 20px;
+    font-size: 0.85rem;
 }
 
 .hud-value {
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: #fff;
 }
@@ -129,30 +126,36 @@
     filter: drop-shadow(0 0 8px var(--accent-gold));
 }
 
-/* Level Title Display */
+/* Level Title Banner - Compact & Non-Blocking */
 .level-banner {
     position: absolute;
-    top: 1.2rem;
+    top: 0.6rem;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 1.1rem;
+    font-size: 0.8rem;
+    font-weight: 700;
     color: var(--primary-cyan);
-    letter-spacing: 2px;
-    text-shadow: 0 0 10px var(--primary-cyan);
-    background: rgba(5, 8, 20, 0.6);
-    padding: 4px 16px;
-    border-radius: 12px;
-    border: 1px solid rgba(0, 243, 255, 0.2);
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px var(--primary-cyan);
+    background: rgba(5, 8, 20, 0.75);
+    padding: 4px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 243, 255, 0.25);
+    white-space: nowrap;
+    max-width: 60%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
 }
 
-/* Mobile Touch Virtual Controls Overlay */
+/* Mobile Virtual Touch Controls Overlay */
 .touch-controls {
-    display: none; /* Auto enabled on mobile devices */
+    display: none; /* Auto enabled on coarse pointers / mobile viewports */
     position: absolute;
     bottom: 12px;
     left: 0;
     width: 100%;
-    padding: 0 20px;
+    padding: 0 16px;
     justify-content: space-between;
     align-items: flex-end;
     pointer-events: none;
@@ -161,24 +164,24 @@
 
 .touch-cluster {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     pointer-events: auto;
 }
 
 .touch-btn {
-    width: 58px;
-    height: 58px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
-    background: rgba(10, 20, 40, 0.65);
+    background: rgba(10, 20, 40, 0.7);
     border: 2px solid var(--primary-cyan);
     color: var(--primary-cyan);
     font-family: var(--font-heading);
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-weight: 800;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 12px rgba(0, 243, 255, 0.3);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
     user-select: none;
     touch-action: manipulation;
 }
@@ -186,7 +189,7 @@
 .touch-btn:active {
     background: var(--primary-cyan);
     color: var(--bg-dark);
-    box-shadow: 0 0 20px var(--primary-cyan);
+    box-shadow: 0 0 18px var(--primary-cyan);
     transform: scale(0.92);
 }
 
@@ -198,12 +201,80 @@
 .touch-btn.dash-btn:active {
     background: var(--primary-purple);
     color: #fff;
-    box-shadow: 0 0 20px var(--primary-purple);
+    box-shadow: 0 0 18px var(--primary-purple);
 }
 
-/* Enable touch controls on touch-capable touch viewports */
+/* Mobile Rotation Overlay */
+.rotate-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(5, 7, 18, 0.96);
+    backdrop-filter: blur(16px);
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    color: var(--primary-cyan);
+}
+
+.rotate-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: rotatePhone 2.5s infinite ease-in-out;
+}
+
+@keyframes rotatePhone {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(90deg); }
+}
+
+/* Responsive Touch Viewports */
 @media (max-width: 1024px), (pointer: coarse) {
     .touch-controls {
         display: flex;
+    }
+}
+
+/* Show Rotate Prompt when phone is held in Portrait mode during gameplay */
+@media (max-width: 900px) and (orientation: portrait) {
+    .rotate-overlay.active {
+        display: flex;
+    }
+}
+
+/* Full Landscape Mobile Optimization */
+@media (max-width: 950px) and (orientation: landscape) {
+    .navbar {
+        padding: 0.6rem 1.5rem;
+    }
+    .game-page-container {
+        padding: 0;
+        min-height: calc(100vh - 60px);
+    }
+    .game-screen-wrapper {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        height: calc(100vh - 60px);
+        max-width: 100vw;
+    }
+    .level-banner {
+        font-size: 0.7rem;
+        top: 0.4rem;
+    }
+    .hud-item {
+        font-size: 0.75rem;
+        padding: 3px 8px;
+    }
+    .touch-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 1rem;
     }
 }

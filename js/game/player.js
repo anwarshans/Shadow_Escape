@@ -1,23 +1,23 @@
 /* ==========================================================================
-   Shadow Escape - Human Persona Runner (Player Entity & Animations)
+   Shadow Escape - Human Persona Runner (Gentle & Slow Jump Physics)
    ========================================================================== */
 
 class Player {
     constructor(x, y) {
-        // Position & Dimensions (Slightly larger for enhanced visibility)
+        // Position & Dimensions
         this.x = x;
         this.y = y;
         this.width = 44;
         this.height = 72;
 
-        // Physics Parameters
+        // Physics Parameters (Gentle & slow vertical jumping speed)
         this.velocityX = 0;
         this.velocityY = 0;
-        this.speed = 6.5;
-        this.accel = 1.4;
+        this.speed = 3.6;
+        this.accel = 0.6;
         this.friction = 0.82;
-        this.gravity = 0.65;
-        this.jumpForce = -14.2;
+        this.gravity = 0.32;     // Reduced from 0.48 for slow, soft float
+        this.jumpForce = -8.5;   // Reduced from -11.0 for gentle, controlled jump
 
         // State Flags
         this.isGrounded = false;
@@ -31,7 +31,7 @@ class Player {
         this.dashDuration = 0.18;
         this.dashCooldown = 0;
         this.maxDashCooldown = 0.8;
-        this.dashSpeed = 17;
+        this.dashSpeed = 8.5;
 
         // Health & Damage
         this.hp = 100;
@@ -129,7 +129,7 @@ class Player {
                 if (window.particleSystem) window.particleSystem.createJumpDust(this.x + this.width / 2, this.y + this.height);
                 input.touch.jump = false;
             } else if (this.canDoubleJump) {
-                this.velocityY = this.jumpForce * 0.9;
+                this.velocityY = this.jumpForce * 0.85;
                 this.canDoubleJump = false;
                 if (window.soundEngine) window.soundEngine.playDoubleJump();
                 if (window.particleSystem) window.particleSystem.createJumpDust(this.x + this.width / 2, this.y + this.height);
@@ -142,7 +142,7 @@ class Player {
         this.y += this.velocityY;
 
         this.isGrounded = false;
-        this.animTimer += dt * 10;
+        this.animTimer += dt * 6;
     }
 
     draw(ctx, cameraOffset) {

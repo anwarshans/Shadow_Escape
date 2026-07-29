@@ -1,9 +1,9 @@
 /* ==========================================================================
-   Shadow Escape - Human Security Guards & Flying Drone Enemies
+   Shadow Escape - Human Security Guards & Flying Drone Enemies (Relaxed Speed)
    ========================================================================== */
 
 class PatrolBot {
-    constructor(x, y, rangeLeft, rangeRight, speed = 2) {
+    constructor(x, y, rangeLeft, rangeRight, speed = 0.9) {
         this.x = x;
         this.y = y;
         this.width = 46;
@@ -11,8 +11,8 @@ class PatrolBot {
 
         this.rangeLeft = rangeLeft;
         this.rangeRight = rangeRight;
-        this.speed = speed;
-        this.direction = 1; // 1: Right, -1: Left
+        this.speed = speed;      // Relaxed patrol speed (0.9)
+        this.direction = 1;      // 1: Right, -1: Left
 
         this.damage = 25;
         this.animTimer = 0;
@@ -35,7 +35,7 @@ class PatrolBot {
             this.direction = 1;
         }
 
-        this.animTimer += dt * 8;
+        this.animTimer += dt * 4;
     }
 
     draw(ctx, cameraOffset) {
@@ -101,7 +101,7 @@ class PatrolBot {
 }
 
 class FlyingDrone {
-    constructor(x, y, rangeY = 40, speed = 1.5) {
+    constructor(x, y, rangeY = 40, speed = 0.8) {
         this.startX = x;
         this.startY = y;
         this.x = x;
@@ -110,7 +110,7 @@ class FlyingDrone {
         this.height = 36;
 
         this.rangeY = rangeY;
-        this.speed = speed;
+        this.speed = speed;      // Relaxed hover speed (0.8)
         this.time = Math.random() * 10;
 
         this.damage = 20;

@@ -3,66 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Shadow Escape – Adventure Game | Anwarsha N S - Game | Shadow Escape Game | Shanu Game</title>
-    <meta name="description" content="Play Shadow Escape game by Anwarsha N S (Shanu) - a fast 2.5D cyber platformer built with HTML5 Canvas and vanilla JavaScript. Escape lasers, guards, and reactor meltdown across 5 levels.">
-    <meta name="keywords" content="Anwarsha N S - Game, Shadow Escape game, shanu game, Shadow Escape, browser game, HTML5 platformer, vanilla JS game">
-    <meta name="author" content="Anwarsha N S (Shanu)">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <title>Shadow Escape - 2.5D Cyber Platformer Browser Game</title>
+    <meta name="description" content="Shadow Escape is a high-performance 2.5D browser platformer game built with HTML5 Canvas, CSS3, and vanilla JavaScript. Escape an abandoned facility, dodge lasers, and collect crystals.">
+    <meta name="keywords" content="Shadow Escape, browser game, HTML5 platformer, vanilla JS game, indie game, developer portfolio">
+    <meta name="author" content="Developer Portfolio">
     <link rel="canonical" href="https://shadow-escape.vercel.app/">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Shadow Escape Game">
     <meta property="og:url" content="https://shadow-escape.vercel.app/">
-    <meta property="og:title" content="Shadow Escape – Adventure Game | Anwarsha N S - Game | Shadow Escape Game">
-    <meta property="og:description" content="Shadow Escape game by Anwarsha N S (Shanu): a 2.5D cyber platformer with laser grids, human guards, and 5 action levels.">
-    <meta property="og:image" content="uploads/logo.png">
+    <meta property="og:title" content="Shadow Escape - 2.5D Cyber Platformer Game">
+    <meta property="og:description" content="Escape active security lasers, human patrol guards, and reactor meltdowns in this 2.5D browser platformer.">
+    <meta property="og:image" content="uploads/org_person.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="Shadow Escape – Adventure Game | Anwarsha N S - Game | Shadow Escape Game">
-    <meta property="twitter:description" content="Play Shadow Escape game by Shanu (Anwarsha N S): pure JavaScript 2.5D platformer with smooth movement, guards, and neon traps.">
-    <meta property="twitter:image" content="uploads/logo.png">
+    <meta property="twitter:title" content="Shadow Escape - 2.5D Cyber Platformer Game">
+    <meta property="twitter:description" content="Smooth double-jumping, human security guards, neon laser grids, and 5 action-packed levels in pure Vanilla JavaScript.">
     
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/game.css">
 
-        <!-- SEO Structured Data: WebSite + Game + Creator -->
-        <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": "Shadow Escape Game",
-            "alternateName": ["Shadow Escape", "Shanu Game", "Anwarsha N S - Game"],
-            "url": "https://shadow-escape.vercel.app/",
-            "description": "Shadow Escape game by Anwarsha N S (Shanu)."
-        }
-        </script>
-
+    <!-- VideoGame Structured Data Schema -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "VideoGame",
-            "name": "Shadow Escape Game",
-            "alternateName": ["Shadow Escape", "Shanu Game"],
-            "description": "Shadow Escape game is a high-performance 2.5D cyber platformer built with HTML5 Canvas and vanilla JavaScript by Anwarsha N S (Shanu).",
+      "name": "Shadow Escape",
+      "description": "A high-performance 2.5D cyber platformer game built with HTML5 Canvas and Vanilla JavaScript.",
       "genre": ["Platformer", "Action", "Adventure"],
       "gamePlatform": "Web Browser",
       "applicationCategory": "Game",
-            "operatingSystem": "Any",
-            "url": "https://shadow-escape.vercel.app/",
-            "author": {
-                "@type": "Person",
-                "name": "Anwarsha N S",
-                "alternateName": "Shanu"
-            },
-            "creator": {
-                "@type": "Person",
-                "name": "Anwarsha N S",
-                "alternateName": "Shanu"
-            }
+      "operatingSystem": "Any"
     }
     </script>
 </head>
@@ -71,9 +45,7 @@
         <!-- Navigation Header -->
         <header class="navbar">
             <a href="#" onclick="showView('homeView'); return false;" class="nav-brand">
-                <div class="logo-icon">
-                    <img src="uploads/logo.png" alt="Shadow Escape logo" class="logo-image">
-                </div>
+                <div class="logo-icon">⚡</div>
                 <span class="logo-text">SHADOW ESCAPE</span>
             </a>
             <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
@@ -87,32 +59,32 @@
         </header>
 
         <!-- VIEW 1: HOME LANDING SCREEN -->
-        <main id="homeView" class="spa-view home-view" style="display: flex;">
-            <div class="home-hero-layout">
+        <main id="homeView" class="spa-view" style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2.5rem 1.5rem;">
+            <div style="max-width: 1200px; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; align-items: center;">
                 
                 <!-- Left Column: Content & Controls -->
-                <div class="cyber-card home-content-card">
-                    <span class="hero-kicker">HTML5 CANVAS • VANILLA JS • 2.5D PERSPECTIVE</span>
-                    <h1 class="section-title hero-title">SHADOW ESCAPE</h1>
-                    <p class="section-subtitle hero-copy">
-                        Shadow Escape is a futuristic browser-based platform adventure game developed by Anwarsha N S using HTML5 Canvas, CSS3, and vanilla JavaScript. Explore an abandoned research facility, avoid security guards, solve puzzles, collect energy crystals, and escape before the reactor collapses.
+                <div class="cyber-card" style="padding: 3rem 2.5rem;">
+                    <span style="display: inline-block; padding: 4px 16px; background: rgba(0,243,255,0.12); border: 1px solid var(--primary-cyan); border-radius: 20px; color: var(--primary-cyan); font-size: 0.85rem; font-family: var(--font-heading); margin-bottom: 1.5rem; letter-spacing: 2px;">HTML5 CANVAS • VANILLA JS • 2.5D PERSPECTIVE</span>
+                    <h1 class="section-title" style="font-size: 3rem; margin-bottom: 1rem;">SHADOW ESCAPE</h1>
+                    <p class="section-subtitle" style="margin-bottom: 2rem; line-height: 1.7; font-size: 1.15rem;">
+                        You wake up inside an abandoned research facility after a failed experiment. Human security guards patrol the sectors, laser grids block corridors, and the reactor core is critical. Escape through 5 levels before facility lockdown!
                     </p>
 
-                    <div class="hero-cta-row">
+                    <div style="display: flex; gap: 1.2rem; flex-wrap: wrap; margin-bottom: 2.5rem;">
                         <button onclick="showView('gameView')" class="cyber-btn cyber-btn-lg">▶ PLAY NOW</button>
                         <button onclick="openModal('modalAbout')" class="cyber-btn secondary cyber-btn-lg">📖 GAME GUIDE</button>
-                        <button onclick="openModal('modalLeaderboard')" class="cyber-btn secondary hero-score-btn">🏆 SCORES</button>
+                        <button onclick="openModal('modalLeaderboard')" class="cyber-btn secondary" style="padding: 0.85rem 1.5rem;">🏆 SCORES</button>
                     </div>
 
                     <!-- Feature Cards Grid -->
-                    <div class="hero-feature-grid">
-                        <div class="feature-tile feature-tile-cyan">
-                            <h4 class="feature-title">2.5D PERSPECTIVE</h4>
-                            <p>Extruded platform blocks & depth shadows.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; text-align: left;">
+                        <div style="background: rgba(5,8,20,0.6); padding: 1rem; border-radius: var(--border-radius-sm); border-left: 3px solid var(--primary-cyan);">
+                            <h4 style="color: var(--primary-cyan); margin-bottom: 0.3rem; font-size: 0.95rem;">2.5D PERSPECTIVE</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Extruded platform blocks & depth shadows.</p>
                         </div>
-                        <div class="feature-tile feature-tile-purple">
-                            <h4 class="feature-title">HUMAN CHARACTERS</h4>
-                            <p>Human runner persona & security guard patrols.</p>
+                        <div style="background: rgba(5,8,20,0.6); padding: 1rem; border-radius: var(--border-radius-sm); border-left: 3px solid var(--primary-purple);">
+                            <h4 style="color: var(--primary-purple); margin-bottom: 0.3rem; font-size: 0.95rem;">HUMAN CHARACTERS</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Human runner persona & security guard patrols.</p>
                         </div>
                     </div>
                 </div>
@@ -190,17 +162,26 @@
                 </div>
             </div>
 
-            <div class="controls-hint">
+            <div style="margin-top: 1rem; color: var(--text-muted); font-size: 0.85rem; text-align: center;">
                 Laptop Controls: <b style="color: var(--primary-cyan);">A/D</b> or <b style="color: var(--primary-cyan);">Arrows</b> to move | <b style="color: var(--primary-cyan);">W/Space/Up</b> to Jump & Double-jump | <b style="color: var(--primary-purple);">Shift/K</b> to Dash | <b style="color: var(--text-main);">P/Esc</b> to Pause
             </div>
         </main>
 
+        <!-- PORTRAIT MOBILE ORIENTATION OVERLAY -->
+        <div class="rotate-overlay" id="rotateOverlay">
+            <div class="rotate-icon">📱🔄</div>
+            <h2 style="font-family: var(--font-heading); color: var(--primary-cyan); margin-bottom: 0.5rem;">ROTATE TO LANDSCAPE</h2>
+            <p style="color: var(--text-muted); max-width: 320px; font-size: 0.95rem;">
+                Shadow Escape is designed for 16:9 Landscape mode. Turn your device horizontally for the ultimate gaming experience!
+            </p>
+        </div>
+
         <!-- MODAL: LEADERBOARD -->
         <div class="modal-overlay" id="modalLeaderboard">
             <div class="modal-content" style="max-width: 720px; text-align: left;">
-                <div class="modal-header-row">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <h2 class="modal-title" style="margin: 0;">LEADERBOARD & STATS</h2>
-                    <button onclick="closeModal('modalLeaderboard')" class="modal-close-btn" aria-label="Close leaderboard">✕</button>
+                    <button onclick="closeModal('modalLeaderboard')" style="background: none; border: none; color: var(--primary-cyan); font-size: 1.5rem; cursor: pointer;">✕</button>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
                     <div style="background: rgba(5,8,20,0.7); border: 1px solid var(--primary-cyan); padding: 1rem; border-radius: var(--border-radius-sm); text-align: center;">
@@ -229,9 +210,9 @@
         <!-- MODAL: ABOUT & GUIDE -->
         <div class="modal-overlay" id="modalAbout">
             <div class="modal-content" style="max-width: 680px; text-align: left;">
-                <div class="modal-header-row">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <h2 class="modal-title" style="margin: 0;">ABOUT SHADOW ESCAPE</h2>
-                    <button onclick="closeModal('modalAbout')" class="modal-close-btn" aria-label="Close about dialog">✕</button>
+                    <button onclick="closeModal('modalAbout')" style="background: none; border: none; color: var(--primary-cyan); font-size: 1.5rem; cursor: pointer;">✕</button>
                 </div>
                 <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
                     In Sector 7 of an abandoned subterranean research laboratory, an experimental containment breach triggered automated lockdowns. You play as a human runner persona escaping human security guard patrols, flying drones, and laser traps across 5 stages.
@@ -249,9 +230,9 @@
         <!-- MODAL: CONTACT -->
         <div class="modal-overlay" id="modalContact">
             <div class="modal-content" style="max-width: 580px; text-align: left;">
-                <div class="modal-header-row">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <h2 class="modal-title" style="margin: 0;">CONTACT DEVELOPER</h2>
-                    <button onclick="closeModal('modalContact')" class="modal-close-btn" aria-label="Close contact dialog">✕</button>
+                    <button onclick="closeModal('modalContact')" style="background: none; border: none; color: var(--primary-cyan); font-size: 1.5rem; cursor: pointer;">✕</button>
                 </div>
                 <form onsubmit="event.preventDefault(); alert('Message sent! Thank you for reaching out.'); closeModal('modalContact');">
                     <div class="form-group">
@@ -318,7 +299,7 @@
         </div>
 
         <footer class="footer">
-            <p>© 2026 Shadow Escape. Developed by Anwarsha N S.<br>Built using HTML5, CSS3 and JavaScript.</p>
+            <p>© 2026 Shadow Escape — Single Page Developer Portfolio Showcase.</p>
         </footer>
     </div>
 
@@ -338,8 +319,27 @@
     <script src="js/game/gameEngine.js"></script>
     <script src="js/ui/uiManager.js"></script>
     <script>
+        let currentView = 'homeView';
+
+        function checkOrientation() {
+            const rotateOverlay = document.getElementById('rotateOverlay');
+            if (!rotateOverlay) return;
+            const isMobile = window.innerWidth <= 900 || ('ontouchstart' in window);
+            const isPortrait = window.innerHeight > window.innerWidth;
+
+            if (isMobile && isPortrait && currentView === 'gameView') {
+                rotateOverlay.classList.add('active');
+            } else {
+                rotateOverlay.classList.remove('active');
+            }
+        }
+
+        window.addEventListener('resize', checkOrientation);
+        window.addEventListener('orientationchange', checkOrientation);
+
         // SPA View & Modal Router
         function showView(viewId) {
+            currentView = viewId;
             document.querySelectorAll('.spa-view').forEach(v => v.style.display = 'none');
             const target = document.getElementById(viewId);
             if (target) {
@@ -356,6 +356,8 @@
                     window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
                 }
             }
+
+            checkOrientation();
         }
 
         function openModal(modalId) {
