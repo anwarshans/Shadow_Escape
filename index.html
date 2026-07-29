@@ -402,7 +402,7 @@
         }
 
         async function requestGameFullscreen() {
-            const fullscreenElement = document.getElementById('gameWrapper');
+            const fullscreenElement = document.querySelector('.app-container');
             if (!fullscreenElement || document.fullscreenElement) return;
 
             try {
