@@ -1,7 +1,7 @@
 {
-  "name": "Shadow Escape",
+  "name": "Shadow Escape | Anwarsha's Game | Shanu's Game | Anwarsha N S",
   "short_name": "ShadowEscape",
-  "description": "2.5D Cyber Platformer Game built with HTML5 Canvas and Vanilla JS",
+  "description": "Anwarsha N S's 2.5D cyber platformer browser game",
   "start_url": "index.html",
   "display": "standalone",
   "orientation": "landscape",
