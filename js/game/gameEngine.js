@@ -6,6 +6,7 @@ class GameEngine {
     constructor() {
         this.canvas = null;
         this.ctx = null;
+        this.performanceMode = false;
 
         this.currentLevelId = 1;
         this.levelData = null;
@@ -43,6 +44,7 @@ class GameEngine {
         this.camera = new Camera(this.canvas.width, this.canvas.height);
 
         this.resizeCanvas();
+        this.refreshPerformanceMode();
         window.addEventListener('resize', () => this.resizeCanvas());
 
         this.loadLevel(this.currentLevelId);
@@ -58,6 +60,30 @@ class GameEngine {
             this.camera.viewportWidth = 1280;
             this.camera.viewportHeight = 720;
         }
+        this.refreshPerformanceMode();
+    }
+
+    refreshPerformanceMode() {
+        this.performanceMode = window.innerWidth <= 1440 || window.innerHeight <= 850;
+        window.gamePerformanceMode = this.performanceMode;
+    }
+
+    isVisible(entity, cameraOffset, padding = 120) {
+        if (!entity || !this.canvas) return false;
+
+        const x = entity.x ?? entity.x1 ?? 0;
+        const y = entity.y ?? entity.y1 ?? 0;
+        const width = entity.width ?? Math.abs((entity.x2 ?? x) - x);
+        const height = entity.height ?? Math.abs((entity.y2 ?? y) - y);
+        const safeWidth = Number.isFinite(width) ? width : 0;
+        const safeHeight = Number.isFinite(height) ? height : 0;
+
+        return (
+            x + safeWidth >= cameraOffset.x - padding &&
+            x <= cameraOffset.x + this.canvas.width + padding &&
+            y + safeHeight >= cameraOffset.y - padding &&
+            y <= cameraOffset.y + this.canvas.height + padding
+        );
     }
 
     loadLevel(levelId) {
@@ -235,23 +261,39 @@ class GameEngine {
 
         // 2. Render 2.5D Platforms
         this.platforms.forEach(plat => {
-            if (window.renderer2D3D) {
+            if (window.renderer2D3D && this.isVisible(plat, cameraOffset, 180)) {
                 window.renderer2D3D.drawPlatform3D(this.ctx, plat, cameraOffset);
             }
         });
 
         // 3. Render Hazards & Lasers
-        this.hazards.forEach(haz => haz.draw(this.ctx, cameraOffset));
-        this.lasers.forEach(laser => laser.draw(this.ctx, cameraOffset));
+        this.hazards.forEach(haz => {
+            if (this.isVisible(haz, cameraOffset, 180)) {
+                haz.draw(this.ctx, cameraOffset);
+            }
+        });
+        this.lasers.forEach(laser => {
+            if (this.isVisible(laser, cameraOffset, 180)) {
+                laser.draw(this.ctx, cameraOffset);
+            }
+        });
 
         // 4. Render Checkpoint & Exit Door
-        if (this.checkpoint) this.checkpoint.draw(this.ctx, cameraOffset);
-        if (this.door) this.door.draw(this.ctx, cameraOffset);
+        if (this.checkpoint && this.isVisible(this.checkpoint, cameraOffset, 180)) this.checkpoint.draw(this.ctx, cameraOffset);
+        if (this.door && this.isVisible(this.door, cameraOffset, 180)) this.door.draw(this.ctx, cameraOffset);
 
         // 5. Render Collectibles & Enemies
-        this.crystals.forEach(c => c.draw(this.ctx, cameraOffset));
-        if (this.key) this.key.draw(this.ctx, cameraOffset);
-        this.enemies.forEach(e => e.draw(this.ctx, cameraOffset));
+        this.crystals.forEach(c => {
+            if (this.isVisible(c, cameraOffset, 160)) {
+                c.draw(this.ctx, cameraOffset);
+            }
+        });
+        if (this.key && this.isVisible(this.key, cameraOffset, 160)) this.key.draw(this.ctx, cameraOffset);
+        this.enemies.forEach(e => {
+            if (this.isVisible(e, cameraOffset, 180)) {
+                e.draw(this.ctx, cameraOffset);
+            }
+        });
 
         // 6. Render Player & Particles
         if (this.player) this.player.draw(this.ctx, cameraOffset);

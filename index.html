@@ -346,22 +346,28 @@
             document.getElementById('navHome').classList.toggle('active', viewId === 'homeView');
             document.getElementById('navPlay').classList.toggle('active', viewId === 'gameView');
 
-            if (viewId === 'gameView') {
+            if (viewId !== 'homeView') {
                 if (!window.gameEngine.canvas) {
                     window.gameEngine.init('gameCanvas');
                 } else {
                     window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
                 }
 
-                document.body.classList.add('game-active');
-                showGameFullscreenControl();
                 if (isMobileDevice()) {
                     requestMobileGameMode();
                 }
+            }
+
+            if (viewId === 'gameView') {
+                document.body.classList.add('game-active');
+                showGameFullscreenControl();
             } else {
-                exitGameFullscreen();
                 document.body.classList.remove('game-active');
                 hideGameFullscreenControl();
+            }
+
+            if (viewId === 'homeView') {
+                exitGameFullscreen();
             }
 
             checkOrientation();

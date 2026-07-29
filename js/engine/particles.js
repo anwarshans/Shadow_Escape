@@ -55,7 +55,8 @@ class ParticleSystem {
 
     // Spawn Jump Dust
     createJumpDust(x, y) {
-        for (let i = 0; i < 8; i++) {
+        const count = window.gamePerformanceMode ? 4 : 8;
+        for (let i = 0; i < count; i++) {
             const vx = (Math.random() - 0.5) * 3;
             const vy = -Math.random() * 2 - 1;
             this.particles.push(new Particle(x, y, vx, vy, '#00f3ff', 3 + Math.random() * 3, 0.4));
@@ -73,7 +74,8 @@ class ParticleSystem {
     // Spawn Crystal Collect Sparkles
     createCrystalBurst(x, y) {
         const colors = ['#00f3ff', '#b026ff', '#ffffff'];
-        for (let i = 0; i < 15; i++) {
+        const count = window.gamePerformanceMode ? 8 : 15;
+        for (let i = 0; i < count; i++) {
             const angle = Math.random() * Math.PI * 2;
             const speed = 2 + Math.random() * 4;
             const color = colors[Math.floor(Math.random() * colors.length)];
@@ -84,7 +86,8 @@ class ParticleSystem {
     // Spawn Explosion Bits
     createExplosion(x, y) {
         const colors = ['#ff007f', '#ff3366', '#ffcf25'];
-        for (let i = 0; i < 25; i++) {
+        const count = window.gamePerformanceMode ? 12 : 25;
+        for (let i = 0; i < count; i++) {
             const angle = Math.random() * Math.PI * 2;
             const speed = 3 + Math.random() * 6;
             const color = colors[Math.floor(Math.random() * colors.length)];
@@ -96,7 +99,7 @@ class ParticleSystem {
 
     // Spawn Laser Spark Emitters
     createLaserSparks(x, y) {
-        if (Math.random() > 0.4) return;
+        if (Math.random() > (window.gamePerformanceMode ? 0.7 : 0.4)) return;
         const vx = (Math.random() - 0.5) * 2;
         const vy = (Math.random() - 0.5) * 2;
         this.particles.push(new Particle(x, y, vx, vy, '#ff007f', 2, 0.3));
@@ -127,7 +130,7 @@ class ParticleSystem {
             ctx.globalAlpha = (g.life / g.lifeMax) * 0.5;
             ctx.fillStyle = '#00f3ff';
             ctx.shadowColor = '#00f3ff';
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = window.gamePerformanceMode ? 6 : 15;
             const drawX = g.x - cameraOffset.x;
             const drawY = g.y - cameraOffset.y;
             ctx.fillRect(drawX, drawY, g.width, g.height);

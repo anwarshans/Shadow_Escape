@@ -138,7 +138,7 @@ class FlyingDrone {
         } else {
             ctx.fillStyle = '#b026ff';
             ctx.shadowColor = '#b026ff';
-            ctx.shadowBlur = 12;
+            ctx.shadowBlur = window.gamePerformanceMode ? 6 : 12;
 
             ctx.beginPath();
             ctx.moveTo(drawX + 24, drawY);

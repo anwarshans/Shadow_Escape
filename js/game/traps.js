@@ -45,14 +45,14 @@ class LaserTrap {
         // Emitter Nodes
         ctx.fillStyle = '#ff007f';
         ctx.shadowColor = '#ff007f';
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = window.gamePerformanceMode ? 5 : 10;
         ctx.fillRect(drawX1 - 5, drawY1 - 5, 10, 10);
         ctx.fillRect(drawX2 - 5, drawY2 - 5, 10, 10);
 
         if (this.isActive) {
             // Outer Glowing Energy Beam
             ctx.strokeStyle = '#ff007f';
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = window.gamePerformanceMode ? 7 : 15;
             ctx.lineWidth = 6;
             ctx.beginPath();
             ctx.moveTo(drawX1, drawY1);
@@ -96,7 +96,7 @@ class HazardZone {
 
             ctx.fillStyle = grad;
             ctx.shadowColor = '#ff007f';
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = window.gamePerformanceMode ? 7 : 15;
             ctx.fillRect(drawX, drawY, this.width, this.height);
 
             // Pulsing surface wave
@@ -106,7 +106,7 @@ class HazardZone {
             // Spike Hazard
             ctx.fillStyle = '#ff3366';
             ctx.shadowColor = '#ff3366';
-            ctx.shadowBlur = 8;
+            ctx.shadowBlur = window.gamePerformanceMode ? 4 : 8;
 
             const spikeWidth = 16;
             const spikeCount = Math.floor(this.width / spikeWidth);

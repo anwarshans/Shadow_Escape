@@ -18,6 +18,12 @@ class Player {
         this.friction = 0.82;
         this.gravity = 0.32;     // Reduced from 0.48 for slow, soft float
         this.jumpForce = -8.5;   // Reduced from -11.0 for gentle, controlled jump
+        this.coyoteTimeMax = 0.12;
+        this.jumpBufferMax = 0.12;
+        this.coyoteTimer = 0;
+        this.jumpBufferTimer = 0;
+
+        this.applyViewportTuning();
 
         // State Flags
         this.isGrounded = false;
@@ -49,6 +55,19 @@ class Player {
         this.spriteImg.onload = () => { this.spriteLoaded = true; };
     }
 
+    applyViewportTuning() {
+        const isLaptopViewport = window.innerWidth > 900 && window.innerWidth <= 1440;
+
+        if (isLaptopViewport) {
+            this.speed = 4.0;
+            this.accel = 0.68;
+            this.friction = 0.84;
+            this.gravity = 0.28;
+            this.jumpForce = -9.6;
+            this.dashSpeed = 9.0;
+        }
+    }
+
     setCheckpoint(x, y) {
         this.spawnX = x;
         this.spawnY = y;
@@ -59,6 +78,8 @@ class Player {
         this.y = this.spawnY;
         this.velocityX = 0;
         this.velocityY = 0;
+        this.coyoteTimer = 0;
+        this.jumpBufferTimer = 0;
         this.hp = this.maxHp;
         this.invincibleTimer = 1.5;
     }
@@ -78,6 +99,16 @@ class Player {
         // Cooldowns
         if (this.invincibleTimer > 0) this.invincibleTimer -= dt;
         if (this.dashCooldown > 0) this.dashCooldown -= dt;
+
+        if (this.isGrounded) {
+            this.coyoteTimer = this.coyoteTimeMax;
+        } else {
+            this.coyoteTimer = Math.max(0, this.coyoteTimer - dt);
+        }
+
+        if (this.jumpBufferTimer > 0) {
+            this.jumpBufferTimer = Math.max(0, this.jumpBufferTimer - dt);
+        }
 
         // Dash State
         if (this.isDashing) {
@@ -121,19 +152,25 @@ class Player {
 
         // Jump Input
         if (input.isJumpPressed()) {
-            if (this.isGrounded) {
+            this.jumpBufferTimer = this.jumpBufferMax;
+            input.touch.jump = false;
+        }
+
+        if (this.jumpBufferTimer > 0) {
+            if (this.isGrounded || this.coyoteTimer > 0) {
                 this.velocityY = this.jumpForce;
                 this.isGrounded = false;
                 this.canDoubleJump = true;
+                this.coyoteTimer = 0;
+                this.jumpBufferTimer = 0;
                 if (window.soundEngine) window.soundEngine.playJump();
                 if (window.particleSystem) window.particleSystem.createJumpDust(this.x + this.width / 2, this.y + this.height);
-                input.touch.jump = false;
             } else if (this.canDoubleJump) {
                 this.velocityY = this.jumpForce * 0.85;
                 this.canDoubleJump = false;
+                this.jumpBufferTimer = 0;
                 if (window.soundEngine) window.soundEngine.playDoubleJump();
                 if (window.particleSystem) window.particleSystem.createJumpDust(this.x + this.width / 2, this.y + this.height);
-                input.touch.jump = false;
             }
         }
 
@@ -180,7 +217,7 @@ class Player {
             // Head & Helmet
             ctx.fillStyle = '#00f3ff';
             ctx.shadowColor = '#00f3ff';
-            ctx.shadowBlur = 12;
+            ctx.shadowBlur = window.gamePerformanceMode ? 6 : 12;
             ctx.beginPath();
             ctx.arc(drawX + 22, drawY + 14, 11, 0, Math.PI * 2);
             ctx.fill();

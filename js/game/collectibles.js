@@ -36,12 +36,12 @@ class EnergyCrystal {
 
         if (this.spriteLoaded) {
             ctx.shadowColor = '#00f3ff';
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = window.gamePerformanceMode ? 8 : 15;
             ctx.drawImage(this.spriteImg, drawX, drawY, this.width, this.height);
         } else {
             ctx.translate(drawX + 15, drawY + 15);
             ctx.shadowColor = '#00f3ff';
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = window.gamePerformanceMode ? 8 : 15;
 
             ctx.beginPath();
             ctx.moveTo(0, -15);
@@ -86,7 +86,7 @@ class Keycard {
         ctx.save();
         ctx.fillStyle = '#ffcf25';
         ctx.shadowColor = '#ffcf25';
-        ctx.shadowBlur = 14;
+        ctx.shadowBlur = window.gamePerformanceMode ? 7 : 14;
 
         ctx.fillRect(drawX, drawY, this.width, this.height);
 
@@ -118,7 +118,7 @@ class ExitDoor {
         ctx.fillRect(drawX, drawY, this.width, this.height);
         ctx.strokeStyle = this.isUnlocked ? '#00ff88' : '#ff3366';
         ctx.shadowColor = this.isUnlocked ? '#00ff88' : '#ff3366';
-        ctx.shadowBlur = 18;
+        ctx.shadowBlur = window.gamePerformanceMode ? 9 : 18;
         ctx.lineWidth = 4;
         ctx.strokeRect(drawX, drawY, this.width, this.height);
 
@@ -157,7 +157,7 @@ class Checkpoint {
 
         ctx.fillStyle = this.activated ? '#00ff88' : '#00f3ff';
         ctx.shadowColor = this.activated ? '#00ff88' : '#00f3ff';
-        ctx.shadowBlur = 14;
+        ctx.shadowBlur = window.gamePerformanceMode ? 7 : 14;
 
         ctx.beginPath();
         ctx.arc(drawX + 14, drawY + 10, 10, 0, Math.PI * 2);
