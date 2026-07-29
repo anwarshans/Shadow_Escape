@@ -132,6 +132,14 @@ body::after {
     justify-content: center;
     font-size: 1.1rem;
     box-shadow: var(--shadow-cyan);
+    overflow: hidden;
+}
+
+.nav-brand .logo-icon .logo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .nav-brand .logo-text {

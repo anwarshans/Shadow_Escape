@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shadow Escape - 2.5D Cyber Platformer Browser Game</title>
     <meta name="description" content="Shadow Escape is a high-performance 2.5D browser platformer game built with HTML5 Canvas, CSS3, and vanilla JavaScript. Escape an abandoned facility, dodge lasers, and collect crystals.">
     <meta name="keywords" content="Shadow Escape, browser game, HTML5 platformer, vanilla JS game, indie game, developer portfolio">
@@ -45,7 +45,9 @@
         <!-- Navigation Header -->
         <header class="navbar">
             <a href="#" onclick="showView('homeView'); return false;" class="nav-brand">
-                <div class="logo-icon">⚡</div>
+                <div class="logo-icon">
+                    <img src="uploads/logo.png" alt="Shadow Escape logo" class="logo-image">
+                </div>
                 <span class="logo-text">SHADOW ESCAPE</span>
             </a>
             <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
@@ -59,47 +61,49 @@
         </header>
 
         <!-- VIEW 1: HOME LANDING SCREEN -->
-        <main id="homeView" class="spa-view" style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 1.5rem; overflow-y: auto;">
-            <div style="max-width: 1200px; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: center;">
+        <main id="homeView" class="spa-view home-view">
+            <div class="home-layout">
                 
                 <!-- Left Column: Content & Controls -->
-                <div class="cyber-card" style="padding: 2.5rem 2rem;">
-                    <span style="display: inline-block; padding: 4px 16px; background: rgba(0,243,255,0.12); border: 1px solid var(--primary-cyan); border-radius: 20px; color: var(--primary-cyan); font-size: 0.85rem; font-family: var(--font-heading); margin-bottom: 1.2rem; letter-spacing: 2px;">HTML5 CANVAS • VANILLA JS • 2.5D PERSPECTIVE</span>
-                    <h1 class="section-title" style="font-size: 2.8rem; margin-bottom: 0.8rem;">SHADOW ESCAPE</h1>
-                    <p class="section-subtitle" style="margin-bottom: 1.8rem; line-height: 1.6; font-size: 1.05rem;">
-                        You wake up inside an abandoned research facility after a failed experiment. Human security guards patrol the sectors, laser grids block corridors, and the reactor core is critical. Escape through 5 levels before facility lockdown!
-                    </p>
+                <div class="cyber-card home-panel">
+                    <span class="home-kicker">HTML5 CANVAS • VANILLA JS • 2.5D PERSPECTIVE</span>
+                    <div class="home-copy">
+                        <h1 class="section-title home-title">SHADOW ESCAPE</h1>
+                        <p class="section-subtitle home-description">
+                            You wake up inside an abandoned research facility after a failed experiment. Human security guards patrol the sectors, laser grids block corridors, and the reactor core is critical. Escape through 5 levels before facility lockdown!
+                        </p>
+                    </div>
 
-                    <div style="display: flex; gap: 1.2rem; flex-wrap: wrap; margin-bottom: 2rem;">
-                        <button onclick="showView('gameView')" class="cyber-btn cyber-btn-lg">▶ PLAY NOW</button>
-                        <button onclick="openModal('modalAbout')" class="cyber-btn secondary cyber-btn-lg">📖 GAME GUIDE</button>
-                        <button onclick="openModal('modalLeaderboard')" class="cyber-btn secondary" style="padding: 0.85rem 1.5rem;">🏆 SCORES</button>
+                    <div class="home-actions">
+                        <button onclick="showView('gameView')" class="cyber-btn cyber-btn-lg home-primary-action">▶ PLAY NOW</button>
+                        <button onclick="openModal('modalAbout')" class="cyber-btn secondary cyber-btn-lg home-secondary-action">📖 GAME GUIDE</button>
+                        <button onclick="openModal('modalLeaderboard')" class="cyber-btn secondary home-score-action">🏆 SCORES</button>
                     </div>
 
                     <!-- Feature Cards Grid -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem; text-align: left;">
-                        <div style="background: rgba(5,8,20,0.6); padding: 0.85rem; border-radius: var(--border-radius-sm); border-left: 3px solid var(--primary-cyan);">
-                            <h4 style="color: var(--primary-cyan); margin-bottom: 0.2rem; font-size: 0.9rem;">2.5D PERSPECTIVE</h4>
-                            <p style="font-size: 0.8rem; color: var(--text-muted);">Extruded platform blocks & depth shadows.</p>
+                    <div class="home-feature-grid">
+                        <div class="home-feature-card cyan">
+                            <h4>2.5D PERSPECTIVE</h4>
+                            <p>Extruded platform blocks & depth shadows.</p>
                         </div>
-                        <div style="background: rgba(5,8,20,0.6); padding: 0.85rem; border-radius: var(--border-radius-sm); border-left: 3px solid var(--primary-purple);">
-                            <h4 style="color: var(--primary-purple); margin-bottom: 0.2rem; font-size: 0.9rem;">HUMAN CHARACTERS</h4>
-                            <p style="font-size: 0.8rem; color: var(--text-muted);">Human runner persona & security guard patrols.</p>
+                        <div class="home-feature-card purple">
+                            <h4>HUMAN CHARACTERS</h4>
+                            <p>Human runner persona & security guard patrols.</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Right Column: org_person.png Hero Showcase Card -->
-                <div class="hero-showcase-card float-animation">
+                <div class="hero-showcase-card float-animation home-profile-card">
                     <img src="uploads/org_person.png" alt="Shadow Escape Hero Runner Persona" class="hero-showcase-img">
                     <div class="hero-persona-badge">
                         <div>
-                            <span style="display: block; font-family: var(--font-heading); font-size: 0.75rem; color: var(--primary-cyan); letter-spacing: 1px;">HERO RUNNER PERSONA</span>
-                            <strong style="font-family: var(--font-heading); font-size: 1.05rem; color: #fff;">AGENT SHADOW</strong>
+                            <span class="home-profile-label">HERO RUNNER PERSONA</span>
+                            <strong class="home-profile-name">AGENT SHADOW</strong>
                         </div>
-                        <div style="text-align: right;">
-                            <span style="display: inline-block; width: 10px; height: 10px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green); margin-right: 6px;"></span>
-                            <span style="font-family: var(--font-heading); font-size: 0.85rem; color: var(--accent-green);">SYSTEM ACTIVE</span>
+                        <div class="home-status">
+                            <span class="home-status-dot"></span>
+                            <span class="home-status-label">SYSTEM ACTIVE</span>
                         </div>
                     </div>
                 </div>

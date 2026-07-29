@@ -69,6 +69,173 @@
     font-size: 1.25rem;
 }
 
+/* Home Landing Screen */
+.home-view {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 2.5vw, 2rem);
+    overflow-y: auto;
+}
+
+.home-layout {
+    width: min(1180px, 100%);
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.85fr);
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    align-items: center;
+}
+
+.home-panel {
+    padding: clamp(1.5rem, 3vw, 2.75rem);
+}
+
+.home-kicker {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.35rem 1rem;
+    margin-bottom: 1.1rem;
+    border: 1px solid rgba(0, 243, 255, 0.45);
+    border-radius: 999px;
+    background: rgba(0, 243, 255, 0.08);
+    color: var(--primary-cyan);
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    letter-spacing: 1.8px;
+    line-height: 1.2;
+}
+
+.home-copy {
+    max-width: 42rem;
+}
+
+.home-title {
+    font-size: clamp(2.5rem, 5vw, 4.1rem);
+    line-height: 0.95;
+    margin-bottom: 1rem;
+}
+
+.home-description {
+    max-width: 36rem;
+    font-size: clamp(1rem, 1.5vw, 1.08rem);
+    line-height: 1.7;
+}
+
+.home-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin: 1.8rem 0 2rem;
+}
+
+.home-actions .cyber-btn {
+    min-height: 58px;
+}
+
+.home-primary-action {
+    min-width: 220px;
+}
+
+.home-secondary-action,
+.home-score-action {
+    min-width: 180px;
+}
+
+.home-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    text-align: left;
+}
+
+.home-feature-card {
+    background: rgba(5, 8, 20, 0.66);
+    padding: 1rem 1.05rem;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-left-width: 3px;
+}
+
+.home-feature-card h4 {
+    margin-bottom: 0.35rem;
+    font-size: 0.9rem;
+}
+
+.home-feature-card p {
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+}
+
+.home-feature-card.cyan {
+    border-left-color: var(--primary-cyan);
+}
+
+.home-feature-card.cyan h4 {
+    color: var(--primary-cyan);
+}
+
+.home-feature-card.purple {
+    border-left-color: var(--primary-purple);
+}
+
+.home-feature-card.purple h4 {
+    color: var(--primary-purple);
+}
+
+.home-profile-card {
+    min-height: 560px;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.home-profile-card .hero-showcase-img {
+    max-height: 560px;
+    object-position: center top;
+}
+
+.home-profile-label,
+.home-profile-name,
+.home-status-label {
+    display: block;
+    font-family: var(--font-heading);
+}
+
+.home-profile-label {
+    font-size: 0.72rem;
+    color: var(--primary-cyan);
+    letter-spacing: 1.2px;
+}
+
+.home-profile-name {
+    font-size: 1.05rem;
+    color: #fff;
+}
+
+.home-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: right;
+}
+
+.home-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 10px var(--accent-green);
+    flex: 0 0 auto;
+}
+
+.home-status-label {
+    color: var(--accent-green);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
 /* Glassmorphism Cards */
 .cyber-card {
     background: var(--bg-card);
@@ -280,5 +447,73 @@
     .cyber-table th, .cyber-table td {
         padding: 0.7rem;
         font-size: 0.84rem;
+    }
+
+    .home-view {
+        padding: 0.8rem;
+        align-items: flex-start;
+    }
+
+    .home-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .home-panel {
+        padding: 1.15rem;
+    }
+
+    .home-kicker {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        min-height: 2.75rem;
+        font-size: 0.74rem;
+        letter-spacing: 1.2px;
+        line-height: 1.35;
+    }
+
+    .home-title {
+        font-size: 2.15rem;
+        line-height: 1;
+    }
+
+    .home-description {
+        font-size: 0.98rem;
+    }
+
+    .home-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .home-actions .cyber-btn {
+        width: 100%;
+        min-height: 52px;
+    }
+
+    .home-feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-profile-card {
+        min-height: 0;
+        max-width: 100%;
+        order: -1;
+    }
+
+    .home-profile-card .hero-showcase-img {
+        max-height: 420px;
+    }
+
+    .hero-persona-badge {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+    }
+
+    .home-status {
+        text-align: left;
     }
 }
