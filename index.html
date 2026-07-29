@@ -17,12 +17,14 @@
     <meta property="og:site_name" content="Shadow Escape">
     <meta property="og:title" content="Shadow Escape - Adventure Game">
     <meta property="og:description" content="Shadow Escape is a futuristic HTML5 platform adventure game developed by Anwarsha N S. Explore an abandoned research facility, avoid security drones, solve challenges, and escape using smooth browser-based gameplay.">
-    <meta property="og:image" content="uploads/org_person.png">
+    <meta property="og:image" content="https://shadow-escape.vercel.app/uploads/preview.png">
+    <meta property="og:image:secure_url" content="https://shadow-escape.vercel.app/uploads/preview.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="Shadow Escape - Adventure Game | Anwarsha's Game | Shanu's Game">
     <meta property="twitter:description" content="Shadow Escape is a futuristic HTML5 platform adventure game developed by Anwarsha N S. Explore an abandoned research facility, avoid security drones, solve challenges, and escape using smooth browser-based gameplay.">
+    <meta property="twitter:image" content="https://shadow-escape.vercel.app/uploads/preview.png">
     
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/main.css">
@@ -122,6 +124,39 @@
                     </div>
                 </div>
 
+            </div>
+
+            <div class="home-mobile-card">
+                <div class="hero-showcase-card home-mobile-hero">
+                    <img src="uploads/preview.png" alt="Shadow Escape Preview" class="hero-showcase-img">
+                </div>
+
+                <div class="cyber-card home-mobile-panel">
+                    <span class="home-kicker">HTML5 CANVAS • VANILLA JS • 2.5D PERSPECTIVE</span>
+                    <div class="home-copy">
+                        <h1 class="section-title home-title">SHADOW ESCAPE</h1>
+                        <p class="section-subtitle home-description">
+                            You wake up inside an abandoned research facility after a failed experiment. Human security guards patrol the sectors, laser grids block corridors, and the reactor core is critical. Escape through 5 levels before facility lockdown!
+                        </p>
+                    </div>
+
+                    <div class="home-actions">
+                        <button onclick="showView('gameView')" class="cyber-btn cyber-btn-lg home-primary-action">▶ PLAY NOW</button>
+                        <button onclick="openModal('modalAbout')" class="cyber-btn secondary cyber-btn-lg home-secondary-action">📖 GAME GUIDE</button>
+                        <button onclick="openModal('modalLeaderboard')" class="cyber-btn secondary home-score-action">🏆 SCORES</button>
+                    </div>
+
+                    <div class="home-feature-grid home-mobile-features">
+                        <div class="home-feature-card cyan">
+                            <h4>2.5D PERSPECTIVE</h4>
+                            <p>Extruded platform blocks & depth shadows.</p>
+                        </div>
+                        <div class="home-feature-card purple">
+                            <h4>HUMAN CHARACTERS</h4>
+                            <p>Human runner persona & security guard patrols.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
 
