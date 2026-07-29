@@ -263,6 +263,18 @@ h1, h2, h3, h4 {
     .navbar {
         padding: 0.6rem 1.2rem;
     }
+
+    .nav-brand {
+        min-width: 0;
+        gap: 10px;
+    }
+
+    .nav-brand .logo-text {
+        font-size: clamp(1.05rem, 4vw, 1.2rem);
+        letter-spacing: 1px;
+        white-space: nowrap;
+        line-height: 1;
+    }
     
     .mobile-nav-toggle {
         display: block;
