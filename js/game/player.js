@@ -151,9 +151,8 @@ class Player {
         }
 
         // Jump Input
-        if (input.isJumpPressed()) {
+        if (input.consumeJumpPressed()) {
             this.jumpBufferTimer = this.jumpBufferMax;
-            input.touch.jump = false;
         }
 
         if (this.jumpBufferTimer > 0) {

@@ -98,8 +98,8 @@
                     <img src="uploads/org_person.png" alt="Shadow Escape Hero Runner Persona" class="hero-showcase-img">
                     <div class="hero-persona-badge">
                         <div>
-                            <span class="home-profile-label">HERO RUNNER PERSONA</span>
-                            <strong class="home-profile-name">AGENT SHADOW</strong>
+                            <span class="home-profile-label">HERO RUNNER PERSON</span>
+                            <strong class="home-profile-name">AGENT SHANU</strong>
                         </div>
                         <div class="home-status">
                             <span class="home-status-dot"></span>
@@ -261,7 +261,7 @@
                 <div style="display: flex; flex-direction: column; gap: 1rem;">
                     <button class="cyber-btn" id="btnResume">RESUME GAME</button>
                     <button class="cyber-btn secondary" id="btnRestart">RESTART LEVEL</button>
-                    <button class="cyber-btn danger" onclick="showView('homeView'); window.uiManager.hideAllModals();">EXIT TO MAIN MENU</button>
+                    <button class="cyber-btn danger" onclick="window.uiManager.hideAllModals(); showView('homeView');">EXIT TO MAIN MENU</button>
                 </div>
             </div>
         </div>
@@ -272,7 +272,7 @@
                 <p style="color: var(--text-muted); margin-bottom: 2rem;">Security guards or hazards eliminated your runner.</p>
                 <div style="display: flex; flex-direction: column; gap: 1rem;">
                     <button class="cyber-btn danger" id="btnGameOverRestart">RETRY LEVEL</button>
-                    <button class="cyber-btn secondary" onclick="showView('homeView'); window.uiManager.hideAllModals();">MAIN MENU</button>
+                    <button class="cyber-btn secondary" onclick="window.uiManager.hideAllModals(); showView('homeView');">MAIN MENU</button>
                 </div>
             </div>
         </div>
@@ -367,6 +367,7 @@
             }
 
             if (viewId === 'homeView') {
+                if (window.uiManager) window.uiManager.hideAllModals();
                 exitGameFullscreen();
             }
 

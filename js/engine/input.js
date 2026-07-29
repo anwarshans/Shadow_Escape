@@ -5,6 +5,7 @@
 class InputHandler {
     constructor() {
         this.keys = {};
+        this.jumpPressed = false;
         this.touch = {
             left: false,
             right: false,
@@ -22,6 +23,10 @@ class InputHandler {
         window.addEventListener('keydown', (e) => {
             this.keys[e.code] = true;
             this.keys[e.key] = true;
+
+            if (!e.repeat && ['KeyW', 'ArrowUp', 'Space'].includes(e.code)) {
+                this.jumpPressed = true;
+            }
 
             // Prevent scroll on arrow keys or space
             if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
@@ -43,6 +48,9 @@ class InputHandler {
             const handleStart = (e) => {
                 e.preventDefault();
                 this.touch[keyName] = true;
+                if (keyName === 'jump') {
+                    this.jumpPressed = true;
+                }
                 if (window.soundEngine) window.soundEngine.ensureContext();
             };
 
@@ -80,6 +88,12 @@ class InputHandler {
         return !!(this.keys['KeyW'] || this.keys['ArrowUp'] || this.keys['Space'] || this.touch.jump);
     }
 
+    consumeJumpPressed() {
+        const pressed = this.jumpPressed;
+        this.jumpPressed = false;
+        return pressed;
+    }
+
     isDashPressed() {
         return !!(this.keys['ShiftLeft'] || this.keys['ShiftRight'] || this.keys['KeyK'] || this.touch.dash);
     }
@@ -90,6 +104,7 @@ class InputHandler {
 
     // Reset touch state
     reset() {
+        this.jumpPressed = false;
         for (let k in this.touch) {
             this.touch[k] = false;
         }
