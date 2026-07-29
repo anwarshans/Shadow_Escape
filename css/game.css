@@ -204,7 +204,7 @@ body.is-fullscreen-game .game-screen-wrapper {
     bottom: 10px;
     left: 0;
     width: 100%;
-    padding: 0 14px;
+    padding: 0 18px;
     justify-content: space-between;
     align-items: flex-end;
     pointer-events: none;
@@ -218,39 +218,46 @@ body.is-fullscreen-game .game-screen-wrapper {
 }
 
 .touch-btn {
-    width: 50px;
-    height: 50px;
+    width: 58px;
+    height: 58px;
     border-radius: 50%;
-    background: rgba(10, 20, 40, 0.75);
+    background: linear-gradient(145deg, rgba(12, 20, 42, 0.98), rgba(7, 12, 24, 0.9));
     border: 2px solid var(--primary-cyan);
     color: var(--primary-cyan);
     font-family: var(--font-heading);
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 800;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+    box-shadow: 0 0 16px rgba(0, 243, 255, 0.4), 0 0 34px rgba(0, 243, 255, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
     user-select: none;
     touch-action: manipulation;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.touch-btn:focus-visible {
+    outline: 2px solid rgba(0, 243, 255, 0.95);
+    outline-offset: 3px;
 }
 
 .touch-btn:active {
     background: var(--primary-cyan);
     color: var(--bg-dark);
-    box-shadow: 0 0 18px var(--primary-cyan);
-    transform: scale(0.92);
+    box-shadow: 0 0 24px rgba(0, 243, 255, 0.8), 0 0 50px rgba(0, 243, 255, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+    transform: scale(0.94);
 }
 
 .touch-btn.dash-btn {
     border-color: var(--primary-purple);
     color: var(--primary-purple);
+    box-shadow: 0 0 16px rgba(176, 38, 255, 0.42), 0 0 34px rgba(176, 38, 255, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .touch-btn.dash-btn:active {
     background: var(--primary-purple);
     color: #fff;
-    box-shadow: 0 0 18px var(--primary-purple);
+    box-shadow: 0 0 24px rgba(176, 38, 255, 0.8), 0 0 50px rgba(176, 38, 255, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.16);
 }
 
 /* Mobile Rotation Overlay */
@@ -322,9 +329,9 @@ body.is-fullscreen-game .game-screen-wrapper {
         height: 10px;
     }
     .touch-btn {
-        width: 44px;
-        height: 44px;
-        font-size: 0.95rem;
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
     }
 }
 
