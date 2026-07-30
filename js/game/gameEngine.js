@@ -129,15 +129,24 @@ class GameEngine {
 
     startLoop() {
         this.lastTime = performance.now();
+        this.accumulator = 0;
+        const fixedStep = 1 / 60;
+
         const loop = (currentTime) => {
-            const dt = Math.min(0.1, (currentTime - this.lastTime) / 1000);
+            const frameTime = Math.min(0.1, (currentTime - this.lastTime) / 1000);
             this.lastTime = currentTime;
 
             if (this.state === 'PLAYING') {
-                this.update(dt);
+                this.accumulator += frameTime;
+                while (this.accumulator >= fixedStep) {
+                    this.update(fixedStep);
+                    this.accumulator -= fixedStep;
+                }
+            } else {
+                this.accumulator = 0;
             }
-            this.render();
 
+            this.render();
             requestAnimationFrame(loop);
         };
         requestAnimationFrame(loop);

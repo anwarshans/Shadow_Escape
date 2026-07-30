@@ -1113,7 +1113,7 @@
 @media (max-width: 900px) {
     .poster-view {
         overflow-y: auto;
-        padding: 0.8rem 0.8rem 2rem;
+        padding: 0.8rem 0.8rem 4rem;
         height: auto;
         min-height: calc(100vh - 60px);
         align-items: flex-start;

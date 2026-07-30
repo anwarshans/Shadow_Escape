@@ -43,9 +43,10 @@ class Camera {
     }
 
     update(dt) {
-        // Smooth lerp tracking
-        this.x += (this.targetX - this.x) * this.lerp;
-        this.y += (this.targetY - this.y) * this.lerp;
+        // Smooth framerate-independent lerp tracking
+        const factor = 1 - Math.exp(-14 * dt);
+        this.x += (this.targetX - this.x) * factor;
+        this.y += (this.targetY - this.y) * factor;
 
         // Clamp camera within world bounds
         this.x = Math.max(0, Math.min(this.x, this.worldWidth - this.viewportWidth));
