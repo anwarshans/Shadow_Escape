@@ -217,11 +217,11 @@
     background: rgba(6, 7, 12, 0.85);
     border: 1px solid rgba(251, 191, 36, 0.35);
     border-radius: 14px;
-    padding: 1.15rem 1.3rem;
+    padding: 1rem 1.2rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(251, 191, 36, 0.05);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    margin-bottom: 1.2rem;
+    margin-top: 0.8rem;
     width: 100%;
     text-align: left;
 }
@@ -229,41 +229,41 @@
 .intel-badge-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 0.85rem;
+    gap: 0.45rem;
+    margin-bottom: 0.75rem;
 }
 
 .intel-tag-pill {
     display: inline-flex;
     align-items: center;
-    padding: 3px 10px;
+    padding: 3px 9px;
     border-radius: 999px;
     background: rgba(251, 191, 36, 0.1);
     border: 1px solid rgba(251, 191, 36, 0.4);
     color: var(--primary-gold);
     font-family: var(--font-heading);
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     font-weight: 700;
     letter-spacing: 1px;
 }
 
 .intel-story-box {
-    margin-bottom: 0.9rem;
+    margin-bottom: 0.8rem;
 }
 
 .intel-story-title {
     font-family: var(--font-heading);
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     color: var(--primary-gold);
     letter-spacing: 1.2px;
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.3rem;
     text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
 }
 
 .intel-story-text {
-    font-size: 0.86rem;
+    font-size: 0.82rem;
     color: var(--text-muted);
-    line-height: 1.6;
+    line-height: 1.5;
 }
 
 .intel-story-text b {
@@ -272,8 +272,8 @@
 
 .intel-features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: 0.65rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
 }
 
 .intel-feature-box {
