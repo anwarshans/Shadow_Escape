@@ -256,7 +256,7 @@ class GameEngine {
 
         // 1. Clear & Render 2.5D Parallax Background
         if (window.renderer2D3D) {
-            window.renderer2D3D.drawParallaxBackground(this.ctx, cameraOffset, this.canvas.width, this.canvas.height);
+            window.renderer2D3D.drawParallaxBackground(this.ctx, cameraOffset, this.canvas.width, this.canvas.height, this.currentLevelId);
         }
 
         // 2. Render 2.5D Platforms

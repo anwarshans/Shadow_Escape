@@ -76,87 +76,101 @@
             </ul>
         </header>
 
-        <!-- VIEW 1: HOME LANDING SCREEN -->
-        <main id="homeView" class="spa-view home-view">
-            <div class="home-layout">
+        <!-- VIEW 1: HOME LANDING SCREEN (AAA GAME POSTER DESIGN) -->
+        <main id="homeView" class="spa-view home-view poster-view">
+            <div class="poster-container">
                 
-                <!-- Left Column: Content & Controls -->
-                <div class="cyber-card home-panel">
-                    <span class="home-kicker">HTML5 CANVAS • VANILLA JS • 2.5D PERSPECTIVE</span>
-                    <div class="home-copy">
-                        <h1 class="section-title home-title">SHADOW ESCAPE</h1>
-                        <p class="section-subtitle home-description">
-                            You wake up inside an abandoned research facility after a failed experiment. Human security guards patrol the sectors, laser grids block corridors, and the reactor core is critical. Escape through 5 levels before facility lockdown!
-                        </p>
-                    </div>
-
-                    <div class="home-actions">
-                        <button onclick="showView('gameView')" class="cyber-btn cyber-btn-lg home-primary-action">▶ PLAY NOW</button>
-                        <button onclick="openModal('modalAbout')" class="cyber-btn secondary cyber-btn-lg home-secondary-action">📖 GAME GUIDE</button>
-                        <button onclick="openModal('modalLeaderboard')" class="cyber-btn secondary home-score-action">🏆 SCORES</button>
-                    </div>
-
-                    <!-- Feature Cards Grid -->
-                    <div class="home-feature-grid">
-                        <div class="home-feature-card cyan">
-                            <h4>2.5D PERSPECTIVE</h4>
-                            <p>Extruded platform blocks & depth shadows.</p>
+                <!-- Left Column: Poster Title, Actions & Feature Pillars -->
+                <div class="poster-left-content">
+                    <div class="poster-tagline">AN ADVENTURE. ONE ESCAPE. ZERO REGRETS.</div>
+                    
+                    <div class="poster-title-wrapper">
+                        <div class="poster-title-shadow">SHADOW</div>
+                        <div class="poster-title-escape">ESCAPE</div>
+                        <div class="poster-subtitle-pill">
+                            <span class="pill-line"></span>
+                            <span class="pill-text">THE GAME</span>
+                            <span class="pill-line"></span>
                         </div>
-                        <div class="home-feature-card purple">
-                            <h4>HUMAN CHARACTERS</h4>
-                            <p>Human runner persona & security guard patrols.</p>
+                    </div>                        <!-- Rich Mission Intel & Specs Showcase Card -->
+                        <div class="poster-intel-card">
+                            <div class="intel-badge-row">
+                                <span class="intel-tag-pill">⚡ HTML5 CANVAS</span>
+                                <span class="intel-tag-pill">🎮 60 FPS PHYSICS</span>
+                                <span class="intel-tag-pill">🏆 5 SECTORS</span>
+                                <span class="intel-tag-pill">🔑 MASTER KEYCARD SYSTEM</span>
+                            </div>
+
+                            <div class="intel-story-box">
+                                <div class="intel-story-title">TACTICAL MISSION BRIEFING</div>
+                                <p class="intel-story-text">
+                                    You wake up inside <b>Sector 7</b> of an abandoned subterranean research facility following a containment breach. Human security guards patrol corridors, automated laser grids block checkpoints, and facility lockdown is imminent. Escape through all 5 security sectors before total lockdown!
+                                </p>
+                            </div>
+
+                            <!-- 4 Feature Highlights Grid -->
+                            <div class="intel-features-grid">
+                                <div class="intel-feature-box">
+                                    <div class="intel-feature-icon">🏃</div>
+                                    <div class="intel-feature-info">
+                                        <strong>DYNAMIC PLATFORMING</strong>
+                                        <span>Wall jumps, dashes & 2.5D physics</span>
+                                    </div>
+                                </div>
+                                <div class="intel-feature-box">
+                                    <div class="intel-feature-icon">🎯</div>
+                                    <div class="intel-feature-info">
+                                        <strong>GUARDS & HAZARDS</strong>
+                                        <span>Bypass patrols, drones & laser grids</span>
+                                    </div>
+                                </div>
+                                <div class="intel-feature-box">
+                                    <div class="intel-feature-icon">💎</div>
+                                    <div class="intel-feature-info">
+                                        <strong>ENERGY CRYSTALS</strong>
+                                        <span>Collect crystals for bonus score</span>
+                                    </div>
+                                </div>
+                                <div class="intel-feature-box">
+                                    <div class="intel-feature-icon">🔑</div>
+                                    <div class="intel-feature-info">
+                                        <strong>SECURITY KEYCARDS</strong>
+                                        <span>Retrieve master keys to exit sectors</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <!-- Bevelled Hex Action Buttons Row -->
+                    <div class="poster-actions-row">
+                        <button onclick="showView('gameView')" class="poster-play-btn">PLAY NOW &raquo;</button>
+                        <div class="poster-secondary-group">
+                            <button onclick="openModal('modalAbout')" class="poster-secondary-btn">📖 GUIDE</button>
+                            <button onclick="openModal('modalLeaderboard')" class="poster-secondary-btn">🏆 SCORES</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Full-Bleed Hero Persona & Top-Right Crest Badge -->
+                <div class="poster-right-content">
+                    <div class="poster-crest-badge">
+                        <img src="uploads/logo.png" alt="Shadow Escape Shield Crest" class="crest-logo-img">
+                        <div class="crest-text-box">
+                            <span class="crest-title">SHADOW ESCAPE</span>
+                            <span class="crest-sub">THE GAME</span>
+                        </div>
+                    </div>
+
+                    <div class="poster-hero-person-wrapper">
+                        <img src="uploads/org_person.png" alt="Shadow Escape Hero Agent Shanu" class="poster-hero-img desktop-hero-img">
+                        <img src="uploads/preview.png" alt="Shadow Escape Gameplay Preview" class="poster-hero-img mobile-hero-img" onclick="showView('gameView')">
+                        <div class="poster-hero-name-tag">
+                            <span class="tag-role">HERO RUNNER</span>
+                            <strong class="tag-name">AGENT SHANU</strong>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column: org_person.png Hero Showcase Card -->
-                <div class="hero-showcase-card float-animation home-profile-card">
-                    <img src="uploads/org_person.png" alt="Shadow Escape Hero Runner Persona" class="hero-showcase-img">
-                    <div class="hero-persona-badge">
-                        <div>
-                            <span class="home-profile-label">HERO RUNNER PERSON</span>
-                            <strong class="home-profile-name">AGENT SHANU</strong>
-                        </div>
-                        <div class="home-status">
-                            <span class="home-status-dot"></span>
-                            <span class="home-status-label">SYSTEM ACTIVE</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="home-mobile-card">
-                <div class="hero-showcase-card home-mobile-hero">
-                    <img src="uploads/preview.png" alt="Shadow Escape Preview" class="hero-showcase-img">
-                </div>
-
-                <div class="cyber-card home-mobile-panel">
-                    <span class="home-kicker">HTML5 CANVAS • VANILLA JS • 2.5D PERSPECTIVE</span>
-                    <div class="home-copy">
-                        <h1 class="section-title home-title">SHADOW ESCAPE</h1>
-                        <p class="section-subtitle home-description">
-                            You wake up inside an abandoned research facility after a failed experiment. Human security guards patrol the sectors, laser grids block corridors, and the reactor core is critical. Escape through 5 levels before facility lockdown!
-                        </p>
-                    </div>
-
-                    <div class="home-actions">
-                        <button onclick="showView('gameView')" class="cyber-btn cyber-btn-lg home-primary-action">▶ PLAY NOW</button>
-                        <button onclick="openModal('modalAbout')" class="cyber-btn secondary cyber-btn-lg home-secondary-action">📖 GAME GUIDE</button>
-                        <button onclick="openModal('modalLeaderboard')" class="cyber-btn secondary home-score-action">🏆 SCORES</button>
-                    </div>
-
-                    <div class="home-feature-grid home-mobile-features">
-                        <div class="home-feature-card cyan">
-                            <h4>2.5D PERSPECTIVE</h4>
-                            <p>Extruded platform blocks & depth shadows.</p>
-                        </div>
-                        <div class="home-feature-card purple">
-                            <h4>HUMAN CHARACTERS</h4>
-                            <p>Human runner persona & security guard patrols.</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </main>
 
@@ -220,7 +234,7 @@
         <!-- PORTRAIT MOBILE ORIENTATION OVERLAY -->
         <div class="rotate-overlay" id="rotateOverlay">
             <div class="rotate-icon">📱🔄</div>
-            <h2 style="font-family: var(--font-heading); color: var(--primary-cyan); margin-bottom: 0.5rem;">ROTATE TO LANDSCAPE</h2>
+            <h2 style="font-family: var(--font-heading); color: var(--primary-gold); margin-bottom: 0.5rem;">ROTATE TO LANDSCAPE</h2>
             <p style="color: var(--text-muted); max-width: 320px; font-size: 0.95rem;">
                 Shadow Escape is designed for 16:9 Landscape mode. Turn your device horizontally for the ultimate gaming experience!
             </p>
@@ -231,23 +245,23 @@
             <div class="modal-content" style="max-width: 720px; text-align: left;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <h2 class="modal-title" style="margin: 0;">LEADERBOARD & STATS</h2>
-                    <button onclick="closeModal('modalLeaderboard')" style="background: none; border: none; color: var(--primary-cyan); font-size: 1.5rem; cursor: pointer;">✕</button>
+                    <button onclick="closeModal('modalLeaderboard')" style="background: none; border: none; color: var(--primary-gold); font-size: 1.5rem; cursor: pointer;">✕</button>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-                    <div style="background: rgba(5,8,20,0.7); border: 1px solid var(--primary-cyan); padding: 1rem; border-radius: var(--border-radius-sm); text-align: center;">
+                    <div style="background: rgba(6,7,12,0.85); border: 1px solid var(--primary-gold); padding: 1rem; border-radius: var(--border-radius-sm); text-align: center; box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);">
                         <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-heading);">HIGH SCORE</span>
-                        <div id="statHighScore" style="font-size: 1.8rem; font-family: var(--font-heading); color: var(--primary-cyan); font-weight: 800; margin-top: 4px;">0</div>
+                        <div id="statHighScore" style="font-size: 1.8rem; font-family: var(--font-heading); color: var(--primary-gold); font-weight: 800; margin-top: 4px;">0</div>
                     </div>
-                    <div style="background: rgba(5,8,20,0.7); border: 1px solid var(--primary-purple); padding: 1rem; border-radius: var(--border-radius-sm); text-align: center;">
+                    <div style="background: rgba(6,7,12,0.85); border: 1px solid var(--primary-amber); padding: 1rem; border-radius: var(--border-radius-sm); text-align: center; box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
                         <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-heading);">CRYSTALS COLLECTED</span>
-                        <div id="statCrystals" style="font-size: 1.8rem; font-family: var(--font-heading); color: var(--primary-purple); font-weight: 800; margin-top: 4px;">0</div>
+                        <div id="statCrystals" style="font-size: 1.8rem; font-family: var(--font-heading); color: var(--primary-amber); font-weight: 800; margin-top: 4px;">0</div>
                     </div>
                 </div>
-                <h4 style="color: var(--primary-cyan); margin-bottom: 0.8rem;">STAGE SPEEDRUN BEST TIMES</h4>
+                <h4 style="color: var(--primary-gold); margin-bottom: 0.8rem;">SECTOR SPEEDRUN RECORDS</h4>
                 <table class="cyber-table">
                     <thead>
                         <tr>
-                            <th>STAGE</th>
+                            <th>SECTOR</th>
                             <th>STATUS</th>
                             <th>BEST TIME</th>
                         </tr>
@@ -261,18 +275,18 @@
         <div class="modal-overlay" id="modalAbout">
             <div class="modal-content" style="max-width: 680px; text-align: left;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 class="modal-title" style="margin: 0;">ABOUT SHADOW ESCAPE</h2>
-                    <button onclick="closeModal('modalAbout')" style="background: none; border: none; color: var(--primary-cyan); font-size: 1.5rem; cursor: pointer;">✕</button>
+                    <h2 class="modal-title" style="margin: 0;">TACTICAL GAME GUIDE</h2>
+                    <button onclick="closeModal('modalAbout')" style="background: none; border: none; color: var(--primary-gold); font-size: 1.5rem; cursor: pointer;">✕</button>
                 </div>
                 <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
-                    In Sector 7 of an abandoned subterranean research laboratory, an experimental containment breach triggered automated lockdowns. You play as a human runner persona escaping human security guard patrols, flying drones, and laser traps across 5 stages.
+                    Awake inside Sector 7 of a high-security subterranean facility following an experimental containment breach. Infiltrate sector corridors, bypass armed security guard patrols and flying drones, collect energy crystals, and retrieve sector keycards before automated facility lockdown!
                 </p>
-                <h4 style="color: var(--primary-cyan); margin-bottom: 0.5rem;">TECH STACK HIGHLIGHTS</h4>
+                <h4 style="color: var(--primary-gold); margin-bottom: 0.5rem;">FEATURE SPECIFICATIONS</h4>
                 <ul style="color: var(--text-muted); margin-bottom: 1.5rem; padding-left: 1.2rem; line-height: 1.8;">
-                    <li><b>HTML5 Canvas:</b> 2.5D block projections & depth shadows.</li>
-                    <li><b>Vanilla JavaScript (ES6+):</b> Zero external game engine dependencies.</li>
-                    <li><b>Web Audio API:</b> Dynamic synthesized audio generator for SFX and synthwave BGM.</li>
-                    <li><b>Uploads Directory:</b> Custom PNG sprite assets for human runner, human security guards, and hero portrait.</li>
+                    <li><b>2.5D Canvas Engine:</b> Extruded platform blocks, depth lighting & real-world parallax backgrounds.</li>
+                    <li><b>Vanilla JavaScript (ES6+):</b> Ultra-fast 60 FPS physics without external dependencies.</li>
+                    <li><b>Web Audio SFX:</b> Dynamic synthesized audio generator for realistic laser traps & movement.</li>
+                    <li><b>Mobile Optimized:</b> Full touch controls & responsive orientation handling.</li>
                 </ul>
             </div>
         </div>
@@ -282,7 +296,7 @@
             <div class="modal-content" style="max-width: 580px; text-align: left;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <h2 class="modal-title" style="margin: 0;">CONTACT DEVELOPER</h2>
-                    <button onclick="closeModal('modalContact')" style="background: none; border: none; color: var(--primary-cyan); font-size: 1.5rem; cursor: pointer;">✕</button>
+                    <button onclick="closeModal('modalContact')" style="background: none; border: none; color: var(--primary-gold); font-size: 1.5rem; cursor: pointer;">✕</button>
                 </div>
                 <form onsubmit="event.preventDefault(); alert('Message sent! Thank you for reaching out.'); closeModal('modalContact');">
                     <div class="form-group">
@@ -297,7 +311,7 @@
                         <label class="form-label">MESSAGE</label>
                         <textarea class="form-textarea" rows="4" placeholder="Write your message here..." required></textarea>
                     </div>
-                    <button type="submit" class="cyber-btn cyber-btn-lg" style="width: 100%;">SEND MESSAGE</button>
+                    <button type="submit" class="poster-play-btn" style="width: 100%; justify-content: center; clip-path: none; border-radius: 8px;">SEND MESSAGE</button>
                 </form>
             </div>
         </div>
@@ -308,43 +322,43 @@
                 <h2 class="modal-title">SYSTEM PAUSED</h2>
                 <p style="color: var(--text-muted); margin-bottom: 2rem;">Take a breath before stepping back into the facility.</p>
                 <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    <button class="cyber-btn" id="btnResume">RESUME GAME</button>
-                    <button class="cyber-btn secondary" id="btnRestart">RESTART LEVEL</button>
-                    <button class="cyber-btn danger" onclick="window.uiManager.hideAllModals(); showView('homeView');">EXIT TO MAIN MENU</button>
+                    <button class="poster-play-btn" id="btnResume" style="clip-path: none; border-radius: 8px; justify-content: center;">RESUME GAME</button>
+                    <button class="poster-secondary-btn" id="btnRestart" style="width: 100%;">RESTART LEVEL</button>
+                    <button class="cyber-btn danger" onclick="window.uiManager.hideAllModals(); showView('homeView');" style="width: 100%;">EXIT TO MAIN MENU</button>
                 </div>
             </div>
         </div>
 
         <div class="modal-overlay" id="gameOverModal">
-            <div class="modal-content" style="border-color: var(--accent-red);">
-                <h2 class="modal-title" style="color: var(--accent-red);">CRITICAL FAILURE</h2>
-                <p style="color: var(--text-muted); margin-bottom: 2rem;">Security guards or hazards eliminated your runner.</p>
+            <div class="modal-content" style="border-color: var(--accent-red); box-shadow: 0 0 45px rgba(239, 68, 68, 0.4);">
+                <h2 class="modal-title" style="color: var(--accent-red); text-shadow: 0 0 15px rgba(239, 68, 68, 0.5);">CRITICAL FAILURE</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">Security guards or hazard grids eliminated your runner.</p>
                 <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    <button class="cyber-btn danger" id="btnGameOverRestart">RETRY LEVEL</button>
-                    <button class="cyber-btn secondary" onclick="window.uiManager.hideAllModals(); showView('homeView');">MAIN MENU</button>
+                    <button class="cyber-btn danger" id="btnGameOverRestart" style="width: 100%; min-height: 50px;">RETRY LEVEL</button>
+                    <button class="poster-secondary-btn" onclick="window.uiManager.hideAllModals(); showView('homeView');" style="width: 100%;">MAIN MENU</button>
                 </div>
             </div>
         </div>
 
         <div class="modal-overlay" id="levelClearModal">
             <div class="modal-content">
-                <h2 class="modal-title" style="color: var(--accent-green);">STAGE CLEARED!</h2>
+                <h2 class="modal-title" style="color: var(--accent-green); text-shadow: 0 0 15px rgba(16, 185, 129, 0.5);">SECTOR CLEARED!</h2>
                 <p style="color: var(--text-muted); margin-bottom: 1rem;">Security gate unlocked. Proceeding to next facility sector.</p>
-                <p style="font-size: 1.4rem; color: var(--accent-gold); font-family: var(--font-heading); margin-bottom: 2rem;">
+                <p style="font-size: 1.5rem; color: var(--primary-gold); font-family: var(--font-heading); margin-bottom: 2rem;">
                     SCORE: <span id="levelClearScore">0</span>
                 </p>
-                <button class="cyber-btn" id="btnNextLevel">NEXT LEVEL ►</button>
+                <button class="poster-play-btn" id="btnNextLevel" style="width: 100%; justify-content: center; clip-path: none; border-radius: 8px;">NEXT LEVEL &raquo;</button>
             </div>
         </div>
 
         <div class="modal-overlay" id="victoryModal">
-            <div class="modal-content" style="border-color: var(--accent-gold);">
-                <h2 class="modal-title" style="color: var(--accent-gold);">FACILITY ESCAPED!</h2>
+            <div class="modal-content" style="border-color: var(--primary-gold);">
+                <h2 class="modal-title" style="color: var(--primary-gold);">FACILITY ESCAPED!</h2>
                 <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Congratulations! You bypassed all 5 security sectors and survived.</p>
-                <p style="font-size: 1.8rem; color: var(--primary-cyan); font-family: var(--font-heading); margin-bottom: 2rem;">
+                <p style="font-size: 1.8rem; color: var(--primary-gold); font-family: var(--font-heading); margin-bottom: 2rem;">
                     FINAL SCORE: <span id="victoryScore">0</span>
                 </p>
-                <button class="cyber-btn" onclick="openModal('modalLeaderboard'); closeModal('victoryModal');">VIEW LEADERBOARD</button>
+                <button class="poster-play-btn" onclick="openModal('modalLeaderboard'); closeModal('victoryModal');" style="width: 100%; justify-content: center; clip-path: none; border-radius: 8px;">VIEW LEADERBOARD</button>
             </div>
         </div>
     </div>
