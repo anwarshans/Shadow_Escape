@@ -8,7 +8,7 @@ class GameEngine {
         this.ctx = null;
         this.performanceMode = false;
         this.sceneZoom = 1.08;
-        this.mobileSceneZoom = 1.18;
+        this.mobileSceneZoom = 1.2;
 
         this.currentLevelId = 1;
         this.levelData = null;
