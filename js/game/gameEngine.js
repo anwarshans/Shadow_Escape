@@ -8,6 +8,7 @@ class GameEngine {
         this.ctx = null;
         this.performanceMode = false;
         this.sceneZoom = 1.08;
+        this.mobileSceneZoom = 1.14;
 
         this.currentLevelId = 1;
         this.levelData = null;
@@ -67,6 +68,10 @@ class GameEngine {
     refreshPerformanceMode() {
         this.performanceMode = window.innerWidth <= 1440 || window.innerHeight <= 850;
         window.gamePerformanceMode = this.performanceMode;
+    }
+
+    getSceneZoom() {
+        return window.innerWidth <= 900 ? this.mobileSceneZoom : this.sceneZoom;
     }
 
     isVisible(entity, cameraOffset, padding = 120) {
@@ -263,10 +268,11 @@ class GameEngine {
     render() {
         if (!this.ctx) return;
         const cameraOffset = this.camera.getRenderOffset();
+        const sceneZoom = this.getSceneZoom();
 
         this.ctx.save();
         this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
-        this.ctx.scale(this.sceneZoom, this.sceneZoom);
+        this.ctx.scale(sceneZoom, sceneZoom);
         this.ctx.translate(-this.canvas.width / 2, -this.canvas.height / 2);
 
         // 1. Clear & Render 2.5D Parallax Background
