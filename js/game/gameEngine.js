@@ -8,8 +8,7 @@ class GameEngine {
         this.ctx = null;
         this.performanceMode = false;
         this.sceneZoom = 1.08;
-        this.mobileSceneZoom = 1.24;
-        this.mobileCameraLead = 110;
+        this.mobileSceneZoom = 1.0;
 
         this.currentLevelId = 1;
         this.levelData = null;
@@ -181,12 +180,7 @@ class GameEngine {
         });
 
         // Camera Tracking
-        const isMobileView = window.innerWidth <= 900;
-        const cameraLeadX = isMobileView ? this.player.velocityX * this.mobileCameraLead : 0;
-        this.camera.follow(
-            this.player.x + this.player.width / 2 + cameraLeadX,
-            this.player.y + this.player.height / 2
-        );
+        this.camera.follow(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2);
         this.camera.update(dt);
 
         // Particle System
