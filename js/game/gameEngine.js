@@ -7,6 +7,7 @@ class GameEngine {
         this.canvas = null;
         this.ctx = null;
         this.performanceMode = false;
+        this.sceneZoom = 1.08;
 
         this.currentLevelId = 1;
         this.levelData = null;
@@ -263,6 +264,11 @@ class GameEngine {
         if (!this.ctx) return;
         const cameraOffset = this.camera.getRenderOffset();
 
+        this.ctx.save();
+        this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
+        this.ctx.scale(this.sceneZoom, this.sceneZoom);
+        this.ctx.translate(-this.canvas.width / 2, -this.canvas.height / 2);
+
         // 1. Clear & Render 2.5D Parallax Background
         if (window.renderer2D3D) {
             window.renderer2D3D.drawParallaxBackground(this.ctx, cameraOffset, this.canvas.width, this.canvas.height, this.currentLevelId);
@@ -312,6 +318,8 @@ class GameEngine {
         if (window.renderer2D3D) {
             window.renderer2D3D.drawAmbientLighting(this.ctx, this.canvas.width, this.canvas.height, performance.now() / 1000);
         }
+
+        this.ctx.restore();
     }
 
     togglePause() {
