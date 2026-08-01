@@ -7,15 +7,13 @@ class Renderer2D3D {
         this.depth3D = 14; // 3D extrude depth in pixels
 
         // Real-World Background Images Preloading
-        this.bgImage1 = new Image();
-        this.bgImage1.src = 'uploads/bg1.png';
-        this.bgImage1Loaded = false;
-        this.bgImage1.onload = () => { this.bgImage1Loaded = true; };
-
-        this.bgImage2 = new Image();
-        this.bgImage2.src = 'uploads/bg2.png';
-        this.bgImage2Loaded = false;
-        this.bgImage2.onload = () => { this.bgImage2Loaded = true; };
+        this.bgImages = [1, 2, 3, 4, 5].map(level => {
+            const image = new Image();
+            image.src = `uploads/bg${level}.png`;
+            image.loaded = false;
+            image.onload = () => { image.loaded = true; };
+            return image;
+        });
     }
 
     // Render 2.5D Platform Block with Top/Front/Side 3D faces
@@ -99,7 +97,7 @@ class Renderer2D3D {
         ctx.restore();
     }
 
-    // Render Real-World Parallax Image Background (bg1.png / bg2.png)
+    // Render Real-World Parallax Image Background (bg1.png - bg5.png)
     drawParallaxBackground(ctx, cameraOffset, canvasWidth, canvasHeight, currentLevel = 1) {
         ctx.save();
 
@@ -113,10 +111,11 @@ class Renderer2D3D {
         ctx.fillStyle = bgGrad;
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-        // 2. Select Real-World Image (bg1.png default, bg2.png for alternate levels)
-        const bgImg = (currentLevel % 2 === 0 && this.bgImage2Loaded) ? this.bgImage2 : (this.bgImage1Loaded ? this.bgImage1 : null);
+        // 2. Select Real-World Image based on the current level
+        const bgIndex = Math.max(0, Math.min(this.bgImages.length - 1, currentLevel - 1));
+        const bgImg = this.bgImages[bgIndex];
 
-        if (bgImg) {
+        if (bgImg && bgImg.loaded) {
             ctx.save();
             ctx.globalAlpha = 0.6; // Blend smoothly with deep space background
             
