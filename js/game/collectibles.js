@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Shadow Escape - Energy Crystals, Keycards, Exit Doors & Checkpoints
+   Shadow Escape - Energy Crystals, Golden Keycards, Exit Doors & Checkpoints
    ========================================================================== */
 
 class EnergyCrystal {
@@ -66,33 +66,41 @@ class Keycard {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.width = 32;
-        this.height = 32;
+        this.width = 36;
+        this.height = 36;
         this.collected = false;
         this.time = Math.random() * 5;
+        this.auraAngle = 0;
     }
 
     update(dt) {
         this.time += dt * 4;
+        this.auraAngle += dt * 3;
     }
 
     draw(ctx, cameraOffset) {
         if (this.collected) return;
 
-        const floatY = Math.sin(this.time) * 4;
+        const floatY = Math.sin(this.time) * 6;
         const drawX = this.x - cameraOffset.x;
         const drawY = this.y - cameraOffset.y + floatY;
 
         ctx.save();
-        
-        // Render Realistic Metallic Golden Master Key 🔑
+
+        // 0. Golden Pulsing Beacon Light Ring
+        const pulse = 14 + Math.sin(this.auraAngle * 2) * 6;
+        ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
         ctx.shadowColor = '#fbbf24';
-        ctx.shadowBlur = window.gamePerformanceMode ? 8 : 16;
+        ctx.shadowBlur = window.gamePerformanceMode ? 10 : 20;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(drawX + 18, drawY + 18, pulse, 0, Math.PI * 2);
+        ctx.stroke();
 
         // 1. Key Head (Circular Ring with Metallic Gold Radial Gradient)
         const headGrad = ctx.createRadialGradient(
-            drawX + 10, drawY + 12, 2,
-            drawX + 10, drawY + 12, 10
+            drawX + 12, drawY + 14, 2,
+            drawX + 12, drawY + 14, 12
         );
         headGrad.addColorStop(0, '#ffffff');
         headGrad.addColorStop(0.35, '#fbbf24');
@@ -100,32 +108,32 @@ class Keycard {
 
         ctx.fillStyle = headGrad;
         ctx.beginPath();
-        ctx.arc(drawX + 10, drawY + 12, 9, 0, Math.PI * 2);
+        ctx.arc(drawX + 12, drawY + 14, 10, 0, Math.PI * 2);
         ctx.fill();
 
         // 2. Inner Hole of Key Ring
         ctx.fillStyle = '#06070a';
         ctx.beginPath();
-        ctx.arc(drawX + 10, drawY + 12, 3.5, 0, Math.PI * 2);
+        ctx.arc(drawX + 12, drawY + 14, 4, 0, Math.PI * 2);
         ctx.fill();
 
         // 3. Key Shaft / Stem
-        const stemGrad = ctx.createLinearGradient(drawX + 16, drawY + 10, drawX + 32, drawY + 14);
+        const stemGrad = ctx.createLinearGradient(drawX + 18, drawY + 12, drawX + 34, drawY + 16);
         stemGrad.addColorStop(0, '#fef08a');
         stemGrad.addColorStop(0.5, '#fbbf24');
         stemGrad.addColorStop(1, '#d97706');
 
         ctx.fillStyle = stemGrad;
-        ctx.fillRect(drawX + 16, drawY + 10, 16, 4);
+        ctx.fillRect(drawX + 18, drawY + 12, 16, 5);
 
         // 4. Key Teeth / Notches
-        ctx.fillRect(drawX + 23, drawY + 14, 3, 5);
-        ctx.fillRect(drawX + 28, drawY + 14, 4, 6);
+        ctx.fillRect(drawX + 25, drawY + 17, 4, 6);
+        ctx.fillRect(drawX + 30, drawY + 17, 4, 7);
 
         // 5. Golden Metallic Highlight Sparkle
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(drawX + 7, drawY + 9, 1.8, 0, Math.PI * 2);
+        ctx.arc(drawX + 9, drawY + 10, 2.2, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.restore();

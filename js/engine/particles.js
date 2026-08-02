@@ -63,6 +63,20 @@ class ParticleSystem {
         }
     }
 
+    // Spawn Jetpack Flight Thruster Flames/Sparks
+    createFlightThruster(x, y, isFacingRight) {
+        const colors = ['#fbbf24', '#f59e0b', '#00f3ff', '#ef4444'];
+        const count = window.gamePerformanceMode ? 2 : 4;
+        for (let i = 0; i < count; i++) {
+            const vx = (isFacingRight ? -1 : 1) * (1 + Math.random() * 2) + (Math.random() - 0.5) * 1.5;
+            const vy = 1.5 + Math.random() * 2.5;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const size = 3 + Math.random() * 4;
+            const p = new Particle(x, y, vx, vy, color, size, 0.25);
+            this.particles.push(p);
+        }
+    }
+
     // Spawn Dash Trail
     createDashGhost(x, y, width, height, isFacingRight) {
         this.dashGhosts.push({

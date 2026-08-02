@@ -111,7 +111,7 @@ class GameEngine {
         // Load Enemies
         this.enemies = (this.levelData.enemies || []).map(e => {
             if (e.type === 'patrol') return new PatrolBot(e.x, e.y, e.rangeLeft, e.rangeRight);
-            if (e.type === 'drone') return new FlyingDrone(e.x, e.y, e.rangeY);
+            if (e.type === 'drone' || e.type === 'flighter') return new FlyingDrone(e.x, e.y, e.rangeY, e.speed, e.pattern, e.rangeX);
             return null;
         }).filter(Boolean);
 
@@ -309,7 +309,35 @@ class GameEngine {
                 c.draw(this.ctx, cameraOffset);
             }
         });
-        if (this.key && this.isVisible(this.key, cameraOffset, 160)) this.key.draw(this.ctx, cameraOffset);
+        if (this.key && !this.key.collected) {
+            this.key.draw(this.ctx, cameraOffset);
+
+            // Offscreen Keycard Tracker Beacon
+            if (!this.isVisible(this.key, cameraOffset, 50) && this.player) {
+                const screenCenterX = cameraOffset.x + this.canvas.width / 2;
+                const screenCenterY = cameraOffset.y + this.canvas.height / 2;
+                const angle = Math.atan2(this.key.y - screenCenterY, this.key.x - screenCenterX);
+                
+                const margin = 50;
+                const clampedX = Math.max(cameraOffset.x + margin, Math.min(cameraOffset.x + this.canvas.width - margin, this.key.x)) - cameraOffset.x;
+                const clampedY = Math.max(cameraOffset.y + margin, Math.min(cameraOffset.y + this.canvas.height - margin, this.key.y)) - cameraOffset.y;
+
+                this.ctx.save();
+                this.ctx.fillStyle = '#fbbf24';
+                this.ctx.shadowColor = '#fbbf24';
+                this.ctx.shadowBlur = 12;
+                this.ctx.beginPath();
+                this.ctx.arc(clampedX, clampedY, 12, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                this.ctx.fillStyle = '#000';
+                this.ctx.font = 'bold 11px sans-serif';
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+                this.ctx.fillText('🔑 KEY', clampedX, clampedY);
+                this.ctx.restore();
+            }
+        }
         this.enemies.forEach(e => {
             if (this.isVisible(e, cameraOffset, 180)) {
                 e.draw(this.ctx, cameraOffset);

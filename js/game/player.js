@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Shadow Escape - Human Persona Runner (Gentle & Slow Jump Physics)
+   Shadow Escape - Human Persona Runner (Original Jump & Dedicated Flight Action)
    ========================================================================== */
 
 class Player {
@@ -10,26 +10,35 @@ class Player {
         this.width = 44;
         this.height = 72;
 
-        // Physics Parameters (Gentle & slow vertical jumping speed)
+        // Original Physics Parameters (Gentle & soft jump physics intact)
         this.velocityX = 0;
         this.velocityY = 0;
         this.speed = 3.6;
         this.accel = 0.6;
         this.friction = 0.82;
-        this.gravity = 0.32;     // Reduced from 0.48 for slow, soft float
-        this.jumpForce = -8.5;   // Reduced from -11.0 for gentle, controlled jump
+        this.gravity = 0.32;
+        this.jumpForce = -8.5;
         this.coyoteTimeMax = 0.12;
         this.jumpBufferMax = 0.12;
         this.coyoteTimer = 0;
         this.jumpBufferTimer = 0;
 
+        // Dedicated Flight / Jetpack Ability
+        this.isFlying = false;
+        this.flightFuel = 100;
+        this.maxFlightFuel = 100;
+        this.flightFuelConsumption = 30; // Fuel used per sec
+        this.flightFuelRecharge = 45;    // Fuel recharged per sec when grounded
+        this.flightThrust = -0.55;       // Upward acceleration when holding Flight button
+
         this.applyViewportTuning();
 
-        // State Flags
+        // State Flags & Animation Controls
         this.isGrounded = false;
         this.canDoubleJump = true;
         this.isFacingRight = true;
         this.animTimer = 0;
+        this.currentAction = 'stand'; // 'stand', 'slow_walk', 'run', 'jump', 'flight'
 
         // Dash Ability
         this.isDashing = false;
@@ -48,11 +57,31 @@ class Player {
         this.spawnX = x;
         this.spawnY = y;
 
-        // Load Human Hero PNG Sprite Image from uploads/
-        this.spriteImg = new Image();
-        this.spriteImg.src = 'uploads/player.png';
-        this.spriteLoaded = false;
-        this.spriteImg.onload = () => { this.spriteLoaded = true; };
+        // Preload Action Images from uploads/
+        this.sprites = {
+            stand: this.loadImage('uploads/player_stand.png'),
+            slow_walk: this.loadImage('uploads/player_slow_walk.png'),
+            run: [
+                this.loadImage('uploads/player_run1.png'),
+                this.loadImage('uploads/player_run2.png'),
+                this.loadImage('uploads/player_run3.png')
+            ],
+            jump: this.loadImage('uploads/player_jump2.png'),
+            flight: [
+                this.loadImage('uploads/player_flight1.png'),
+                this.loadImage('uploads/player_flight2.png'),
+                this.loadImage('uploads/player_flight3.png'),
+                this.loadImage('uploads/player_flight4.png')
+            ]
+        };
+    }
+
+    loadImage(src) {
+        const img = new Image();
+        img.src = src;
+        img.loaded = false;
+        img.onload = () => { img.loaded = true; };
+        return img;
     }
 
     applyViewportTuning() {
@@ -80,6 +109,7 @@ class Player {
         this.velocityY = 0;
         this.coyoteTimer = 0;
         this.jumpBufferTimer = 0;
+        this.flightFuel = this.maxFlightFuel;
         this.hp = this.maxHp;
         this.invincibleTimer = 1.5;
     }
@@ -96,12 +126,14 @@ class Player {
     }
 
     update(dt, input) {
-        // Cooldowns
+        // Cooldowns & Timers
         if (this.invincibleTimer > 0) this.invincibleTimer -= dt;
         if (this.dashCooldown > 0) this.dashCooldown -= dt;
 
         if (this.isGrounded) {
             this.coyoteTimer = this.coyoteTimeMax;
+            // Recharge flight fuel when grounded
+            this.flightFuel = Math.min(this.maxFlightFuel, this.flightFuel + this.flightFuelRecharge * dt);
         } else {
             this.coyoteTimer = Math.max(0, this.coyoteTimer - dt);
         }
@@ -125,6 +157,7 @@ class Player {
             }
 
             this.x += this.velocityX;
+            this.currentAction = 'flight';
             return;
         }
 
@@ -150,35 +183,99 @@ class Player {
             if (window.soundEngine) window.soundEngine.playDash();
         }
 
-        // Jump Input
-        if (input.consumeJumpPressed()) {
-            this.jumpBufferTimer = this.jumpBufferMax;
-        }
+        // Dedicated Flight Input Check (EXCLUSIVELY when clicking/holding Flight button)
+        const wantsFlight = input.isFlightPressed();
+        if (wantsFlight && this.flightFuel > 0) {
+            this.isFlying = true;
+            this.jumpBufferTimer = 0; // Don't jump when clicking Flight
+            this.flightFuel = Math.max(0, this.flightFuel - this.flightFuelConsumption * dt);
+            this.velocityY += this.flightThrust;
+            this.velocityY = Math.max(-6.5, this.velocityY); // Cap upward flight speed
 
-        if (this.jumpBufferTimer > 0) {
-            if (this.isGrounded || this.coyoteTimer > 0) {
-                this.velocityY = this.jumpForce;
-                this.isGrounded = false;
-                this.canDoubleJump = true;
-                this.coyoteTimer = 0;
-                this.jumpBufferTimer = 0;
-                if (window.soundEngine) window.soundEngine.playJump();
-                if (window.particleSystem) window.particleSystem.createJumpDust(this.x + this.width / 2, this.y + this.height);
-            } else if (this.canDoubleJump) {
-                this.velocityY = this.jumpForce * 0.85;
-                this.canDoubleJump = false;
-                this.jumpBufferTimer = 0;
-                if (window.soundEngine) window.soundEngine.playDoubleJump();
-                if (window.particleSystem) window.particleSystem.createJumpDust(this.x + this.width / 2, this.y + this.height);
+            if (window.particleSystem) {
+                const thrusterX = this.isFacingRight ? this.x + 8 : this.x + this.width - 8;
+                window.particleSystem.createFlightThruster(thrusterX, this.y + this.height - 15, this.isFacingRight);
+            }
+
+            if (Math.random() < 0.25 && window.soundEngine) {
+                window.soundEngine.playFlight();
+            }
+        } else {
+            this.isFlying = false;
+
+            // Jump Input (ONLY evaluated when NOT clicking Flight)
+            if (input.consumeJumpPressed()) {
+                this.jumpBufferTimer = this.jumpBufferMax;
+            }
+
+            if (this.jumpBufferTimer > 0) {
+                if (this.isGrounded || this.coyoteTimer > 0) {
+                    this.velocityY = this.jumpForce;
+                    this.isGrounded = false;
+                    this.canDoubleJump = true;
+                    this.coyoteTimer = 0;
+                    this.jumpBufferTimer = 0;
+                    if (window.soundEngine) window.soundEngine.playJump();
+                    if (window.particleSystem) window.particleSystem.createJumpDust(this.x + this.width / 2, this.y + this.height);
+                } else if (this.canDoubleJump) {
+                    this.velocityY = this.jumpForce * 0.85;
+                    this.canDoubleJump = false;
+                    this.jumpBufferTimer = 0;
+                    if (window.soundEngine) window.soundEngine.playDoubleJump();
+                    if (window.particleSystem) window.particleSystem.createJumpDust(this.x + this.width / 2, this.y + this.height);
+                }
             }
         }
 
         // Gravity
-        this.velocityY += this.gravity;
+        if (!this.isFlying) {
+            this.velocityY += this.gravity;
+        }
         this.y += this.velocityY;
 
+        // Reset grounded state (evaluated by physics collisions)
         this.isGrounded = false;
-        this.animTimer += dt * 6;
+
+        // Animation Timer Increment
+        this.animTimer += dt * 8;
+
+        // Determine current action state
+        const speedMagnitude = Math.abs(this.velocityX);
+        if (this.isFlying) {
+            // ONLY display Flight action image when explicitly clicking/holding Flight button
+            this.currentAction = 'flight';
+        } else if (!this.isGrounded && Math.abs(this.velocityY) > 0.5) {
+            this.currentAction = 'jump';
+        } else if (speedMagnitude > 2.0) {
+            this.currentAction = 'run';
+        } else if (speedMagnitude > 0.15) {
+            this.currentAction = 'slow_walk';
+        } else {
+            this.currentAction = 'stand';
+        }
+    }
+
+    getActiveImage() {
+        const spr = this.sprites;
+        if (!spr) return null;
+
+        switch (this.currentAction) {
+            case 'flight': {
+                const idx = Math.floor(this.animTimer * 1.5) % spr.flight.length;
+                return spr.flight[idx];
+            }
+            case 'jump':
+                return spr.jump;
+            case 'run': {
+                const idx = Math.floor(this.animTimer * 1.2) % spr.run.length;
+                return spr.run[idx];
+            }
+            case 'slow_walk':
+                return spr.slow_walk;
+            case 'stand':
+            default:
+                return spr.stand;
+        }
     }
 
     draw(ctx, cameraOffset) {
@@ -198,34 +295,50 @@ class Player {
         ctx.ellipse(drawX + this.width / 2, drawY + this.height + 2, 18, 6, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Draw Image Sprite or Fallback Detailed Vector Human Character
-        if (this.spriteLoaded) {
+        const activeImg = this.getActiveImage();
+
+        if (activeImg && activeImg.loaded && activeImg.naturalHeight > 0) {
+            const aspect = activeImg.naturalWidth / activeImg.naturalHeight;
+
+            // Height tuned per action state, width derived 100% strictly from natural image aspect ratio
+            let drawHeight = 78;
+            if (this.currentAction === 'stand') {
+                drawHeight = 80; // Perfect tall standing hero stance
+            } else if (this.currentAction === 'slow_walk') {
+                drawHeight = 78;
+            } else if (this.currentAction === 'run' || this.currentAction === 'jump') {
+                drawHeight = 76;
+            } else if (this.currentAction === 'flight') {
+                drawHeight = 76;
+            }
+
+            const drawWidth = drawHeight * aspect; // Exact natural proportion (no squishing/stretching)
+            const offsetX = (this.width - drawWidth) / 2;
+            const offsetY = this.height - drawHeight; // Align feet with ground level
+
             ctx.save();
             if (!this.isFacingRight) {
-                ctx.translate(drawX + this.width, drawY);
+                ctx.translate(drawX + this.width / 2 + drawWidth / 2, drawY + offsetY);
                 ctx.scale(-1, 1);
-                ctx.drawImage(this.spriteImg, 0, 0, this.width, this.height);
+                ctx.drawImage(activeImg, 0, 0, drawWidth, drawHeight);
             } else {
-                ctx.drawImage(this.spriteImg, drawX, drawY, this.width, this.height);
+                ctx.drawImage(activeImg, drawX + offsetX, drawY + offsetY, drawWidth, drawHeight);
             }
             ctx.restore();
         } else {
-            // Detailed Vector Human Persona Animation
+            // Detailed Vector Fallback if images loading
             const legAngle = Math.sin(this.animTimer) * (Math.abs(this.velocityX) > 0.5 ? 0.6 : 0.1);
 
-            // Head & Helmet
-            ctx.fillStyle = '#00f3ff';
-            ctx.shadowColor = '#00f3ff';
+            ctx.fillStyle = this.isFlying ? '#fbbf24' : '#00f3ff';
+            ctx.shadowColor = ctx.fillStyle;
             ctx.shadowBlur = window.gamePerformanceMode ? 6 : 12;
             ctx.beginPath();
             ctx.arc(drawX + 22, drawY + 14, 11, 0, Math.PI * 2);
             ctx.fill();
 
-            // Torso (Stealth Suit)
             ctx.fillStyle = '#0a1a36';
             ctx.fillRect(drawX + 11, drawY + 25, 22, 26);
 
-            // Legs
             ctx.strokeStyle = '#00f3ff';
             ctx.lineWidth = 5;
             ctx.beginPath();

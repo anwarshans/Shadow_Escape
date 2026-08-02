@@ -5,6 +5,7 @@
 class UIManager {
     constructor() {
         this.hudHealthFill = null;
+        this.hudFuelFill = null;
         this.hudCrystalsVal = null;
         this.hudKeyIndicator = null;
         this.hudLevelTitle = null;
@@ -19,6 +20,7 @@ class UIManager {
 
     init() {
         this.hudHealthFill = document.getElementById('hudHealthFill');
+        this.hudFuelFill = document.getElementById('hudFuelFill');
         this.hudCrystalsVal = document.getElementById('hudCrystalsVal');
         this.hudKeyIndicator = document.getElementById('hudKeyIndicator');
         this.hudLevelTitle = document.getElementById('hudLevelTitle');
@@ -75,6 +77,12 @@ class UIManager {
         if (this.hudHealthFill) {
             const pct = Math.max(0, (engine.player.hp / engine.player.maxHp) * 100);
             this.hudHealthFill.style.width = `${pct}%`;
+        }
+
+        // Flight Fuel Bar
+        if (this.hudFuelFill) {
+            const fuelPct = Math.max(0, (engine.player.flightFuel / engine.player.maxFlightFuel) * 100);
+            this.hudFuelFill.style.width = `${fuelPct}%`;
         }
 
         // Crystals Counter

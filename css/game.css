@@ -150,6 +150,31 @@ body.is-fullscreen-game .game-screen-wrapper {
     transition: width 0.2s ease;
 }
 
+/* Flight Fuel Bar */
+.hud-fuel-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.fuel-bar-container {
+    width: 100px;
+    height: 12px;
+    background: rgba(4, 5, 8, 0.85);
+    border: 1px solid var(--primary-cyan);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+}
+
+.fuel-bar-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #00f3ff, #3b82f6);
+    transition: width 0.15s ease;
+}
+
 /* Energy Crystals Counter */
 .hud-item {
     display: flex;
@@ -260,6 +285,18 @@ body.is-fullscreen-game .game-screen-wrapper {
     background: var(--primary-amber);
     color: #fff;
     box-shadow: 0 0 30px rgba(245, 158, 11, 0.9);
+}
+
+.touch-btn.flight-btn {
+    border-color: var(--primary-cyan);
+    color: var(--primary-cyan);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.45);
+}
+
+.touch-btn.flight-btn:active {
+    background: var(--primary-cyan);
+    color: #050608;
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.9);
 }
 
 /* Mobile Rotation Overlay */

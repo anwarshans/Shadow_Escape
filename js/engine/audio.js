@@ -128,6 +128,31 @@ class SoundEngine {
         } catch(e){}
     }
 
+    playFlight() {
+        if (!this.ctx) return;
+        this.ensureContext();
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(220, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(340, this.ctx.currentTime + 0.12);
+
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(600, this.ctx.currentTime);
+
+            gain.gain.setValueAtTime(0.25 * this.sfxVol, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.12);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.12);
+        } catch(e){}
+    }
+
     playCrystal() {
         this.playTone(880, 'sine', 0.1, 0.4, 0.01);
         setTimeout(() => this.playTone(1320, 'sine', 0.15, 0.4, 0.01), 60);

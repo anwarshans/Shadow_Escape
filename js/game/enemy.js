@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Shadow Escape - Human Security Guards & Flying Drone Enemies (Relaxed Speed)
+   Shadow Escape - Human Security Guards & Advanced Flighter Drones
    ========================================================================== */
 
 class PatrolBot {
@@ -11,7 +11,7 @@ class PatrolBot {
 
         this.rangeLeft = rangeLeft;
         this.rangeRight = rangeRight;
-        this.speed = speed;      // Relaxed patrol speed (0.9)
+        this.speed = speed;      // Patrol speed
         this.direction = 1;      // 1: Right, -1: Left
 
         this.damage = 25;
@@ -101,19 +101,21 @@ class PatrolBot {
 }
 
 class FlyingDrone {
-    constructor(x, y, rangeY = 40, speed = 0.8) {
+    constructor(x, y, rangeY = 40, speed = 0.9, pattern = 'sine', rangeX = 100) {
         this.startX = x;
         this.startY = y;
         this.x = x;
         this.y = y;
-        this.width = 48;
-        this.height = 36;
+        this.width = 52;
+        this.height = 40;
 
         this.rangeY = rangeY;
-        this.speed = speed;      // Relaxed hover speed (0.8)
+        this.rangeX = rangeX;
+        this.speed = speed;
+        this.pattern = pattern; // 'sine', 'vertical', 'horizontal', 'hunter'
         this.time = Math.random() * 10;
-
-        this.damage = 20;
+        this.damage = 22;
+        this.scanTimer = 0;
 
         // Load Drone PNG Image from uploads/
         this.spriteImg = new Image();
@@ -123,8 +125,32 @@ class FlyingDrone {
     }
 
     update(dt) {
-        this.time += dt * this.speed;
-        this.y = this.startY + Math.sin(this.time) * this.rangeY;
+        this.time += dt * this.speed * 2;
+        this.scanTimer += dt * 3;
+
+        if (this.pattern === 'vertical') {
+            this.y = this.startY + Math.sin(this.time) * this.rangeY;
+        } else if (this.pattern === 'horizontal') {
+            this.x = this.startX + Math.sin(this.time) * this.rangeX;
+        } else if (this.pattern === 'hunter') {
+            // Slight tracking towards player position if within 350px
+            if (window.gameEngine && window.gameEngine.player) {
+                const player = window.gameEngine.player;
+                const dx = player.x - this.x;
+                const dy = player.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 360) {
+                    this.x += (dx / dist) * this.speed * 1.4;
+                    this.y += (dy / dist) * this.speed * 0.8;
+                } else {
+                    this.y = this.startY + Math.sin(this.time) * (this.rangeY * 0.5);
+                }
+            }
+        } else {
+            // Default Sine Wave Hover
+            this.x = this.startX + Math.cos(this.time * 0.7) * (this.rangeX * 0.5);
+            this.y = this.startY + Math.sin(this.time) * this.rangeY;
+        }
     }
 
     draw(ctx, cameraOffset) {
@@ -133,7 +159,25 @@ class FlyingDrone {
 
         ctx.save();
 
+        // 1. Scanner Laser Beam
+        const scanWidth = 60;
+        const scanGrad = ctx.createLinearGradient(drawX + this.width / 2, drawY + this.height, drawX + this.width / 2, drawY + this.height + 90);
+        scanGrad.addColorStop(0, 'rgba(176, 38, 255, 0.45)');
+        scanGrad.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = scanGrad;
+        ctx.beginPath();
+        ctx.moveTo(drawX + this.width / 2 - 8, drawY + this.height);
+        ctx.lineTo(drawX + this.width / 2 - scanWidth / 2, drawY + this.height + 90);
+        ctx.lineTo(drawX + this.width / 2 + scanWidth / 2, drawY + this.height + 90);
+        ctx.lineTo(drawX + this.width / 2 + 8, drawY + this.height);
+        ctx.closePath();
+        ctx.fill();
+
+        // 2. Drone Sprite or Fallback Vector
         if (this.spriteLoaded) {
+            ctx.shadowColor = '#b026ff';
+            ctx.shadowBlur = window.gamePerformanceMode ? 6 : 14;
             ctx.drawImage(this.spriteImg, drawX, drawY, this.width, this.height);
         } else {
             ctx.fillStyle = '#b026ff';
@@ -141,11 +185,11 @@ class FlyingDrone {
             ctx.shadowBlur = window.gamePerformanceMode ? 6 : 12;
 
             ctx.beginPath();
-            ctx.moveTo(drawX + 24, drawY);
-            ctx.lineTo(drawX + 48, drawY + 18);
-            ctx.lineTo(drawX + 36, drawY + 36);
-            ctx.lineTo(drawX + 12, drawY + 36);
-            ctx.lineTo(drawX, drawY + 18);
+            ctx.moveTo(drawX + 26, drawY);
+            ctx.lineTo(drawX + 52, drawY + 20);
+            ctx.lineTo(drawX + 38, drawY + 40);
+            ctx.lineTo(drawX + 14, drawY + 40);
+            ctx.lineTo(drawX, drawY + 20);
             ctx.closePath();
             ctx.fill();
         }
@@ -156,3 +200,4 @@ class FlyingDrone {
 
 window.PatrolBot = PatrolBot;
 window.FlyingDrone = FlyingDrone;
+window.Flighter = FlyingDrone;

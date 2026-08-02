@@ -185,6 +185,13 @@
                             </div>
                         </div>
 
+                        <div class="hud-fuel-box">
+                            <span class="hud-label" style="color: var(--primary-cyan);">FLIGHT FUEL</span>
+                            <div class="fuel-bar-container">
+                                <div class="fuel-bar-fill" id="hudFuelFill"></div>
+                            </div>
+                        </div>
+
                         <div class="hud-item">
                             <span style="color: var(--primary-cyan); font-weight: bold;">💎</span>
                             <span class="hud-value" id="hudCrystalsVal">0/0</span>
@@ -217,8 +224,9 @@
                         <button class="touch-btn" id="btnTouchRight">►</button>
                     </div>
                     <div class="touch-cluster">
-                        <button class="touch-btn dash-btn" id="btnTouchDash">⚡</button>
-                        <button class="touch-btn" id="btnTouchJump">▲</button>
+                        <button class="touch-btn flight-btn" id="btnTouchFlight" title="Fly / Jetpack">🚀</button>
+                        <button class="touch-btn dash-btn" id="btnTouchDash" title="Dash">⚡</button>
+                        <button class="touch-btn" id="btnTouchJump" title="Jump">▲</button>
                     </div>
                 </div>
             </div>

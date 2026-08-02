@@ -12,7 +12,8 @@ class InputHandler {
             up: false,
             down: false,
             jump: false,
-            dash: false
+            dash: false,
+            flight: false
         };
 
         this.setupKeyboardListeners();
@@ -72,6 +73,7 @@ class InputHandler {
             bindBtn('btnTouchRight', 'right');
             bindBtn('btnTouchJump', 'jump');
             bindBtn('btnTouchDash', 'dash');
+            bindBtn('btnTouchFlight', 'flight');
         });
     }
 
@@ -96,6 +98,10 @@ class InputHandler {
 
     isDashPressed() {
         return !!(this.keys['ShiftLeft'] || this.keys['ShiftRight'] || this.keys['KeyK'] || this.touch.dash);
+    }
+
+    isFlightPressed() {
+        return !!(this.keys['KeyF'] || this.keys['KeyE'] || this.touch.flight);
     }
 
     isPausePressed() {
