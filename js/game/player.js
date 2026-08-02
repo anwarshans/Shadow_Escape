@@ -183,27 +183,24 @@ class Player {
             if (window.soundEngine) window.soundEngine.playDash();
         }
 
-        // Dedicated Flight Input Check (EXCLUSIVELY when clicking/holding Flight button)
-        const wantsFlight = input.isFlightPressed();
-        if (wantsFlight && this.flightFuel > 0) {
-            this.isFlying = true;
-            this.jumpBufferTimer = 0; // Don't jump when clicking Flight
-            this.flightFuel = Math.max(0, this.flightFuel - this.flightFuelConsumption * dt);
-            this.velocityY += this.flightThrust;
-            this.velocityY = Math.max(-6.5, this.velocityY); // Cap upward flight speed
+        // Dedicated Fight / Combat Action Input Check (EXCLUSIVELY triggers knife attack action, NO jump/flight launch)
+        const wantsFight = input.isFlightPressed();
+        if (wantsFight) {
+            this.isFighting = true;
+            this.jumpBufferTimer = 0; // Prevent jumping when clicking Fight button
 
-            if (window.particleSystem) {
-                const thrusterX = this.isFacingRight ? this.x + 8 : this.x + this.width - 8;
-                window.particleSystem.createFlightThruster(thrusterX, this.y + this.height - 15, this.isFacingRight);
+            if (window.particleSystem && Math.random() < 0.3) {
+                const slashX = this.isFacingRight ? this.x + this.width + 5 : this.x - 15;
+                window.particleSystem.createCrystalBurst(slashX, this.y + 25);
             }
 
-            if (Math.random() < 0.25 && window.soundEngine) {
-                window.soundEngine.playFlight();
+            if (Math.random() < 0.2 && window.soundEngine) {
+                window.soundEngine.playTone(600, 'sawtooth', 0.08, 0.3, 0.01);
             }
         } else {
-            this.isFlying = false;
+            this.isFighting = false;
 
-            // Jump Input (ONLY evaluated when NOT clicking Flight)
+            // Jump Input (ONLY evaluated when NOT clicking Fight)
             if (input.consumeJumpPressed()) {
                 this.jumpBufferTimer = this.jumpBufferMax;
             }
@@ -228,9 +225,7 @@ class Player {
         }
 
         // Gravity
-        if (!this.isFlying) {
-            this.velocityY += this.gravity;
-        }
+        this.velocityY += this.gravity;
         this.y += this.velocityY;
 
         // Reset grounded state (evaluated by physics collisions)
@@ -241,8 +236,8 @@ class Player {
 
         // Determine current action state
         const speedMagnitude = Math.abs(this.velocityX);
-        if (this.isFlying) {
-            // ONLY display Flight action image when explicitly clicking/holding Flight button
+        if (this.isFighting) {
+            // Display Fight knife attack action frames (player_flight1..4.png)
             this.currentAction = 'flight';
         } else if (!this.isGrounded && Math.abs(this.velocityY) > 0.5) {
             this.currentAction = 'jump';
@@ -300,19 +295,25 @@ class Player {
         if (activeImg && activeImg.loaded && activeImg.naturalHeight > 0) {
             const aspect = activeImg.naturalWidth / activeImg.naturalHeight;
 
-            // Height tuned per action state, width derived 100% strictly from natural image aspect ratio
+            // Height tuned per action state, width derived from natural image aspect ratio
             let drawHeight = 78;
+            let widthScale = 1.0;
+
             if (this.currentAction === 'stand') {
                 drawHeight = 80; // Perfect tall standing hero stance
             } else if (this.currentAction === 'slow_walk') {
                 drawHeight = 78;
-            } else if (this.currentAction === 'run' || this.currentAction === 'jump') {
-                drawHeight = 76;
+            } else if (this.currentAction === 'run') {
+                drawHeight = 72;
+                widthScale = 0.86; // Reduced running player width slightly as requested
+            } else if (this.currentAction === 'jump') {
+                drawHeight = 58;
+                widthScale = 0.78; // Reduced width of jumping person as requested
             } else if (this.currentAction === 'flight') {
-                drawHeight = 76;
+                drawHeight = 72; // Fight knife combat action stance
             }
 
-            const drawWidth = drawHeight * aspect; // Exact natural proportion (no squishing/stretching)
+            const drawWidth = drawHeight * aspect * widthScale; // Scaled width
             const offsetX = (this.width - drawWidth) / 2;
             const offsetY = this.height - drawHeight; // Align feet with ground level
 
