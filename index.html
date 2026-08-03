@@ -947,7 +947,7 @@
             };
 
             ['click', 'pointerdown', 'touchstart', 'keydown'].forEach(evt => {
-                window.addEventListener(evt, autoStartAudio, { passive: true, once: true });
+                window.addEventListener(evt, autoStartAudio, { passive: true });
             });
         });
 
