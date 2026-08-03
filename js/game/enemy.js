@@ -47,7 +47,7 @@ class PatrolBot {
             }
             if (window.soundEngine) window.soundEngine.playExplosion();
         } else if (window.soundEngine) {
-            window.soundEngine.playTone(400, 'triangle', 0.1, 0.2, 0.01);
+            window.soundEngine.playEnemyHit();
         }
 
         return true;
@@ -167,14 +167,24 @@ class Fighter {
         this.attackCooldown = 0;
         this.hurtTimer = 0;
         this.isDead = false;
+        this.isFighting = false;
 
-        // Load 4 Fighter PNG Frames from uploads/
-        this.sprites = [
+        // Walking PNG frames for normal time (patrol / walk without fighting)
+        this.walkSprites = [
+            this.loadImage('uploads/fighter walk 1.png'),
+            this.loadImage('uploads/fighter walk 2.png'),
+            this.loadImage('uploads/fighter walk 3.png')
+        ];
+
+        // Fighting PNG frames for combat / attacking player
+        this.fightSprites = [
             this.loadImage('uploads/fighter 1.png'),
             this.loadImage('uploads/fighter 2.png'),
             this.loadImage('uploads/fighter 3.png'),
             this.loadImage('uploads/fighter 4.png')
         ];
+
+        this.sprites = this.walkSprites;
     }
 
     loadImage(src) {
@@ -204,7 +214,7 @@ class Fighter {
             }
             if (window.soundEngine) window.soundEngine.playExplosion();
         } else if (window.soundEngine) {
-            window.soundEngine.playTone(400, 'triangle', 0.1, 0.2, 0.01);
+            window.soundEngine.playEnemyHit();
         }
 
         return true;
@@ -215,6 +225,8 @@ class Fighter {
 
         if (this.hurtTimer > 0) this.hurtTimer -= dt;
         if (this.attackCooldown > 0) this.attackCooldown -= dt;
+
+        this.isFighting = false;
 
         // Stair attack AI: check distance to player
         if (window.gameEngine && window.gameEngine.player) {
@@ -227,19 +239,22 @@ class Fighter {
             if (dist < 200 && Math.abs(dy) < 85) {
                 this.direction = dx > 0 ? 1 : -1;
 
-                if (dist < 60 && this.attackCooldown <= 0) {
-                    // Perform Stair Attack
-                    this.attackCooldown = 0.9;
-                    if (window.particleSystem) {
-                        const slashX = this.direction === 1 ? this.x + this.width : this.x - 15;
-                        window.particleSystem.createHitSparks(slashX, this.y + 35);
+                if (dist < 70 || this.attackCooldown > 0.3) {
+                    this.isFighting = true;
+                    if (dist < 60 && this.attackCooldown <= 0) {
+                        // Perform Stair Attack
+                        this.attackCooldown = 0.9;
+                        if (window.particleSystem) {
+                            const slashX = this.direction === 1 ? this.x + this.width : this.x - 15;
+                            window.particleSystem.createHitSparks(slashX, this.y + 35);
+                        }
                     }
                 } else if (dist >= 45) {
                     // March aggressively on stair step
                     this.x += this.direction * (this.speed * 1.35);
                 }
             } else {
-                // Patrol stair bounds
+                // Patrol stair bounds in normal time
                 this.x += this.direction * this.speed;
                 if (this.x >= this.rangeRight) {
                     this.x = this.rangeRight;
@@ -292,18 +307,23 @@ class Fighter {
             ctx.filter = 'brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)';
         }
 
-        // Draw active Fighter frame (fighter 1..4)
-        const frameIdx = Math.floor(this.animTimer) % this.sprites.length;
-        const currentSpr = this.sprites[frameIdx];
+        // Draw active Fighter frame (fighter walk 1..3 in normal time, fighter 1..4 when fighting player)
+        const activeFrames = this.isFighting ? this.fightSprites : this.walkSprites;
+        const frameIdx = Math.floor(this.animTimer) % activeFrames.length;
+        const currentSpr = activeFrames[frameIdx];
 
         if (currentSpr && currentSpr.loaded && currentSpr.naturalHeight > 0) {
+            const aspect = currentSpr.naturalWidth / currentSpr.naturalHeight;
+            const drawWidth = this.height * aspect;
+            const offsetX = (this.width - drawWidth) / 2;
+
             ctx.save();
             if (this.direction === -1) {
-                ctx.translate(drawX + this.width, drawY);
+                ctx.translate(drawX + this.width / 2 + drawWidth / 2, drawY);
                 ctx.scale(-1, 1);
-                ctx.drawImage(currentSpr, 0, 0, this.width, this.height);
+                ctx.drawImage(currentSpr, 0, 0, drawWidth, this.height);
             } else {
-                ctx.drawImage(currentSpr, drawX, drawY, this.width, this.height);
+                ctx.drawImage(currentSpr, drawX + offsetX, drawY, drawWidth, this.height);
             }
             ctx.restore();
         } else {
@@ -362,7 +382,7 @@ class FlyingDrone {
             }
             if (window.soundEngine) window.soundEngine.playExplosion();
         } else if (window.soundEngine) {
-            window.soundEngine.playTone(400, 'triangle', 0.1, 0.2, 0.01);
+            window.soundEngine.playEnemyHit();
         }
 
         return true;

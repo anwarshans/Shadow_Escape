@@ -36,6 +36,33 @@ class UIManager {
     }
 
     setupEventListeners() {
+        // Add global button click & hover SFX listeners
+        document.body.addEventListener('click', (e) => {
+            if (window.soundEngine) {
+                window.soundEngine.ensureContext();
+                if (window.soundEngine.isPlayingHomeBGM === false && window.soundEngine.isPlayingBGM === false) {
+                    const homeView = document.getElementById('homeView');
+                    if (homeView && homeView.style.display !== 'none') {
+                        window.soundEngine.startHomeBGM();
+                    }
+                }
+            }
+
+            const target = e.target.closest('button, .nav-link, a, .poster-play-btn, .poster-secondary-btn, .modal-close');
+            if (target && window.soundEngine) {
+                window.soundEngine.playUIClick();
+            }
+        });
+
+        document.body.addEventListener('mouseover', (e) => {
+            const target = e.target.closest('button, .nav-link, .poster-play-btn, .poster-secondary-btn');
+            if (target && window.soundEngine && !target.dataset.hovered) {
+                window.soundEngine.playUIHover();
+                target.dataset.hovered = 'true';
+                setTimeout(() => { delete target.dataset.hovered; }, 200);
+            }
+        });
+
         // Pause Modal Buttons
         const btnResume = document.getElementById('btnResume');
         if (btnResume) btnResume.addEventListener('click', () => window.gameEngine.togglePause());

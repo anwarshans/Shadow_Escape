@@ -73,6 +73,7 @@
                 <li><a href="#" onclick="openModal('modalLeaderboard'); return false;" class="nav-link">Leaderboard</a></li>
                 <li><a href="#" onclick="openModal('modalAbout'); return false;" class="nav-link">About</a></li>
                 <li><a href="#" onclick="openModal('modalContact'); return false;" class="nav-link">Contact</a></li>
+                <li><button onclick="toggleAudioMute()" class="nav-audio-btn" id="btnAudioToggle" title="Toggle Sound & Music">🔊 Sound: ON</button></li>
             </ul>
         </header>
 
@@ -416,6 +417,7 @@
             document.getElementById('navPlay').classList.toggle('active', viewId === 'gameView');
 
             if (viewId !== 'homeView') {
+                if (window.soundEngine) window.soundEngine.stopHomeBGM();
                 if (!window.gameEngine.canvas) {
                     window.gameEngine.init('gameCanvas');
                 } else {
@@ -436,12 +438,37 @@
             }
 
             if (viewId === 'homeView') {
+                if (window.soundEngine) {
+                    window.soundEngine.stopBGM();
+                    window.soundEngine.startHomeBGM();
+                }
                 if (window.uiManager) window.uiManager.hideAllModals();
                 exitGameFullscreen();
             }
 
             checkOrientation();
         }
+
+        function toggleAudioMute() {
+            if (window.soundEngine) {
+                const isMuted = window.soundEngine.toggleMute();
+                updateAudioButtonUI(isMuted);
+            }
+        }
+
+        function updateAudioButtonUI(isMuted) {
+            const btn = document.getElementById('btnAudioToggle');
+            if (btn) {
+                btn.innerHTML = isMuted ? '🔇 Muted' : '🔊 Sound: ON';
+                btn.classList.toggle('muted', isMuted);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.soundEngine) {
+                updateAudioButtonUI(window.soundEngine.isMuted);
+            }
+        });
 
         function isMobileDevice() {
             return window.matchMedia('(max-width: 950px)').matches || window.matchMedia('(pointer: coarse)').matches;

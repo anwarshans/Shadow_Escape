@@ -205,6 +205,36 @@ body::after {
     width: 100%;
 }
 
+.nav-audio-btn {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary-gold);
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-audio-btn:hover {
+    background: rgba(251, 191, 36, 0.25);
+    border-color: var(--primary-gold);
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
+    transform: translateY(-1px);
+}
+
+.nav-audio-btn.muted {
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
 /* Utility Typography */
 h1, h2, h3, h4 {
     font-family: var(--font-heading);

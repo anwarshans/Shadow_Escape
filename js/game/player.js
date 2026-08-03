@@ -67,7 +67,10 @@ class Player {
             run: [
                 this.loadImage('uploads/player_run1.png'),
                 this.loadImage('uploads/player_run2.png'),
-                this.loadImage('uploads/player_run3.png')
+                this.loadImage('uploads/player_run3.png'),
+                this.loadImage('uploads/player run 4.png'),
+                this.loadImage('uploads/player run 5.png'),
+                this.loadImage('uploads/player run 6.png')
             ],
             jump: this.loadImage('uploads/player_jump2.png'),
             flight: [
@@ -200,7 +203,7 @@ class Player {
                 window.particleSystem.createHitSparks(slashX, this.y + 30);
             }
             if (window.soundEngine) {
-                window.soundEngine.playTone(650, 'sawtooth', 0.08, 0.4, 0.01);
+                window.soundEngine.playAttack();
             }
         } else if (this.attackTimer > 0) {
             this.isFighting = true;
