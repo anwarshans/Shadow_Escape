@@ -36,7 +36,12 @@ class Particle {
         const drawX = this.x - cameraOffset.x;
         const drawY = this.y - cameraOffset.y;
 
-        if (this.shape === 'rect') {
+        if (this.shape === 'text') {
+            ctx.font = '900 16px var(--font-heading), sans-serif';
+            ctx.fillStyle = this.color;
+            ctx.textAlign = 'center';
+            ctx.fillText(this.text || '', drawX, drawY);
+        } else if (this.shape === 'rect') {
             ctx.fillRect(drawX - this.size / 2, drawY - this.size / 2, this.size, this.size);
         } else {
             ctx.beginPath();
@@ -107,6 +112,28 @@ class ParticleSystem {
             const color = colors[Math.floor(Math.random() * colors.length)];
             const p = new Particle(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed, color, 4 + Math.random() * 4, 0.6, 'rect');
             p.gravity = 0.2;
+            this.particles.push(p);
+        }
+    }
+
+    // Spawn Floating Damage Text
+    createDamageText(x, y, text, color = '#ff3366') {
+        const p = new Particle(x, y, (Math.random() - 0.5) * 1.5, -2, color, 16, 0.7, 'text');
+        p.text = text;
+        p.gravity = 0.05;
+        this.particles.push(p);
+    }
+
+    // Spawn Hit Sparks
+    createHitSparks(x, y) {
+        const colors = ['#ff007f', '#ffcf25', '#ffffff', '#00f3ff'];
+        const count = window.gamePerformanceMode ? 6 : 12;
+        for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 2 + Math.random() * 5;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const p = new Particle(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed, color, 3, 0.35);
+            p.gravity = 0.1;
             this.particles.push(p);
         }
     }

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Shadow Escape - Human Security Guards & Advanced Flighter Drones
+   Shadow Escape - Human Security Guards, Stair Fighters & Advanced Drones
    ========================================================================== */
 
 class PatrolBot {
@@ -14,8 +14,12 @@ class PatrolBot {
         this.speed = speed;      // Patrol speed
         this.direction = 1;      // 1: Right, -1: Left
 
+        this.hp = 60;
+        this.maxHp = 60;
         this.damage = 25;
         this.animTimer = 0;
+        this.hurtTimer = 0;
+        this.isDead = false;
 
         // Load Guard PNG Image from uploads/
         this.spriteImg = new Image();
@@ -24,7 +28,36 @@ class PatrolBot {
         this.spriteImg.onload = () => { this.spriteLoaded = true; };
     }
 
+    takeDamage(amount) {
+        if (this.isDead || this.hurtTimer > 0) return false;
+        this.hp -= amount;
+        this.hurtTimer = 0.3;
+
+        if (window.particleSystem) {
+            window.particleSystem.createDamageText(this.x + this.width / 2, this.y - 10, `-${amount} HP`, '#ff3366');
+            window.particleSystem.createHitSparks(this.x + this.width / 2, this.y + this.height / 2);
+        }
+
+        if (this.hp <= 0) {
+            this.hp = 0;
+            this.isDead = true;
+            if (window.particleSystem) {
+                window.particleSystem.createExplosion(this.x + this.width / 2, this.y + this.height / 2);
+                window.particleSystem.createDamageText(this.x + this.width / 2, this.y - 30, 'GUARD DOWN!', '#fbbf24');
+            }
+            if (window.soundEngine) window.soundEngine.playExplosion();
+        } else if (window.soundEngine) {
+            window.soundEngine.playTone(400, 'triangle', 0.1, 0.2, 0.01);
+        }
+
+        return true;
+    }
+
     update(dt) {
+        if (this.isDead) return;
+
+        if (this.hurtTimer > 0) this.hurtTimer -= dt;
+
         this.x += this.direction * this.speed;
 
         if (this.x >= this.rangeRight) {
@@ -39,6 +72,8 @@ class PatrolBot {
     }
 
     draw(ctx, cameraOffset) {
+        if (this.isDead) return;
+
         const drawX = this.x - cameraOffset.x;
         const drawY = this.y - cameraOffset.y;
 
@@ -50,6 +85,18 @@ class PatrolBot {
         ctx.ellipse(drawX + this.width / 2, drawY + this.height + 2, 20, 6, 0, 0, Math.PI * 2);
         ctx.fill();
 
+        // Health bar
+        if (this.hp < this.maxHp) {
+            const barW = 40;
+            const barH = 5;
+            const barX = drawX + (this.width - barW) / 2;
+            const barY = drawY - 10;
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+            ctx.fillRect(barX - 1, barY - 1, barW + 2, barH + 2);
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(barX, barY, barW * (this.hp / this.maxHp), barH);
+        }
+
         // Flashlight / Laser Vision Cone
         ctx.fillStyle = 'rgba(255, 51, 102, 0.22)';
         ctx.beginPath();
@@ -58,6 +105,10 @@ class PatrolBot {
         ctx.lineTo(drawX + (this.direction === 1 ? this.width + 80 : -80), drawY + 55);
         ctx.closePath();
         ctx.fill();
+
+        if (this.hurtTimer > 0) {
+            ctx.filter = 'brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)';
+        }
 
         // Draw Image Sprite or Fallback Human Guard Vector
         if (this.spriteLoaded) {
@@ -74,18 +125,15 @@ class PatrolBot {
             // Human Tactical Guard Vector
             const legAngle = Math.sin(this.animTimer) * 0.5;
 
-            // Tactical Helmet & Red Visor
             ctx.fillStyle = '#1e293b';
             ctx.fillRect(drawX + 11, drawY + 6, 24, 18);
             ctx.fillStyle = '#ff3366';
             const visorX = this.direction === 1 ? drawX + 23 : drawX + 11;
             ctx.fillRect(visorX, drawY + 12, 12, 6);
 
-            // Armor Torso
             ctx.fillStyle = '#334155';
             ctx.fillRect(drawX + 8, drawY + 24, 30, 26);
 
-            // Legs
             ctx.strokeStyle = '#0f172a';
             ctx.lineWidth = 5;
             ctx.beginPath();
@@ -94,6 +142,173 @@ class PatrolBot {
             ctx.moveTo(drawX + 30, drawY + 50);
             ctx.lineTo(drawX + 30 - Math.sin(legAngle) * 10, drawY + 70);
             ctx.stroke();
+        }
+
+        ctx.restore();
+    }
+}
+
+class Fighter {
+    constructor(x, y, rangeLeft, rangeRight, speed = 1.1, hp = 60) {
+        this.x = x;
+        this.y = y;
+        this.width = 52;
+        this.height = 76;
+
+        this.rangeLeft = rangeLeft;
+        this.rangeRight = rangeRight;
+        this.speed = speed;
+        this.direction = 1; // 1: Right, -1: Left
+
+        this.hp = hp;
+        this.maxHp = hp;
+        this.damage = 25;
+        this.animTimer = 0;
+        this.attackCooldown = 0;
+        this.hurtTimer = 0;
+        this.isDead = false;
+
+        // Load 4 Fighter PNG Frames from uploads/
+        this.sprites = [
+            this.loadImage('uploads/fighter 1.png'),
+            this.loadImage('uploads/fighter 2.png'),
+            this.loadImage('uploads/fighter 3.png'),
+            this.loadImage('uploads/fighter 4.png')
+        ];
+    }
+
+    loadImage(src) {
+        const img = new Image();
+        img.src = src;
+        img.loaded = false;
+        img.onload = () => { img.loaded = true; };
+        return img;
+    }
+
+    takeDamage(amount) {
+        if (this.isDead || this.hurtTimer > 0) return false;
+        this.hp -= amount;
+        this.hurtTimer = 0.3;
+
+        if (window.particleSystem) {
+            window.particleSystem.createDamageText(this.x + this.width / 2, this.y - 10, `-${amount} HP`, '#ff3366');
+            window.particleSystem.createHitSparks(this.x + this.width / 2, this.y + this.height / 2);
+        }
+
+        if (this.hp <= 0) {
+            this.hp = 0;
+            this.isDead = true;
+            if (window.particleSystem) {
+                window.particleSystem.createExplosion(this.x + this.width / 2, this.y + this.height / 2);
+                window.particleSystem.createDamageText(this.x + this.width / 2, this.y - 30, 'FIGHTER ELIMINATED!', '#fbbf24');
+            }
+            if (window.soundEngine) window.soundEngine.playExplosion();
+        } else if (window.soundEngine) {
+            window.soundEngine.playTone(400, 'triangle', 0.1, 0.2, 0.01);
+        }
+
+        return true;
+    }
+
+    update(dt) {
+        if (this.isDead) return;
+
+        if (this.hurtTimer > 0) this.hurtTimer -= dt;
+        if (this.attackCooldown > 0) this.attackCooldown -= dt;
+
+        // Stair attack AI: check distance to player
+        if (window.gameEngine && window.gameEngine.player) {
+            const player = window.gameEngine.player;
+            const dx = player.x - this.x;
+            const dy = player.y - this.y;
+            const dist = Math.hypot(dx, dy);
+
+            // If player is on or near the stair platform
+            if (dist < 200 && Math.abs(dy) < 85) {
+                this.direction = dx > 0 ? 1 : -1;
+
+                if (dist < 60 && this.attackCooldown <= 0) {
+                    // Perform Stair Attack
+                    this.attackCooldown = 0.9;
+                    if (window.particleSystem) {
+                        const slashX = this.direction === 1 ? this.x + this.width : this.x - 15;
+                        window.particleSystem.createHitSparks(slashX, this.y + 35);
+                    }
+                } else if (dist >= 45) {
+                    // March aggressively on stair step
+                    this.x += this.direction * (this.speed * 1.35);
+                }
+            } else {
+                // Patrol stair bounds
+                this.x += this.direction * this.speed;
+                if (this.x >= this.rangeRight) {
+                    this.x = this.rangeRight;
+                    this.direction = -1;
+                } else if (this.x <= this.rangeLeft) {
+                    this.x = this.rangeLeft;
+                    this.direction = 1;
+                }
+            }
+        }
+
+        this.animTimer += dt * 8;
+    }
+
+    draw(ctx, cameraOffset) {
+        if (this.isDead) return;
+
+        const drawX = this.x - cameraOffset.x;
+        const drawY = this.y - cameraOffset.y;
+
+        ctx.save();
+
+        // 3D Drop Shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+        ctx.beginPath();
+        ctx.ellipse(drawX + this.width / 2, drawY + this.height + 2, 22, 7, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Cyber Health Bar above head
+        const barWidth = 46;
+        const barHeight = 6;
+        const barX = drawX + (this.width - barWidth) / 2;
+        const barY = drawY - 14;
+
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.fillRect(barX - 1, barY - 1, barWidth + 2, barHeight + 2);
+
+        const hpPct = Math.max(0, this.hp / this.maxHp);
+        const hpColor = hpPct > 0.5 ? '#10b981' : (hpPct > 0.25 ? '#fbbf24' : '#ef4444');
+        ctx.fillStyle = hpColor;
+        ctx.fillRect(barX, barY, barWidth * hpPct, barHeight);
+
+        // Fighter Label
+        ctx.font = 'bold 9px var(--font-heading), sans-serif';
+        ctx.fillStyle = '#ff3366';
+        ctx.textAlign = 'center';
+        ctx.fillText('STAIR FIGHTER', drawX + this.width / 2, drawY - 17);
+
+        if (this.hurtTimer > 0) {
+            ctx.filter = 'brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)';
+        }
+
+        // Draw active Fighter frame (fighter 1..4)
+        const frameIdx = Math.floor(this.animTimer) % this.sprites.length;
+        const currentSpr = this.sprites[frameIdx];
+
+        if (currentSpr && currentSpr.loaded && currentSpr.naturalHeight > 0) {
+            ctx.save();
+            if (this.direction === -1) {
+                ctx.translate(drawX + this.width, drawY);
+                ctx.scale(-1, 1);
+                ctx.drawImage(currentSpr, 0, 0, this.width, this.height);
+            } else {
+                ctx.drawImage(currentSpr, drawX, drawY, this.width, this.height);
+            }
+            ctx.restore();
+        } else {
+            ctx.fillStyle = '#ff3366';
+            ctx.fillRect(drawX, drawY, this.width, this.height);
         }
 
         ctx.restore();
@@ -114,8 +329,12 @@ class FlyingDrone {
         this.speed = speed;
         this.pattern = pattern; // 'sine', 'vertical', 'horizontal', 'hunter'
         this.time = Math.random() * 10;
+        this.hp = 40;
+        this.maxHp = 40;
         this.damage = 22;
         this.scanTimer = 0;
+        this.hurtTimer = 0;
+        this.isDead = false;
 
         // Load Drone PNG Image from uploads/
         this.spriteImg = new Image();
@@ -124,7 +343,36 @@ class FlyingDrone {
         this.spriteImg.onload = () => { this.spriteLoaded = true; };
     }
 
+    takeDamage(amount) {
+        if (this.isDead || this.hurtTimer > 0) return false;
+        this.hp -= amount;
+        this.hurtTimer = 0.3;
+
+        if (window.particleSystem) {
+            window.particleSystem.createDamageText(this.x + this.width / 2, this.y - 10, `-${amount} HP`, '#ff3366');
+            window.particleSystem.createHitSparks(this.x + this.width / 2, this.y + this.height / 2);
+        }
+
+        if (this.hp <= 0) {
+            this.hp = 0;
+            this.isDead = true;
+            if (window.particleSystem) {
+                window.particleSystem.createExplosion(this.x + this.width / 2, this.y + this.height / 2);
+                window.particleSystem.createDamageText(this.x + this.width / 2, this.y - 25, 'DRONE DESTROYED!', '#fbbf24');
+            }
+            if (window.soundEngine) window.soundEngine.playExplosion();
+        } else if (window.soundEngine) {
+            window.soundEngine.playTone(400, 'triangle', 0.1, 0.2, 0.01);
+        }
+
+        return true;
+    }
+
     update(dt) {
+        if (this.isDead) return;
+
+        if (this.hurtTimer > 0) this.hurtTimer -= dt;
+
         this.time += dt * this.speed * 2;
         this.scanTimer += dt * 3;
 
@@ -133,7 +381,6 @@ class FlyingDrone {
         } else if (this.pattern === 'horizontal') {
             this.x = this.startX + Math.sin(this.time) * this.rangeX;
         } else if (this.pattern === 'hunter') {
-            // Slight tracking towards player position if within 350px
             if (window.gameEngine && window.gameEngine.player) {
                 const player = window.gameEngine.player;
                 const dx = player.x - this.x;
@@ -147,17 +394,29 @@ class FlyingDrone {
                 }
             }
         } else {
-            // Default Sine Wave Hover
             this.x = this.startX + Math.cos(this.time * 0.7) * (this.rangeX * 0.5);
             this.y = this.startY + Math.sin(this.time) * this.rangeY;
         }
     }
 
     draw(ctx, cameraOffset) {
+        if (this.isDead) return;
+
         const drawX = this.x - cameraOffset.x;
         const drawY = this.y - cameraOffset.y;
 
         ctx.save();
+
+        if (this.hp < this.maxHp) {
+            const barW = 36;
+            const barH = 4;
+            const barX = drawX + (this.width - barW) / 2;
+            const barY = drawY - 8;
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+            ctx.fillRect(barX - 1, barY - 1, barW + 2, barH + 2);
+            ctx.fillStyle = '#b026ff';
+            ctx.fillRect(barX, barY, barW * (this.hp / this.maxHp), barH);
+        }
 
         // 1. Scanner Laser Beam
         const scanWidth = 60;
@@ -173,6 +432,10 @@ class FlyingDrone {
         ctx.lineTo(drawX + this.width / 2 + 8, drawY + this.height);
         ctx.closePath();
         ctx.fill();
+
+        if (this.hurtTimer > 0) {
+            ctx.filter = 'brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)';
+        }
 
         // 2. Drone Sprite or Fallback Vector
         if (this.spriteLoaded) {
@@ -199,5 +462,6 @@ class FlyingDrone {
 }
 
 window.PatrolBot = PatrolBot;
+window.Fighter = Fighter;
 window.FlyingDrone = FlyingDrone;
 window.Flighter = FlyingDrone;

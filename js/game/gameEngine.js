@@ -110,7 +110,8 @@ class GameEngine {
 
         // Load Enemies
         this.enemies = (this.levelData.enemies || []).map(e => {
-            if (e.type === 'patrol') return new PatrolBot(e.x, e.y, e.rangeLeft, e.rangeRight);
+            if (e.type === 'patrol') return new PatrolBot(e.x, e.y, e.rangeLeft, e.rangeRight, e.speed || 0.9);
+            if (e.type === 'fighter') return new Fighter(e.x, e.y, e.rangeLeft, e.rangeRight, e.speed || 1.1, e.hp || 60);
             if (e.type === 'drone' || e.type === 'flighter') return new FlyingDrone(e.x, e.y, e.rangeY, e.speed, e.pattern, e.rangeX);
             return null;
         }).filter(Boolean);
@@ -205,10 +206,22 @@ class GameEngine {
             }
         });
 
+        // Check Player Attack Combat Hitbox vs Enemies
+        const attackHitbox = this.player.getAttackHitbox();
+        if (attackHitbox) {
+            this.enemies.forEach(enemy => {
+                if (!enemy.isDead && Physics.checkAABB(attackHitbox, enemy)) {
+                    if (enemy.takeDamage(30)) {
+                        this.score += 50;
+                    }
+                }
+            });
+        }
+
         // Update Enemies
         this.enemies.forEach(enemy => {
             enemy.update(dt);
-            if (Physics.checkAABB(this.player, enemy)) {
+            if (!enemy.isDead && Physics.checkAABB(this.player, enemy)) {
                 if (this.player.takeDamage(enemy.damage)) {
                     if (window.particleSystem) window.particleSystem.createExplosion(this.player.x, this.player.y);
                 }
@@ -283,7 +296,7 @@ class GameEngine {
         // 2. Render 2.5D Platforms
         this.platforms.forEach(plat => {
             if (window.renderer2D3D && this.isVisible(plat, cameraOffset, 180)) {
-                window.renderer2D3D.drawPlatform3D(this.ctx, plat, cameraOffset);
+                window.renderer2D3D.drawPlatform3D(this.ctx, plat, cameraOffset, this.currentLevelId);
             }
         });
 
@@ -350,7 +363,7 @@ class GameEngine {
 
         // 7. Render Ambient Light Beams
         if (window.renderer2D3D) {
-            window.renderer2D3D.drawAmbientLighting(this.ctx, this.canvas.width, this.canvas.height, performance.now() / 1000);
+            window.renderer2D3D.drawAmbientLighting(this.ctx, this.canvas.width, this.canvas.height, performance.now() / 1000, this.currentLevelId);
         }
 
         this.ctx.restore();

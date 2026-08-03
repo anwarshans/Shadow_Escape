@@ -224,6 +224,35 @@ body.is-fullscreen-game .game-screen-wrapper {
     box-shadow: 0 0 15px rgba(251, 191, 36, 0.25);
 }
 
+/* Combat Controls Quick Hint Banner */
+.combat-controls-hint {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(6, 9, 20, 0.88);
+    border: 1px solid rgba(0, 243, 255, 0.5);
+    border-radius: 20px;
+    padding: 5px 16px;
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    color: var(--primary-cyan);
+    z-index: 15;
+    pointer-events: none;
+    box-shadow: 0 0 16px rgba(0, 243, 255, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(8px);
+}
+
+.combat-controls-hint b {
+    color: var(--primary-gold);
+    background: rgba(251, 191, 36, 0.15);
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
 /* Mobile Virtual Touch Controls Overlay */
 .touch-controls {
     display: none;

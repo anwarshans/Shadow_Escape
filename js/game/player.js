@@ -52,6 +52,9 @@ class Player {
         this.hp = 100;
         this.maxHp = 100;
         this.invincibleTimer = 0;
+        this.attackCooldown = 0;
+        this.attackTimer = 0;
+        this.isFighting = false;
 
         // Checkpoint
         this.spawnX = x;
@@ -126,9 +129,10 @@ class Player {
     }
 
     update(dt, input) {
-        // Cooldowns & Timers
         if (this.invincibleTimer > 0) this.invincibleTimer -= dt;
         if (this.dashCooldown > 0) this.dashCooldown -= dt;
+        if (this.attackCooldown > 0) this.attackCooldown -= dt;
+        if (this.attackTimer > 0) this.attackTimer -= dt;
 
         if (this.isGrounded) {
             this.coyoteTimer = this.coyoteTimeMax;
@@ -183,20 +187,23 @@ class Player {
             if (window.soundEngine) window.soundEngine.playDash();
         }
 
-        // Dedicated Fight / Combat Action Input Check (EXCLUSIVELY triggers knife attack action, NO jump/flight launch)
+        // Dedicated Fight / Attack Combat Action Check
         const wantsFight = input.isFlightPressed();
-        if (wantsFight) {
+        if (wantsFight && this.attackCooldown <= 0) {
             this.isFighting = true;
-            this.jumpBufferTimer = 0; // Prevent jumping when clicking Fight button
+            this.attackTimer = 0.25;
+            this.attackCooldown = 0.35;
+            this.jumpBufferTimer = 0; // Prevent jumping when attacking
 
-            if (window.particleSystem && Math.random() < 0.3) {
-                const slashX = this.isFacingRight ? this.x + this.width + 5 : this.x - 15;
-                window.particleSystem.createCrystalBurst(slashX, this.y + 25);
+            if (window.particleSystem) {
+                const slashX = this.isFacingRight ? this.x + this.width + 10 : this.x - 10;
+                window.particleSystem.createHitSparks(slashX, this.y + 30);
             }
-
-            if (Math.random() < 0.2 && window.soundEngine) {
-                window.soundEngine.playTone(600, 'sawtooth', 0.08, 0.3, 0.01);
+            if (window.soundEngine) {
+                window.soundEngine.playTone(650, 'sawtooth', 0.08, 0.4, 0.01);
             }
+        } else if (this.attackTimer > 0) {
+            this.isFighting = true;
         } else {
             this.isFighting = false;
 
@@ -350,7 +357,32 @@ class Player {
             ctx.stroke();
         }
 
+        if (this.isFighting || this.attackTimer > 0) {
+            ctx.save();
+            ctx.strokeStyle = '#00f3ff';
+            ctx.shadowColor = '#00f3ff';
+            ctx.shadowBlur = 18;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            const arcCenterX = this.isFacingRight ? drawX + this.width + 12 : drawX - 12;
+            const arcCenterY = drawY + 36;
+            ctx.arc(arcCenterX, arcCenterY, 32, this.isFacingRight ? -Math.PI * 0.45 : Math.PI * 0.55, this.isFacingRight ? Math.PI * 0.45 : Math.PI * 1.45);
+            ctx.stroke();
+            ctx.restore();
+        }
+
         ctx.restore();
+    }
+
+    getAttackHitbox() {
+        if (!this.isFighting && this.attackTimer <= 0) return null;
+        const reach = 60;
+        return {
+            x: this.isFacingRight ? this.x + this.width - 10 : this.x - reach + 10,
+            y: this.y + 10,
+            width: reach,
+            height: this.height - 20
+        };
     }
 }
 

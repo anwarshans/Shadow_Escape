@@ -1,15 +1,15 @@
 /* ==========================================================================
-   Shadow Escape - Hardened 5 Level Layouts (Multi-Staircases & Flighter Drones)
+   Shadow Escape - Hardened 5 Level Layouts (Staircase Fighters & Dynamic Themes)
    ========================================================================== */
 
 const LEVELS = [
     // --------------------------------------------------------------------------
-    // LEVEL 1: TUTORIAL & SECURITY ENTRANCE
+    // LEVEL 1: GREEN VALLEY OUTSKIRTS (Peaceful Countryside Village)
     // --------------------------------------------------------------------------
     {
         id: 1,
-        title: "Level 1: Security Entrance",
-        subtitle: "Navigate the Security Staircase: Flighters patrol different steps. Use Flight or climb to reach the Key!",
+        title: "Level 1: Green Valley Outskirts",
+        subtitle: "Peaceful Countryside Village: Defeat the Fighter on the stairs with Attack (F / Mouse Click / ⚔️) to pass!",
         worldWidth: 1800,
         worldHeight: 850,
         spawn: { x: 80, y: 548 }, // 548 + 72 = 620
@@ -40,9 +40,11 @@ const LEVELS = [
             { x1: 740, y1: 280, x2: 740, y2: 480, interval: 2.2, duration: 1.0 }
         ],
         enemies: [
+            { type: 'fighter', x: 460, y: 314, rangeLeft: 460, rangeRight: 560, hp: 60 },      // Fighter on Staircase Step 3
+            { type: 'fighter', x: 750, y: 404, rangeLeft: 740, rangeRight: 880, hp: 60 },      // Fighter on Landing Staircase
             { type: 'patrol', x: 650, y: 550, rangeLeft: 610, rangeRight: 920 },
-            { type: 'flighter', x: 380, y: 380, rangeY: 30, speed: 0.9, pattern: 'vertical' }, // Flighter on Staircase Step 2
-            { type: 'flighter', x: 1020, y: 190, rangeY: 35, speed: 1.0, pattern: 'vertical' }  // Flighter on Key Tower
+            { type: 'flighter', x: 380, y: 380, rangeY: 30, speed: 0.9, pattern: 'vertical' },
+            { type: 'flighter', x: 1020, y: 190, rangeY: 35, speed: 1.0, pattern: 'vertical' }
         ],
         crystals: [
             { x: 280, y: 480 },
@@ -58,12 +60,12 @@ const LEVELS = [
     },
 
     // --------------------------------------------------------------------------
-    // LEVEL 2: CARGO STORAGE ROOM (Cargo Staircases & Flighter Patrols)
+    // LEVEL 2: METRO SKYLINE DISTRICT (Futuristic Metropolitan City)
     // --------------------------------------------------------------------------
     {
         id: 2,
-        title: "Level 2: Cargo Storage Room",
-        subtitle: "Multi-Tier Cargo Stairs: Flighters scan different stair levels. Reach the top alcove Key!",
+        title: "Level 2: Metro Skyline District",
+        subtitle: "Futuristic Metropolitan City: Defeat Fighters guarding cargo staircases!",
         worldWidth: 2000,
         worldHeight: 950,
         spawn: { x: 80, y: 648 },
@@ -99,11 +101,13 @@ const LEVELS = [
             { x1: 1300, y1: 500, x2: 1300, y2: 720, interval: 1.4, duration: 1.2 }
         ],
         enemies: [
+            { type: 'fighter', x: 310, y: 404, rangeLeft: 310, rangeRight: 400, hp: 60 },      // Fighter on Cargo Stair 1
+            { type: 'fighter', x: 840, y: 324, rangeLeft: 840, rangeRight: 940, hp: 60 },      // Fighter on Cargo Stair 2
             { type: 'patrol', x: 450, y: 580, rangeLeft: 430, rangeRight: 700 },
             { type: 'patrol', x: 850, y: 510, rangeLeft: 830, rangeRight: 1100 },
-            { type: 'flighter', x: 330, y: 400, rangeY: 35, speed: 1.0, pattern: 'horizontal', rangeX: 100 }, // Flighter on Staircase 1
-            { type: 'flighter', x: 860, y: 240, rangeY: 40, speed: 1.1, pattern: 'vertical' },              // Flighter on Staircase 2
-            { type: 'flighter', x: 1180, y: 150, rangeY: 45, speed: 1.1, pattern: 'sine', rangeX: 80 }     // Key Alcove Flighter
+            { type: 'flighter', x: 330, y: 400, rangeY: 35, speed: 1.0, pattern: 'horizontal', rangeX: 100 },
+            { type: 'flighter', x: 860, y: 240, rangeY: 40, speed: 1.1, pattern: 'vertical' },
+            { type: 'flighter', x: 1180, y: 150, rangeY: 45, speed: 1.1, pattern: 'sine', rangeX: 80 }
         ],
         crystals: [
             { x: 240, y: 510 },
@@ -119,12 +123,12 @@ const LEVELS = [
     },
 
     // --------------------------------------------------------------------------
-    // LEVEL 3: RESEARCH LABORATORY (Vertical Laboratory Staircase & Hunter Swarm)
+    // LEVEL 3: INDUSTRIAL POWER ZONE (Factories and Industrial Area)
     // --------------------------------------------------------------------------
     {
         id: 3,
-        title: "Level 3: Research Laboratory",
-        subtitle: "Vertical Lab Stairs: 5 Staircase landings guarded by Flighters. Fly or climb to the Peak!",
+        title: "Level 3: Industrial Power Zone",
+        subtitle: "Factories and Industrial Area: Clear vertical lab stairs to reach the top!",
         worldWidth: 1800,
         worldHeight: 1300,
         spawn: { x: 80, y: 1108 },
@@ -156,10 +160,12 @@ const LEVELS = [
             { x1: 620, y1: 460, x2: 620, y2: 780, interval: 1.5, duration: 1.1 }
         ],
         enemies: [
-            { type: 'flighter', x: 200, y: 940, rangeY: 35, speed: 0.9, pattern: 'horizontal', rangeX: 90 }, // Flighter on Lab Stair 1
-            { type: 'flighter', x: 200, y: 710, rangeY: 40, speed: 1.0, pattern: 'vertical' },              // Flighter on Lab Stair 2
-            { type: 'flighter', x: 500, y: 470, rangeY: 45, speed: 1.1, pattern: 'horizontal', rangeX: 120 }, // Flighter on Lab Stair 3
-            { type: 'flighter', x: 920, y: 190, rangeY: 45, speed: 1.3, pattern: 'hunter' },                 // Hunter Flighter at peak
+            { type: 'fighter', x: 280, y: 834, rangeLeft: 280, rangeRight: 390, hp: 60 },      // Fighter on Lab Stair Step 2
+            { type: 'fighter', x: 430, y: 474, rangeLeft: 430, rangeRight: 550, hp: 60 },      // Fighter on Lab Stair Step 5
+            { type: 'flighter', x: 200, y: 940, rangeY: 35, speed: 0.9, pattern: 'horizontal', rangeX: 90 },
+            { type: 'flighter', x: 200, y: 710, rangeY: 40, speed: 1.0, pattern: 'vertical' },
+            { type: 'flighter', x: 500, y: 470, rangeY: 45, speed: 1.1, pattern: 'horizontal', rangeX: 120 },
+            { type: 'flighter', x: 920, y: 190, rangeY: 45, speed: 1.3, pattern: 'hunter' },
             { type: 'patrol', x: 920, y: 1110, rangeLeft: 910, rangeRight: 1500 }
         ],
         crystals: [
@@ -177,12 +183,12 @@ const LEVELS = [
     },
 
     // --------------------------------------------------------------------------
-    // LEVEL 4: UNSTABLE REACTOR CORE (Plasma Abyss & Reactor Stairs)
+    // LEVEL 4: RESEARCH FACILITY CORE (High-Tech Laboratory)
     // --------------------------------------------------------------------------
     {
         id: 4,
-        title: "Level 4: Unstable Reactor Core",
-        subtitle: "Plasma Abyss Stairs: Floating stair platforms over reactor fluid guarded by Flighters!",
+        title: "Level 4: Research Facility Core",
+        subtitle: "High-Tech Laboratory: Plasma abyss stairs guarded by aggressive Fighters!",
         worldWidth: 2200,
         worldHeight: 950,
         spawn: { x: 80, y: 648 },
@@ -215,11 +221,13 @@ const LEVELS = [
             { x1: 1400, y1: 150, x2: 1400, y2: 550, interval: 1.4, duration: 1.0 }
         ],
         enemies: [
+            { type: 'fighter', x: 350, y: 364, rangeLeft: 350, rangeRight: 430, hp: 60 },      // Fighter on Reactor Stair 2
+            { type: 'fighter', x: 570, y: 214, rangeLeft: 570, rangeRight: 660, hp: 60 },      // Fighter on Reactor Stair 4
             { type: 'patrol', x: 400, y: 550, rangeLeft: 390, rangeRight: 550 },
             { type: 'patrol', x: 700, y: 450, rangeLeft: 690, rangeRight: 870 },
-            { type: 'flighter', x: 370, y: 360, rangeY: 35, speed: 1.1, pattern: 'vertical' },             // Flighter on Reactor Stairs 1
-            { type: 'flighter', x: 570, y: 210, rangeY: 45, speed: 1.1, pattern: 'sine', rangeX: 90 },     // Flighter on Reactor Stairs 2
-            { type: 'flighter', x: 1080, y: 170, rangeY: 40, speed: 1.3, pattern: 'hunter' },               // Hunter Flighter over Key
+            { type: 'flighter', x: 370, y: 360, rangeY: 35, speed: 1.1, pattern: 'vertical' },
+            { type: 'flighter', x: 570, y: 210, rangeY: 45, speed: 1.1, pattern: 'sine', rangeX: 90 },
+            { type: 'flighter', x: 1080, y: 170, rangeY: 40, speed: 1.3, pattern: 'hunter' },
             { type: 'flighter', x: 1480, y: 300, rangeY: 35, speed: 1.1, pattern: 'vertical' }
         ],
         crystals: [
@@ -236,12 +244,12 @@ const LEVELS = [
     },
 
     // --------------------------------------------------------------------------
-    // LEVEL 5: FINAL ESCAPE PORTAL (Grand Citadel Staircase & Swarm Flighters)
+    // LEVEL 5: SHADOW NEXUS (Reactor Core / Final Escape)
     // --------------------------------------------------------------------------
     {
         id: 5,
-        title: "Level 5: Final Escape Portal",
-        subtitle: "Grand Citadel Stairs: 6 Citadel stair steps guarded by 5 Flighters & rapid laser grids!",
+        title: "Level 5: Shadow Nexus",
+        subtitle: "Reactor Core & Final Escape: Grand Citadel stairs guarded by Elite Fighters!",
         worldWidth: 2500,
         worldHeight: 950,
         spawn: { x: 80, y: 648 },
@@ -275,11 +283,14 @@ const LEVELS = [
             { x1: 1650, y1: 150, x2: 1650, y2: 580, interval: 1.0, duration: 1.0 }
         ],
         enemies: [
-            { type: 'flighter', x: 340, y: 460, rangeY: 35, speed: 1.1, pattern: 'horizontal', rangeX: 80 }, // Flighter on Citadel Stair 1
-            { type: 'flighter', x: 510, y: 300, rangeY: 40, speed: 1.2, pattern: 'vertical' },               // Flighter on Citadel Stair 2
-            { type: 'flighter', x: 800, y: 260, rangeY: 40, speed: 1.3, pattern: 'sine', rangeX: 90 },       // Flighter on Citadel Stair 3
-            { type: 'flighter', x: 1290, y: 150, rangeY: 40, speed: 1.4, pattern: 'hunter' },                // Hunter Flighter 1
-            { type: 'flighter', x: 1720, y: 280, rangeY: 45, speed: 1.3, pattern: 'hunter' },                // Hunter Flighter 2
+            { type: 'fighter', x: 410, y: 384, rangeLeft: 410, rangeRight: 490, hp: 60 },      // Fighter on Citadel Stair 2
+            { type: 'fighter', x: 770, y: 264, rangeLeft: 770, rangeRight: 850, hp: 60 },      // Fighter on Citadel Stair 5
+            { type: 'fighter', x: 1270, y: 144, rangeLeft: 1270, rangeRight: 1400, hp: 80 },   // Elite Fighter on Peak Citadel Key Platform
+            { type: 'flighter', x: 340, y: 460, rangeY: 35, speed: 1.1, pattern: 'horizontal', rangeX: 80 },
+            { type: 'flighter', x: 510, y: 300, rangeY: 40, speed: 1.2, pattern: 'vertical' },
+            { type: 'flighter', x: 800, y: 260, rangeY: 40, speed: 1.3, pattern: 'sine', rangeX: 90 },
+            { type: 'flighter', x: 1290, y: 150, rangeY: 40, speed: 1.4, pattern: 'hunter' },
+            { type: 'flighter', x: 1720, y: 280, rangeY: 45, speed: 1.3, pattern: 'hunter' },
             { type: 'patrol', x: 820, y: 430, rangeLeft: 810, rangeRight: 1060 }
         ],
         crystals: [

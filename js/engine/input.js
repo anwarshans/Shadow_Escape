@@ -74,6 +74,19 @@ class InputHandler {
             bindBtn('btnTouchJump', 'jump');
             bindBtn('btnTouchDash', 'dash');
             bindBtn('btnTouchFlight', 'flight');
+
+            const canvas = document.getElementById('gameCanvas');
+            if (canvas) {
+                canvas.addEventListener('mousedown', (e) => {
+                    if (e.button === 0) { // Left click
+                        this.touch.flight = true;
+                        if (window.soundEngine) window.soundEngine.ensureContext();
+                    }
+                });
+                canvas.addEventListener('mouseup', () => {
+                    this.touch.flight = false;
+                });
+            }
         });
     }
 
@@ -101,7 +114,7 @@ class InputHandler {
     }
 
     isFlightPressed() {
-        return !!(this.keys['KeyF'] || this.keys['KeyE'] || this.touch.flight);
+        return !!(this.keys['KeyF'] || this.keys['KeyE'] || this.keys['KeyJ'] || this.keys['f'] || this.keys['e'] || this.keys['j'] || this.touch.flight);
     }
 
     isPausePressed() {
