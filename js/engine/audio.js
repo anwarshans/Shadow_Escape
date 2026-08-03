@@ -6,8 +6,8 @@ class SoundEngine {
     constructor() {
         this.ctx = null;
         this.isMuted = false;
-        this.sfxVol = 0.8;
-        this.musicVol = 0.55;
+        this.sfxVol = 1.0;     // Boosted SFX volume
+        this.musicVol = 0.72;   // Boosted Music volume
 
         this.isPlayingBGM = false;
         this.isPlayingHomeBGM = false;
@@ -29,8 +29,8 @@ class SoundEngine {
     loadSettings() {
         if (window.storage) {
             const settings = window.storage.getSettings();
-            this.sfxVol = settings.sfxVolume !== undefined ? settings.sfxVolume : 0.8;
-            this.musicVol = settings.musicVolume !== undefined ? settings.musicVolume : 0.55;
+            this.sfxVol = settings.sfxVolume !== undefined ? settings.sfxVolume : 1.0;
+            this.musicVol = settings.musicVolume !== undefined ? settings.musicVolume : 0.72;
             this.isMuted = settings.isMuted !== undefined ? settings.isMuted : false;
         }
     }
@@ -65,13 +65,15 @@ class SoundEngine {
         }
     }
 
-    // Helper: Play synthesized tone with custom envelope
-    playTone(freq, type, duration, startVol = 0.5, endVol = 0.001) {
+    // Helper: Play synthesized tone with custom envelope & optional ringing harmonic
+    playTone(freq, type, duration, startVol = 0.6, endVol = 0.001, ringHarmonic = true) {
         if (this.isMuted || !this.ctx || this.sfxVol <= 0) return;
         this.ensureContext();
 
         try {
             const now = this.ctx.currentTime;
+            
+            // Fundamental Tone
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
 
@@ -86,54 +88,88 @@ class SoundEngine {
 
             osc.start(now);
             osc.stop(now + duration);
+
+            // Ringing Metallic Harmonic Overtone
+            if (ringHarmonic) {
+                const ringOsc = this.ctx.createOscillator();
+                const ringGain = this.ctx.createGain();
+
+                ringOsc.type = 'sine';
+                ringOsc.frequency.setValueAtTime(freq * 2.76, now); // Metallic non-integer ratio ring
+
+                ringGain.gain.setValueAtTime(startVol * 0.35 * this.sfxVol, now);
+                ringGain.gain.exponentialRampToValueAtTime(0.0001, now + duration * 0.8);
+
+                ringOsc.connect(ringGain);
+                ringGain.connect(this.ctx.destination);
+
+                ringOsc.start(now);
+                ringOsc.stop(now + duration * 0.8);
+            }
         } catch (e) {}
     }
 
     // =========================================================================
-    // PROFESSIONAL IN-GAME SOUND EFFECTS (SFX)
+    // BRIGHT, RINGING & ATTRACTIVE IN-GAME SOUND EFFECTS (SFX)
     // =========================================================================
 
-    // Jump: Punchy low-end sub pop + smooth pitch sweep (140Hz -> 540Hz)
+    // Jump: Punchy low-end sub pop + bright ringing pitch sweep (180Hz -> 750Hz)
     playJump() {
         if (this.isMuted || !this.ctx || this.sfxVol <= 0) return;
         this.ensureContext();
         try {
             const now = this.ctx.currentTime;
 
-            // Pitch Sweep Osc
+            // Bright Ringing Sweep Osc
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(140, now);
-            osc.frequency.exponentialRampToValueAtTime(540, now + 0.14);
+            osc.frequency.setValueAtTime(180, now);
+            osc.frequency.exponentialRampToValueAtTime(750, now + 0.15);
 
-            gain.gain.setValueAtTime(0.45 * this.sfxVol, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+            gain.gain.setValueAtTime(0.6 * this.sfxVol, now);
+            gain.gain.exponentialRampToValueAtTime(0.005, now + 0.15);
 
-            // Sub-thump for solid feel
+            // High Ringing Overtone
+            const ringOsc = this.ctx.createOscillator();
+            const ringGain = this.ctx.createGain();
+            ringOsc.type = 'sine';
+            ringOsc.frequency.setValueAtTime(450, now);
+            ringOsc.frequency.exponentialRampToValueAtTime(1875, now + 0.15);
+
+            ringGain.gain.setValueAtTime(0.25 * this.sfxVol, now);
+            ringGain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+            // Sub-thump for solid grounding
             const subOsc = this.ctx.createOscillator();
             const subGain = this.ctx.createGain();
             subOsc.type = 'triangle';
-            subOsc.frequency.setValueAtTime(90, now);
-            subOsc.frequency.exponentialRampToValueAtTime(40, now + 0.08);
+            subOsc.frequency.setValueAtTime(110, now);
+            subOsc.frequency.exponentialRampToValueAtTime(45, now + 0.09);
 
-            subGain.gain.setValueAtTime(0.35 * this.sfxVol, now);
-            subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+            subGain.gain.setValueAtTime(0.45 * this.sfxVol, now);
+            subGain.gain.exponentialRampToValueAtTime(0.005, now + 0.09);
 
             osc.connect(gain);
             gain.connect(this.ctx.destination);
+
+            ringOsc.connect(ringGain);
+            ringGain.connect(this.ctx.destination);
 
             subOsc.connect(subGain);
             subGain.connect(this.ctx.destination);
 
             osc.start(now);
-            osc.stop(now + 0.14);
+            ringOsc.start(now);
             subOsc.start(now);
-            subOsc.stop(now + 0.08);
+
+            osc.stop(now + 0.15);
+            ringOsc.stop(now + 0.15);
+            subOsc.stop(now + 0.09);
         } catch(e){}
     }
 
-    // Double Jump: Energetic dual-tone sci-fi energy surge
+    // Double Jump: Energetic ringing sci-fi dual surge (420Hz -> 1350Hz)
     playDoubleJump() {
         if (this.isMuted || !this.ctx || this.sfxVol <= 0) return;
         this.ensureContext();
@@ -141,37 +177,46 @@ class SoundEngine {
             const now = this.ctx.currentTime;
             const osc1 = this.ctx.createOscillator();
             const osc2 = this.ctx.createOscillator();
+            const ringOsc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
 
             osc1.type = 'triangle';
-            osc1.frequency.setValueAtTime(320, now);
-            osc1.frequency.exponentialRampToValueAtTime(840, now + 0.16);
+            osc1.frequency.setValueAtTime(380, now);
+            osc1.frequency.exponentialRampToValueAtTime(950, now + 0.18);
 
             osc2.type = 'sine';
-            osc2.frequency.setValueAtTime(480, now);
-            osc2.frequency.exponentialRampToValueAtTime(1260, now + 0.16);
+            osc2.frequency.setValueAtTime(570, now);
+            osc2.frequency.exponentialRampToValueAtTime(1425, now + 0.18);
 
-            gain.gain.setValueAtTime(0.4 * this.sfxVol, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.16);
+            ringOsc.type = 'sine';
+            ringOsc.frequency.setValueAtTime(1140, now);
+            ringOsc.frequency.exponentialRampToValueAtTime(2850, now + 0.18);
+
+            gain.gain.setValueAtTime(0.55 * this.sfxVol, now);
+            gain.gain.exponentialRampToValueAtTime(0.005, now + 0.18);
 
             osc1.connect(gain);
             osc2.connect(gain);
+            ringOsc.connect(gain);
             gain.connect(this.ctx.destination);
 
             osc1.start(now);
             osc2.start(now);
-            osc1.stop(now + 0.16);
-            osc2.stop(now + 0.16);
+            ringOsc.start(now);
+
+            osc1.stop(now + 0.18);
+            osc2.stop(now + 0.18);
+            ringOsc.stop(now + 0.18);
         } catch(e){}
     }
 
-    // Dash: Dynamic high-pass noise burst with air thrust sweep
+    // Dash: High-pass noise burst + ringing energy slice sweep
     playDash() {
         if (this.isMuted || !this.ctx || this.sfxVol <= 0) return;
         this.ensureContext();
         try {
             const now = this.ctx.currentTime;
-            const bufferSize = Math.floor(this.ctx.sampleRate * 0.15);
+            const bufferSize = Math.floor(this.ctx.sampleRate * 0.16);
             const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
             const data = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) {
@@ -183,74 +228,96 @@ class SoundEngine {
 
             const filter = this.ctx.createBiquadFilter();
             filter.type = 'bandpass';
-            filter.Q.value = 3.0;
-            filter.frequency.setValueAtTime(1600, now);
-            filter.frequency.exponentialRampToValueAtTime(250, now + 0.15);
+            filter.Q.value = 4.5;
+            filter.frequency.setValueAtTime(2200, now);
+            filter.frequency.exponentialRampToValueAtTime(320, now + 0.16);
 
             const gain = this.ctx.createGain();
-            gain.gain.setValueAtTime(0.55 * this.sfxVol, now);
-            gain.gain.exponentialRampToValueAtTime(0.005, now + 0.15);
+            gain.gain.setValueAtTime(0.7 * this.sfxVol, now);
+            gain.gain.exponentialRampToValueAtTime(0.005, now + 0.16);
+
+            // Ringing laser dash sheen
+            const sheenOsc = this.ctx.createOscillator();
+            const sheenGain = this.ctx.createGain();
+            sheenOsc.type = 'sine';
+            sheenOsc.frequency.setValueAtTime(1800, now);
+            sheenOsc.frequency.exponentialRampToValueAtTime(450, now + 0.16);
+            sheenGain.gain.setValueAtTime(0.3 * this.sfxVol, now);
+            sheenGain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
 
             noise.connect(filter);
             filter.connect(gain);
             gain.connect(this.ctx.destination);
 
+            sheenOsc.connect(sheenGain);
+            sheenGain.connect(this.ctx.destination);
+
             noise.start(now);
+            sheenOsc.start(now);
+            sheenOsc.stop(now + 0.16);
         } catch(e){}
     }
 
-    // Flight / Jetpack: Rich low-frequency jet thruster hum with LFO modulation
+    // Flight / Jetpack: Rich jet thruster hum with high ringing turbine sheen
     playFlight() {
         if (this.isMuted || !this.ctx || this.sfxVol <= 0) return;
         this.ensureContext();
         try {
             const now = this.ctx.currentTime;
             const osc = this.ctx.createOscillator();
+            const ringOsc = this.ctx.createOscillator();
             const filter = this.ctx.createBiquadFilter();
             const gain = this.ctx.createGain();
 
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(160, now);
-            osc.frequency.linearRampToValueAtTime(280, now + 0.11);
+            osc.frequency.setValueAtTime(190, now);
+            osc.frequency.linearRampToValueAtTime(320, now + 0.12);
+
+            ringOsc.type = 'sine';
+            ringOsc.frequency.setValueAtTime(800, now);
+            ringOsc.frequency.linearRampToValueAtTime(1400, now + 0.12);
 
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(450, now);
+            filter.frequency.setValueAtTime(650, now);
 
-            gain.gain.setValueAtTime(0.28 * this.sfxVol, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.11);
+            gain.gain.setValueAtTime(0.38 * this.sfxVol, now);
+            gain.gain.exponentialRampToValueAtTime(0.008, now + 0.12);
 
             osc.connect(filter);
+            ringOsc.connect(filter);
             filter.connect(gain);
             gain.connect(this.ctx.destination);
 
             osc.start(now);
-            osc.stop(now + 0.11);
+            ringOsc.start(now);
+            osc.stop(now + 0.12);
+            ringOsc.stop(now + 0.12);
         } catch(e){}
     }
 
-    // Crystal Collect: Shimmering 4-note crystalline arpeggio (C6-E6-G6-C7)
+    // Crystal Collect: Shimmering 5-note ringing glass bell sequence (C6-E6-G6-B6-C7)
     playCrystal() {
         if (this.isMuted || !this.ctx || this.sfxVol <= 0) return;
-        const notes = [1046.50, 1318.51, 1567.98, 2093.00];
+        const notes = [1046.50, 1318.51, 1567.98, 1975.53, 2093.00];
         notes.forEach((freq, idx) => {
             setTimeout(() => {
-                this.playTone(freq, 'sine', 0.12, 0.45, 0.005);
-            }, idx * 45);
+                this.playTone(freq, 'sine', 0.28, 0.65, 0.001, true);
+            }, idx * 40);
         });
     }
 
-    // Keycard Collect: High-tech metallic card chime with major 7th interval
+    // Keycard Collect: High-tech ringing metallic card chime (E5-G#5-B5-E6-G#6)
     playKey() {
         if (this.isMuted || !this.ctx || this.sfxVol <= 0) return;
-        const notes = [659.25, 830.61, 987.77, 1318.51];
+        const notes = [659.25, 830.61, 987.77, 1318.51, 1661.22];
         notes.forEach((freq, idx) => {
             setTimeout(() => {
-                this.playTone(freq, 'triangle', 0.18, 0.5, 0.005);
-            }, idx * 60);
+                this.playTone(freq, 'sine', 0.35, 0.7, 0.001, true);
+            }, idx * 55);
         });
     }
 
-    // Door Unlock: Heavy pneumatic lock release + hydraulic thud
+    // Door Unlock: Heavy pneumatic lock release + ringing mechanical chime unlock
     playDoorUnlock() {
         if (this.isMuted || !this.ctx || this.sfxVol <= 0) return;
         this.ensureContext();
@@ -261,33 +328,49 @@ class SoundEngine {
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(240, now);
-            osc.frequency.exponentialRampToValueAtTime(650, now + 0.22);
-            gain.gain.setValueAtTime(0.35 * this.sfxVol, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+            osc.frequency.setValueAtTime(260, now);
+            osc.frequency.exponentialRampToValueAtTime(750, now + 0.25);
+            gain.gain.setValueAtTime(0.5 * this.sfxVol, now);
+            gain.gain.exponentialRampToValueAtTime(0.005, now + 0.25);
+
+            // Ringing metallic unlock chime
+            const ringOsc = this.ctx.createOscillator();
+            const ringGain = this.ctx.createGain();
+            ringOsc.type = 'sine';
+            ringOsc.frequency.setValueAtTime(1400, now);
+            ringOsc.frequency.exponentialRampToValueAtTime(2800, now + 0.25);
+            ringGain.gain.setValueAtTime(0.35 * this.sfxVol, now);
+            ringGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
 
             // Sub thud
             const sub = this.ctx.createOscillator();
             const subGain = this.ctx.createGain();
             sub.type = 'sine';
-            sub.frequency.setValueAtTime(120, now);
-            sub.frequency.exponentialRampToValueAtTime(30, now + 0.25);
-            subGain.gain.setValueAtTime(0.5 * this.sfxVol, now);
-            subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+            sub.frequency.setValueAtTime(140, now);
+            sub.frequency.exponentialRampToValueAtTime(35, now + 0.28);
+            subGain.gain.setValueAtTime(0.65 * this.sfxVol, now);
+            subGain.gain.exponentialRampToValueAtTime(0.005, now + 0.28);
 
             osc.connect(gain);
             gain.connect(this.ctx.destination);
+
+            ringOsc.connect(ringGain);
+            ringGain.connect(this.ctx.destination);
+
             sub.connect(subGain);
             subGain.connect(this.ctx.destination);
 
             osc.start(now);
+            ringOsc.start(now);
             sub.start(now);
-            osc.stop(now + 0.22);
-            sub.stop(now + 0.25);
+
+            osc.stop(now + 0.25);
+            ringOsc.stop(now + 0.25);
+            sub.stop(now + 0.28);
         } catch(e){}
     }
 
-    // Hurt / Damage: Sub-bass impact punch + distorted shield crack
+    // Hurt / Damage: Sub-bass impact punch + ringing shield crack
     playHurt() {
         if (this.isMuted || !this.ctx || this.sfxVol <= 0) return;
         this.ensureContext();
@@ -298,26 +381,26 @@ class SoundEngine {
             const osc = this.ctx.createOscillator();
             const gain = this.ctx.createGain();
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(190, now);
-            osc.frequency.exponentialRampToValueAtTime(35, now + 0.28);
-            gain.gain.setValueAtTime(0.65 * this.sfxVol, now);
-            gain.gain.linearRampToValueAtTime(0.01, now + 0.28);
+            osc.frequency.setValueAtTime(220, now);
+            osc.frequency.exponentialRampToValueAtTime(40, now + 0.3);
+            gain.gain.setValueAtTime(0.8 * this.sfxVol, now);
+            gain.gain.linearRampToValueAtTime(0.005, now + 0.3);
 
             // Distortion / Noise punch
-            const bufferSize = Math.floor(this.ctx.sampleRate * 0.12);
+            const bufferSize = Math.floor(this.ctx.sampleRate * 0.14);
             const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
             const data = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) {
-                data[i] = (Math.random() * 2 - 1) * 0.7;
+                data[i] = (Math.random() * 2 - 1) * 0.8;
             }
             const noise = this.ctx.createBufferSource();
             noise.buffer = buffer;
             const filter = this.ctx.createBiquadFilter();
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(600, now);
+            filter.frequency.setValueAtTime(750, now);
             const noiseGain = this.ctx.createGain();
-            noiseGain.gain.setValueAtTime(0.5 * this.sfxVol, now);
-            noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+            noiseGain.gain.setValueAtTime(0.6 * this.sfxVol, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.005, now + 0.14);
 
             osc.connect(gain);
             gain.connect(this.ctx.destination);
@@ -327,7 +410,7 @@ class SoundEngine {
 
             osc.start(now);
             noise.start(now);
-            osc.stop(now + 0.28);
+            osc.stop(now + 0.3);
         } catch(e){}
     }
 
@@ -337,7 +420,7 @@ class SoundEngine {
         this.ensureContext();
         try {
             const now = this.ctx.currentTime;
-            const duration = 0.45;
+            const duration = 0.5;
 
             // Noise rumble
             const bufferSize = Math.floor(this.ctx.sampleRate * duration);
@@ -351,21 +434,21 @@ class SoundEngine {
 
             const filter = this.ctx.createBiquadFilter();
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(500, now);
-            filter.frequency.exponentialRampToValueAtTime(40, now + duration);
+            filter.frequency.setValueAtTime(600, now);
+            filter.frequency.exponentialRampToValueAtTime(45, now + duration);
 
             const gain = this.ctx.createGain();
-            gain.gain.setValueAtTime(0.75 * this.sfxVol, now);
+            gain.gain.setValueAtTime(0.9 * this.sfxVol, now);
             gain.gain.exponentialRampToValueAtTime(0.005, now + duration);
 
             // Sub kick
             const kick = this.ctx.createOscillator();
             const kickGain = this.ctx.createGain();
             kick.type = 'sine';
-            kick.frequency.setValueAtTime(150, now);
-            kick.frequency.exponentialRampToValueAtTime(25, now + 0.3);
-            kickGain.gain.setValueAtTime(0.8 * this.sfxVol, now);
-            kickGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            kick.frequency.setValueAtTime(170, now);
+            kick.frequency.exponentialRampToValueAtTime(30, now + 0.35);
+            kickGain.gain.setValueAtTime(0.95 * this.sfxVol, now);
+            kickGain.gain.exponentialRampToValueAtTime(0.005, now + 0.35);
 
             noise.connect(filter);
             filter.connect(gain);
@@ -376,11 +459,11 @@ class SoundEngine {
 
             noise.start(now);
             kick.start(now);
-            kick.stop(now + 0.3);
+            kick.stop(now + 0.35);
         } catch(e){}
     }
 
-    // Level Clear: Triumphant polyphonic fanfare arpeggio
+    // Level Clear: Glorious 6-note ringing victory fanfare
     playLevelClear() {
         if (this.isMuted || !this.ctx || this.sfxVol <= 0) return;
         const chords = [
@@ -388,27 +471,28 @@ class SoundEngine {
             { freq: 659.25, time: 100 },  // E5
             { freq: 783.99, time: 200 },  // G5
             { freq: 987.77, time: 300 },  // B5
-            { freq: 1046.50, time: 420 }  // C6
+            { freq: 1046.50, time: 410 }, // C6
+            { freq: 1318.51, time: 540 }  // E6
         ];
         chords.forEach(c => {
             setTimeout(() => {
-                this.playTone(c.freq, 'sine', 0.4, 0.5, 0.005);
-                this.playTone(c.freq * 1.5, 'triangle', 0.25, 0.25, 0.005);
+                this.playTone(c.freq, 'sine', 0.5, 0.65, 0.001, true);
+                this.playTone(c.freq * 1.5, 'triangle', 0.35, 0.35, 0.001, false);
             }, c.time);
         });
     }
 
-    // UI Click: Snappy sci-fi tick
+    // UI Click: Snappy ringing glass button tick
     playUIClick() {
-        this.playTone(1200, 'sine', 0.04, 0.3, 0.001);
+        this.playTone(1400, 'sine', 0.06, 0.45, 0.001, true);
     }
 
-    // UI Hover: Subtle soft button hover pulse
+    // UI Hover: Soft ringing chime hover tick
     playUIHover() {
-        this.playTone(800, 'triangle', 0.03, 0.12, 0.001);
+        this.playTone(950, 'triangle', 0.04, 0.2, 0.001, true);
     }
 
-    // Attack / Slash: Sharp sci-fi blade slash
+    // Attack / Slash: Sharp blade slash with ringing metallic sheen
     playAttack() {
         if (this.isMuted || !this.ctx || this.sfxVol <= 0) return;
         this.ensureContext();
@@ -419,21 +503,35 @@ class SoundEngine {
             const filter = this.ctx.createBiquadFilter();
 
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(850, now);
-            osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
+            osc.frequency.setValueAtTime(950, now);
+            osc.frequency.exponentialRampToValueAtTime(180, now + 0.12);
 
             filter.type = 'highpass';
-            filter.frequency.setValueAtTime(400, now);
+            filter.frequency.setValueAtTime(450, now);
 
-            gain.gain.setValueAtTime(0.45 * this.sfxVol, now);
-            gain.gain.exponentialRampToValueAtTime(0.005, now + 0.1);
+            gain.gain.setValueAtTime(0.6 * this.sfxVol, now);
+            gain.gain.exponentialRampToValueAtTime(0.005, now + 0.12);
+
+            // Ringing metallic sheen
+            const ringOsc = this.ctx.createOscillator();
+            const ringGain = this.ctx.createGain();
+            ringOsc.type = 'sine';
+            ringOsc.frequency.setValueAtTime(2400, now);
+            ringOsc.frequency.exponentialRampToValueAtTime(600, now + 0.12);
+            ringGain.gain.setValueAtTime(0.35 * this.sfxVol, now);
+            ringGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
 
             osc.connect(filter);
             filter.connect(gain);
             gain.connect(this.ctx.destination);
 
+            ringOsc.connect(ringGain);
+            ringGain.connect(this.ctx.destination);
+
             osc.start(now);
-            osc.stop(now + 0.1);
+            ringOsc.start(now);
+            osc.stop(now + 0.12);
+            ringOsc.stop(now + 0.12);
         } catch(e){}
     }
 
@@ -447,17 +545,17 @@ class SoundEngine {
             const gain = this.ctx.createGain();
 
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(380, now);
-            osc.frequency.exponentialRampToValueAtTime(110, now + 0.12);
+            osc.frequency.setValueAtTime(420, now);
+            osc.frequency.exponentialRampToValueAtTime(130, now + 0.13);
 
-            gain.gain.setValueAtTime(0.35 * this.sfxVol, now);
-            gain.gain.exponentialRampToValueAtTime(0.005, now + 0.12);
+            gain.gain.setValueAtTime(0.48 * this.sfxVol, now);
+            gain.gain.exponentialRampToValueAtTime(0.005, now + 0.13);
 
             osc.connect(gain);
             gain.connect(this.ctx.destination);
 
             osc.start(now);
-            osc.stop(now + 0.12);
+            osc.stop(now + 0.13);
         } catch(e){}
     }
 
@@ -488,12 +586,12 @@ class SoundEngine {
                     osc.frequency.setValueAtTime(freq / 2, now + idx * 1.0); // Sub octave
 
                     filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(220, now + idx * 1.0);
-                    filter.frequency.linearRampToValueAtTime(380, now + idx * 1.0 + 0.5);
-                    filter.frequency.linearRampToValueAtTime(180, now + idx * 1.0 + 0.95);
+                    filter.frequency.setValueAtTime(260, now + idx * 1.0);
+                    filter.frequency.linearRampToValueAtTime(420, now + idx * 1.0 + 0.5);
+                    filter.frequency.linearRampToValueAtTime(220, now + idx * 1.0 + 0.95);
 
                     gain.gain.setValueAtTime(0.001, now + idx * 1.0);
-                    gain.gain.linearRampToValueAtTime(0.18 * this.musicVol, now + idx * 1.0 + 0.15);
+                    gain.gain.linearRampToValueAtTime(0.24 * this.musicVol, now + idx * 1.0 + 0.15);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 1.0 + 0.95);
 
                     osc.connect(filter);
@@ -504,24 +602,31 @@ class SoundEngine {
                     osc.stop(now + idx * 1.0 + 0.98);
                 });
 
-                // 2. Sci-Fi Ambient Arpeggio Sequence (F Minor 7th motif)
+                // 2. Sci-Fi Ringing Ambient Arpeggio Sequence (F Minor 7th motif)
                 // Notes: F4, Ab4, C5, Eb5, C5, Ab4, F4, G4
                 const arpNotes = [349.23, 415.30, 523.25, 622.25, 523.25, 415.30, 349.23, 392.00];
                 arpNotes.forEach((freq, idx) => {
                     const osc = this.ctx.createOscillator();
+                    const ringOsc = this.ctx.createOscillator();
                     const gain = this.ctx.createGain();
 
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(freq, now + idx * 0.5);
 
-                    gain.gain.setValueAtTime(0.08 * this.musicVol, now + idx * 0.5);
+                    ringOsc.type = 'sine';
+                    ringOsc.frequency.setValueAtTime(freq * 2.0, now + idx * 0.5); // Octave ring harmonic
+
+                    gain.gain.setValueAtTime(0.12 * this.musicVol, now + idx * 0.5);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.5 + 0.45);
 
                     osc.connect(gain);
+                    ringOsc.connect(gain);
                     gain.connect(this.ctx.destination);
 
                     osc.start(now + idx * 0.5);
+                    ringOsc.start(now + idx * 0.5);
                     osc.stop(now + idx * 0.5 + 0.45);
+                    ringOsc.stop(now + idx * 0.5 + 0.45);
                 });
 
                 // 3. Ambient Pad Swell (F Minor Triad)
@@ -535,12 +640,12 @@ class SoundEngine {
                     osc.frequency.setValueAtTime(freq, now);
 
                     filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(300, now);
-                    filter.frequency.linearRampToValueAtTime(650, now + 2.0);
-                    filter.frequency.linearRampToValueAtTime(250, now + 3.8);
+                    filter.frequency.setValueAtTime(320, now);
+                    filter.frequency.linearRampToValueAtTime(750, now + 2.0);
+                    filter.frequency.linearRampToValueAtTime(280, now + 3.8);
 
                     gain.gain.setValueAtTime(0.001, now);
-                    gain.gain.linearRampToValueAtTime(0.07 * this.musicVol, now + 1.8);
+                    gain.gain.linearRampToValueAtTime(0.11 * this.musicVol, now + 1.8);
                     gain.gain.linearRampToValueAtTime(0.001, now + 3.9);
 
                     osc.connect(filter);
@@ -590,10 +695,10 @@ class SoundEngine {
                     osc.frequency.setValueAtTime(freq, now + idx * 0.4);
 
                     filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(320, now + idx * 0.4);
-                    filter.frequency.exponentialRampToValueAtTime(120, now + idx * 0.4 + 0.35);
+                    filter.frequency.setValueAtTime(380, now + idx * 0.4);
+                    filter.frequency.exponentialRampToValueAtTime(140, now + idx * 0.4 + 0.35);
 
-                    gain.gain.setValueAtTime(0.12 * this.musicVol, now + idx * 0.4);
+                    gain.gain.setValueAtTime(0.16 * this.musicVol, now + idx * 0.4);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.4 + 0.35);
 
                     osc.connect(filter);
@@ -615,10 +720,10 @@ class SoundEngine {
                     noise.buffer = buffer;
                     const filter = this.ctx.createBiquadFilter();
                     filter.type = 'highpass';
-                    filter.frequency.value = 7000;
+                    filter.frequency.value = 7500;
 
                     const gain = this.ctx.createGain();
-                    gain.gain.setValueAtTime(0.03 * this.musicVol, now + i * 0.4);
+                    gain.gain.setValueAtTime(0.045 * this.musicVol, now + i * 0.4);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.4 + 0.03);
 
                     noise.connect(filter);

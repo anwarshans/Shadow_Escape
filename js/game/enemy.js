@@ -22,10 +22,15 @@ class PatrolBot {
         this.isDead = false;
 
         // Load Guard PNG Image from uploads/
-        this.spriteImg = new Image();
-        this.spriteImg.src = 'uploads/guard.png';
-        this.spriteLoaded = false;
-        this.spriteImg.onload = () => { this.spriteLoaded = true; };
+        if (window.assetManager) {
+            this.spriteImg = window.assetManager.getImage('uploads/guard.png');
+            this.spriteLoaded = this.spriteImg.loaded;
+        } else {
+            this.spriteImg = new Image();
+            this.spriteImg.src = 'uploads/guard.png';
+            this.spriteLoaded = false;
+            this.spriteImg.onload = () => { this.spriteLoaded = true; };
+        }
     }
 
     takeDamage(amount) {
@@ -111,7 +116,7 @@ class PatrolBot {
         }
 
         // Draw Image Sprite or Fallback Human Guard Vector
-        if (this.spriteLoaded) {
+        if (this.spriteLoaded || (this.spriteImg && this.spriteImg.loaded)) {
             ctx.save();
             if (this.direction === -1) {
                 ctx.translate(drawX + this.width, drawY);
@@ -188,6 +193,9 @@ class Fighter {
     }
 
     loadImage(src) {
+        if (window.assetManager) {
+            return window.assetManager.getImage(src);
+        }
         const img = new Image();
         img.src = src;
         img.loaded = false;
@@ -357,10 +365,15 @@ class FlyingDrone {
         this.isDead = false;
 
         // Load Drone PNG Image from uploads/
-        this.spriteImg = new Image();
-        this.spriteImg.src = 'uploads/drone.png';
-        this.spriteLoaded = false;
-        this.spriteImg.onload = () => { this.spriteLoaded = true; };
+        if (window.assetManager) {
+            this.spriteImg = window.assetManager.getImage('uploads/drone.png');
+            this.spriteLoaded = this.spriteImg.loaded;
+        } else {
+            this.spriteImg = new Image();
+            this.spriteImg.src = 'uploads/drone.png';
+            this.spriteLoaded = false;
+            this.spriteImg.onload = () => { this.spriteLoaded = true; };
+        }
     }
 
     takeDamage(amount) {
@@ -458,7 +471,7 @@ class FlyingDrone {
         }
 
         // 2. Drone Sprite or Fallback Vector
-        if (this.spriteLoaded) {
+        if (this.spriteLoaded || (this.spriteImg && this.spriteImg.loaded)) {
             ctx.shadowColor = '#b026ff';
             ctx.shadowBlur = window.gamePerformanceMode ? 6 : 14;
             ctx.drawImage(this.spriteImg, drawX, drawY, this.width, this.height);

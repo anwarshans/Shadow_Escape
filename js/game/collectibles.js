@@ -14,10 +14,15 @@ class EnergyCrystal {
         this.rotationAngle = 0;
 
         // Load Crystal PNG Image from uploads/
-        this.spriteImg = new Image();
-        this.spriteImg.src = 'uploads/crystal.png';
-        this.spriteLoaded = false;
-        this.spriteImg.onload = () => { this.spriteLoaded = true; };
+        if (window.assetManager) {
+            this.spriteImg = window.assetManager.getImage('uploads/crystal.png');
+            this.spriteLoaded = this.spriteImg.loaded;
+        } else {
+            this.spriteImg = new Image();
+            this.spriteImg.src = 'uploads/crystal.png';
+            this.spriteLoaded = false;
+            this.spriteImg.onload = () => { this.spriteLoaded = true; };
+        }
     }
 
     update(dt) {
@@ -34,7 +39,7 @@ class EnergyCrystal {
 
         ctx.save();
 
-        if (this.spriteLoaded) {
+        if (this.spriteLoaded || (this.spriteImg && this.spriteImg.loaded)) {
             ctx.shadowColor = '#00f3ff';
             ctx.shadowBlur = window.gamePerformanceMode ? 8 : 15;
             ctx.drawImage(this.spriteImg, drawX, drawY, this.width, this.height);

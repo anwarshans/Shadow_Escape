@@ -8,8 +8,12 @@ class Renderer2D3D {
 
         // Real-World Background Images Preloading
         this.bgImages = [1, 2, 3, 4, 5].map(level => {
+            const src = `uploads/bg${level}.png`;
+            if (window.assetManager) {
+                return window.assetManager.getImage(src);
+            }
             const image = new Image();
-            image.src = `uploads/bg${level}.png`;
+            image.src = src;
             image.loaded = false;
             image.onload = () => { image.loaded = true; };
             return image;

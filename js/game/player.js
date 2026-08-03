@@ -83,6 +83,9 @@ class Player {
     }
 
     loadImage(src) {
+        if (window.assetManager) {
+            return window.assetManager.getImage(src);
+        }
         const img = new Image();
         img.src = src;
         img.loaded = false;

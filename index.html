@@ -215,11 +215,14 @@
                             <span style="color: var(--accent-gold);">SCORE:</span>
                             <span class="hud-value" id="hudScoreVal">0</span>
                         </div>
+
+                        <!-- 3-Lines Escape / Pause Menu Button -->
+                        <button class="hud-pause-btn" id="btnGamePauseToggle" onclick="window.gameEngine && window.gameEngine.togglePause()" title="Escape / Pause Menu" aria-label="Pause Menu">☰</button>
                     </div>
                 </div>
 
-                <!-- Combat Control Quick Hint -->
-                <div class="combat-controls-hint">
+                <!-- Combat Control Quick Hint Popup -->
+                <div class="combat-controls-hint" id="combatHint">
                     ⚔️ <span>ATTACK FIGHTERS: Press <b>F</b>, <b>E</b>, <b>J</b> or <b>Left Click</b></span>
                 </div>
 
@@ -230,8 +233,8 @@
                         <button class="touch-btn" id="btnTouchRight">►</button>
                     </div>
                     <div class="touch-cluster">
-                        <button class="touch-btn flight-btn" id="btnTouchFlight" title="Fight Action">⚔️</button>
-                        <button class="touch-btn dash-btn" id="btnTouchDash" title="Dash">⚡</button>
+                        <button class="touch-btn dash-btn" id="btnTouchDash" title="Speed / Dash">⚡</button>
+                        <button class="touch-btn flight-btn" id="btnTouchFlight" title="Fight / Attack">⚔️</button>
                         <button class="touch-btn" id="btnTouchJump" title="Jump">▲</button>
                     </div>
                 </div>
@@ -240,11 +243,38 @@
 
         <!-- PORTRAIT MOBILE ORIENTATION OVERLAY -->
         <div class="rotate-overlay" id="rotateOverlay">
-            <div class="rotate-icon">📱🔄</div>
-            <h2 style="font-family: var(--font-heading); color: var(--primary-gold); margin-bottom: 0.5rem;">ROTATE TO LANDSCAPE</h2>
-            <p style="color: var(--text-muted); max-width: 320px; font-size: 0.95rem;">
+            <!-- Small Home Button to return to Home View -->
+            <button class="rotate-home-btn" id="btnRotateHome" onclick="showView('homeView')" title="Return to Home Screen" aria-label="Return to Home Screen">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>HOME</span>
+            </button>
+
+            <!-- Device Badge and Vibrant 3D Rotate Play Button -->
+            <div class="rotate-icon-wrapper">
+                <div class="rotate-device-badge">📱</div>
+                <button class="rotate-play-btn" id="btnRotatePlay" onclick="handleRotatePlay()" title="Rotate Screen & Play" aria-label="Rotate Screen & Play">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.5 2v6h-6"></path>
+                        <path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <h2 class="rotate-title">ROTATE TO LANDSCAPE</h2>
+            <p class="rotate-desc">
                 Shadow Escape is designed for 16:9 Landscape mode. Turn your device horizontally for the ultimate gaming experience!
             </p>
+
+            <!-- Play / Rotate Action Button -->
+            <button class="rotate-action-btn" onclick="handleRotatePlay()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>ROTATE & PLAY</span>
+            </button>
         </div>
 
         <!-- MODAL: LEADERBOARD -->
@@ -371,6 +401,7 @@
     </div>
 
     <!-- Modular JS Engine Load Order -->
+    <script src="js/engine/assetManager.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/engine/audio.js"></script>
     <script src="js/engine/camera.js"></script>
@@ -431,9 +462,12 @@
 
             if (viewId === 'gameView') {
                 document.body.classList.add('game-active');
+                document.body.classList.add('in-game-view');
                 showGameFullscreenControl();
+                triggerCombatHintPopup();
             } else {
                 document.body.classList.remove('game-active');
+                document.body.classList.remove('in-game-view');
                 hideGameFullscreenControl();
             }
 
@@ -448,6 +482,15 @@
 
             checkOrientation();
         }
+
+        function triggerCombatHintPopup() {
+            const hint = document.getElementById('combatHint');
+            if (!hint) return;
+            hint.classList.remove('show-popup');
+            void hint.offsetWidth;
+            hint.classList.add('show-popup');
+        }
+        window.triggerCombatHintPopup = triggerCombatHintPopup;
 
         function toggleAudioMute() {
             if (window.soundEngine) {
@@ -521,6 +564,16 @@
                 console.warn('Orientation lock failed:', error);
             }
         }
+
+        async function handleRotatePlay() {
+            if (isMobileDevice()) {
+                await requestMobileGameMode();
+            } else {
+                await requestGameFullscreen();
+            }
+            setTimeout(checkOrientation, 300);
+        }
+        window.handleRotatePlay = handleRotatePlay;
 
         async function exitGameFullscreen() {
             if (!document.fullscreenElement) return;

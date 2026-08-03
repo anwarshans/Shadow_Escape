@@ -132,6 +132,7 @@ class GameEngine {
 
         if (window.particleSystem) window.particleSystem.reset();
         if (window.soundEngine) window.soundEngine.startBGM();
+        if (window.triggerCombatHintPopup) window.triggerCombatHintPopup();
     }
 
     startLoop() {
