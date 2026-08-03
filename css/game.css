@@ -257,10 +257,12 @@ body.is-fullscreen-game .game-screen-wrapper {
 .touch-controls {
     display: none;
     position: absolute;
-    bottom: 10px;
+    bottom: max(22px, env(safe-area-inset-bottom, 22px));
     left: 0;
     width: 100%;
-    padding: 0 18px;
+    padding-left: max(32px, env(safe-area-inset-left, 32px));
+    padding-right: max(32px, env(safe-area-inset-right, 32px));
+    box-sizing: border-box;
     justify-content: space-between;
     align-items: flex-end;
     pointer-events: none;
@@ -269,7 +271,7 @@ body.is-fullscreen-game .game-screen-wrapper {
 
 .touch-cluster {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     pointer-events: auto;
 }
 
@@ -401,6 +403,11 @@ body.is-fullscreen-game .game-screen-wrapper {
         height: 54px;
         font-size: 1.05rem;
     }
+    .touch-controls {
+        bottom: max(18px, env(safe-area-inset-bottom, 18px));
+        padding-left: max(24px, env(safe-area-inset-left, 24px));
+        padding-right: max(24px, env(safe-area-inset-right, 24px));
+    }
 }
 
 @media (max-width: 950px) and (orientation: portrait) {
@@ -462,12 +469,13 @@ body.is-fullscreen-game .game-screen-wrapper {
     }
 
     .touch-controls {
-        bottom: 8px;
-        padding: 0 10px;
+        bottom: max(16px, env(safe-area-inset-bottom, 16px));
+        padding-left: max(16px, env(safe-area-inset-left, 16px));
+        padding-right: max(16px, env(safe-area-inset-right, 16px));
     }
 
     .touch-cluster {
-        gap: 8px;
+        gap: 10px;
     }
 
     .touch-btn {

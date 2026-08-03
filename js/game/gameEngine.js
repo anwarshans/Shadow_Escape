@@ -8,7 +8,7 @@ class GameEngine {
         this.ctx = null;
         this.performanceMode = false;
         this.sceneZoom = 1.08;
-        this.mobileSceneZoom = 1.0;
+        this.mobileSceneZoom = 1.28;
 
         this.currentLevelId = 1;
         this.levelData = null;
@@ -71,7 +71,7 @@ class GameEngine {
     }
 
     getSceneZoom() {
-        return window.innerWidth <= 900 ? this.mobileSceneZoom : this.sceneZoom;
+        return (window.innerWidth <= 950 || ('ontouchstart' in window && window.innerWidth <= 1024)) ? this.mobileSceneZoom : this.sceneZoom;
     }
 
     isVisible(entity, cameraOffset, padding = 120) {
@@ -180,9 +180,11 @@ class GameEngine {
             }
         });
 
-        // Camera Tracking
-        this.camera.follow(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2);
-        this.camera.update(dt);
+        // Camera Tracking - Center view completely over player
+        const isMobile = window.innerWidth <= 950 || ('ontouchstart' in window && window.innerWidth <= 1024);
+        const camOffsetY = isMobile ? -25 : -10;
+        this.camera.follow(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, camOffsetY);
+        this.camera.update(dt, this.getSceneZoom());
 
         // Particle System
         if (window.particleSystem) window.particleSystem.update(dt);

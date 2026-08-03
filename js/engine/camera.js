@@ -31,10 +31,10 @@ class Camera {
         this.worldHeight = height;
     }
 
-    follow(targetX, targetY) {
-        // Center camera on target
+    follow(targetX, targetY, offsetY = 0) {
+        // Center camera on target with optional vertical offset
         this.targetX = targetX - this.viewportWidth / 2;
-        this.targetY = targetY - this.viewportHeight / 2;
+        this.targetY = targetY - this.viewportHeight / 2 + offsetY;
     }
 
     shake(intensity, duration = 200) {
@@ -42,15 +42,27 @@ class Camera {
         this.shakeDuration = duration;
     }
 
-    update(dt) {
+    update(dt, zoom = 1.0) {
         // Smooth framerate-independent lerp tracking
         const factor = 1 - Math.exp(-14 * dt);
         this.x += (this.targetX - this.x) * factor;
         this.y += (this.targetY - this.y) * factor;
 
-        // Clamp camera within world bounds
-        this.x = Math.max(0, Math.min(this.x, this.worldWidth - this.viewportWidth));
-        this.y = Math.max(0, Math.min(this.y, this.worldHeight - this.viewportHeight));
+        // Effective visible dimensions considering zoom level
+        const effW = this.viewportWidth / zoom;
+        const effH = this.viewportHeight / zoom;
+
+        const marginX = (this.viewportWidth - effW) / 2;
+        const marginY = (this.viewportHeight - effH) / 2;
+
+        const minX = -marginX;
+        const maxX = Math.max(minX, this.worldWidth - effW - marginX);
+        const minY = -marginY;
+        const maxY = Math.max(minY, this.worldHeight - effH - marginY);
+
+        // Clamp camera within world bounds accounting for zoom scale
+        this.x = Math.max(minX, Math.min(this.x, maxX));
+        this.y = Math.max(minY, Math.min(this.y, maxY));
 
         // Screen shake processing
         if (this.shakeDuration > 0) {
