@@ -128,11 +128,20 @@ class GameEngine {
 
         this.hasKey = false;
         this.levelTimer = 0;
-        this.state = 'PLAYING';
+        this.state = 'INTRO';
 
         if (window.particleSystem) window.particleSystem.reset();
         if (window.soundEngine) window.soundEngine.startBGM();
-        if (window.triggerCombatHintPopup) window.triggerCombatHintPopup();
+
+        if (window.uiManager && typeof window.uiManager.showLevelIntro === 'function') {
+            window.uiManager.showLevelIntro(this.levelData, () => {
+                this.state = 'PLAYING';
+                if (window.triggerCombatHintPopup) window.triggerCombatHintPopup();
+            });
+        } else {
+            this.state = 'PLAYING';
+            if (window.triggerCombatHintPopup) window.triggerCombatHintPopup();
+        }
     }
 
     startLoop() {

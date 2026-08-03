@@ -672,71 +672,15 @@ class SoundEngine {
     }
 
     // =========================================================================
-    // IN-GAME BACKGROUND MUSIC (BGM)
+    // IN-GAME BACKGROUND MUSIC (BGM) - Disabled per user preference for silent gameplay
     // =========================================================================
     startBGM() {
-        if (this.isPlayingBGM || this.isMuted || !this.ctx || this.musicVol <= 0) return;
-        this.ensureContext();
-        this.stopHomeBGM(); // Ensure Home BGM is stopped
-        this.isPlayingBGM = true;
-
-        const synthInGameBGM = () => {
-            if (!this.isPlayingBGM || this.isMuted || !this.ctx) return;
-            try {
-                const now = this.ctx.currentTime;
-                // Cyberpunk stealth pulse bassline
-                const bassFreqs = [55, 65, 49, 58, 55, 65, 73, 49];
-                bassFreqs.forEach((freq, idx) => {
-                    const osc = this.ctx.createOscillator();
-                    const filter = this.ctx.createBiquadFilter();
-                    const gain = this.ctx.createGain();
-
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(freq, now + idx * 0.4);
-
-                    filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(380, now + idx * 0.4);
-                    filter.frequency.exponentialRampToValueAtTime(140, now + idx * 0.4 + 0.35);
-
-                    gain.gain.setValueAtTime(0.16 * this.musicVol, now + idx * 0.4);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.4 + 0.35);
-
-                    osc.connect(filter);
-                    filter.connect(gain);
-                    gain.connect(this.ctx.destination);
-
-                    osc.start(now + idx * 0.4);
-                    osc.stop(now + idx * 0.4 + 0.35);
-                });
-
-                // Subtle hi-hat synth pulse
-                for (let i = 0; i < 8; i++) {
-                    const bufferSize = Math.floor(this.ctx.sampleRate * 0.03);
-                    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-                    const data = buffer.getChannelData(0);
-                    for (let j = 0; j < bufferSize; j++) data[j] = Math.random() * 2 - 1;
-
-                    const noise = this.ctx.createBufferSource();
-                    noise.buffer = buffer;
-                    const filter = this.ctx.createBiquadFilter();
-                    filter.type = 'highpass';
-                    filter.frequency.value = 7500;
-
-                    const gain = this.ctx.createGain();
-                    gain.gain.setValueAtTime(0.045 * this.musicVol, now + i * 0.4);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.4 + 0.03);
-
-                    noise.connect(filter);
-                    filter.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    noise.start(now + i * 0.4);
-                }
-
-                this.bgmTimeout = setTimeout(synthInGameBGM, 3200);
-            } catch(e){}
-        };
-
-        synthInGameBGM();
+        this.stopHomeBGM();
+        this.isPlayingBGM = false;
+        if (this.bgmTimeout) {
+            clearTimeout(this.bgmTimeout);
+            this.bgmTimeout = null;
+        }
     }
 
     stopBGM() {
@@ -750,3 +694,12 @@ class SoundEngine {
 
 const audio = new SoundEngine();
 window.soundEngine = audio;
+
+// Automatically initialize sound engine & attempt playback on site load
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.soundEngine) {
+        window.soundEngine.init();
+        window.soundEngine.ensureContext();
+        window.soundEngine.startHomeBGM();
+    }
+});

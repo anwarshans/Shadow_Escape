@@ -1112,11 +1112,13 @@
 
 @media (max-width: 900px) {
     .poster-view {
-        overflow-y: auto;
-        padding: 0.8rem 0.8rem 4rem;
-        height: auto;
-        min-height: calc(100vh - 60px);
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        padding: 0.8rem 0.8rem 6rem !important;
+        height: calc(100dvh - 60px) !important;
+        max-height: calc(100dvh - 60px) !important;
         align-items: flex-start;
+        box-sizing: border-box;
     }
     
     .poster-container {
@@ -1126,6 +1128,7 @@
         gap: 0.8rem;
         max-height: none;
         width: 100%;
+        padding-bottom: 3rem;
     }
 
     /* 1. Full Complete Mobile Poster Image (preview.png) - 100% Un-cropped */
@@ -1218,13 +1221,21 @@
 
     /* Mobile Mission Intel Showcase Card */
     .poster-intel-card {
-        padding: 1rem 1.1rem;
+        padding: 1rem 1.1rem 1.6rem;
         margin-top: 0.4rem;
-        margin-bottom: 1rem;
+        margin-bottom: 2.5rem;
     }
 
     .intel-features-grid {
         grid-template-columns: 1fr;
-        gap: 0.55rem;
+        gap: 0.65rem;
+    }
+
+    .intel-feature-box {
+        padding: 10px 12px;
+    }
+
+    .intel-feature-info span {
+        word-break: break-word;
     }
 }

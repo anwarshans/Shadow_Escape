@@ -167,10 +167,82 @@ class UIManager {
         if (this.victoryModal) this.victoryModal.classList.add('active');
     }
 
+    showLevelIntro(levelData, onStartGame) {
+        const overlay = document.getElementById('levelIntroOverlay');
+        if (!overlay || !levelData) {
+            if (onStartGame) onStartGame();
+            return;
+        }
+
+        const badge = document.getElementById('introBadge');
+        const title = document.getElementById('introTitle');
+        const location = document.getElementById('introLocation');
+        const objective = document.getElementById('introObjective');
+
+        if (badge) badge.innerText = `— SECTOR / LEVEL 0${levelData.id || 1} —`;
+
+        // Extract title name without "Level X: " prefix if present
+        const rawTitle = levelData.title || `Stage ${levelData.id}`;
+        const cleanTitle = rawTitle.replace(/^Level\s+\d+:\s*/i, '');
+        if (title) title.innerText = cleanTitle.toUpperCase();
+
+        // Extract location description from subtitle
+        let locText = 'Unknown Sector';
+        if (levelData.subtitle) {
+            locText = levelData.subtitle.split(':')[0];
+        }
+        if (location) location.innerText = `📍 LOCATION: ${locText}`;
+
+        // Extract objective hint
+        let objText = 'Defeat Staircase Fighters, grab Key & reach Exit Door!';
+        if (levelData.subtitle && levelData.subtitle.includes(':')) {
+            const parts = levelData.subtitle.split(':');
+            if (parts[1]) objText = parts[1].trim();
+        }
+        if (objective) objective.innerText = `🎯 MISSION: ${objText}`;
+
+        overlay.classList.remove('fade-out');
+        overlay.style.display = 'flex';
+
+        if (window.soundEngine && typeof window.soundEngine.playTone === 'function') {
+            window.soundEngine.playTone(440, 'triangle', 0.2, 0.4, 0.001, true);
+            setTimeout(() => {
+                if (window.soundEngine && typeof window.soundEngine.playTone === 'function') {
+                    window.soundEngine.playTone(880, 'sine', 0.3, 0.5, 0.001, true);
+                }
+            }, 150);
+        }
+
+        let dismissed = false;
+        const dismissIntro = () => {
+            if (dismissed) return;
+            dismissed = true;
+            overlay.removeEventListener('click', dismissIntro);
+            overlay.classList.add('fade-out');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                overlay.classList.remove('fade-out');
+                if (onStartGame) onStartGame();
+            }, 450);
+        };
+
+        overlay.addEventListener('click', dismissIntro);
+
+        if (this.introTimeout) clearTimeout(this.introTimeout);
+        this.introTimeout = setTimeout(() => {
+            dismissIntro();
+        }, 2200);
+    }
+
     hideAllModals() {
         [this.pauseModal, this.gameOverModal, this.levelClearModal, this.victoryModal].forEach(m => {
             if (m) m.classList.remove('active');
         });
+        const overlay = document.getElementById('levelIntroOverlay');
+        if (overlay) {
+            overlay.style.display = 'none';
+            overlay.classList.remove('fade-out');
+        }
     }
 }
 

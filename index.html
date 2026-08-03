@@ -176,20 +176,36 @@
                     <canvas id="gameCanvas" width="1280" height="720"></canvas>
                 </div>
 
-                <!-- HUD Overlay - Clean 3-Column Grid -->
+                <!-- Level Starting Intro Screen (Full Screen Black Overlay) -->
+                <div class="level-intro-overlay" id="levelIntroOverlay" style="display: none;">
+                    <div class="intro-content">
+                        <div class="intro-badge" id="introBadge">— SECTOR / LEVEL 01 —</div>
+                        <h1 class="intro-title" id="introTitle">GREEN VALLEY OUTSKIRTS</h1>
+                        <div class="intro-location" id="introLocation">📍 LOCATION: Peaceful Countryside Village</div>
+                        <div class="intro-objective" id="introObjective">🎯 MISSION: Defeat the Fighter on the stairs & reach Exit Door</div>
+                        <div class="intro-divider"></div>
+                        <div class="intro-status">
+                            <span class="status-pulse"></span> DEPLOYING AGENT SHANU...
+                        </div>
+                        <div class="intro-skip-hint">TAP OR CLICK ANYWHERE TO START</div>
+                    </div>
+                </div>
+
+                <!-- HUD Overlay - Clean Non-Overlapping Layout -->
                 <div class="game-hud">
                     <div class="hud-group left">
-                        <div class="hud-health-box">
-                            <span class="hud-label">HP SYSTEM</span>
-                            <div class="health-bar-container">
-                                <div class="health-bar-fill" id="hudHealthFill"></div>
+                        <div class="hud-vitals-card">
+                            <div class="hud-health-box">
+                                <span class="hud-badge hp-badge">HP</span>
+                                <div class="health-bar-container">
+                                    <div class="health-bar-fill" id="hudHealthFill"></div>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="hud-fuel-box">
-                            <span class="hud-label" style="color: var(--primary-cyan);">FLIGHT FUEL</span>
-                            <div class="fuel-bar-container">
-                                <div class="fuel-bar-fill" id="hudFuelFill"></div>
+                            <div class="hud-fuel-box">
+                                <span class="hud-badge fuel-badge">FUEL</span>
+                                <div class="fuel-bar-container">
+                                    <div class="fuel-bar-fill" id="hudFuelFill"></div>
+                                </div>
                             </div>
                         </div>
 
@@ -199,11 +215,11 @@
                         </div>
 
                         <div class="hud-item key-indicator" id="hudKeyIndicator">
-                            <span style="color: var(--accent-gold); font-weight: bold;">🔑 KEY</span>
+                            <span style="color: var(--accent-gold); font-weight: bold;">🔑</span>
                         </div>
                     </div>
 
-                    <div class="level-banner" id="hudLevelTitle">Level 1: Facility Security Entrance</div>
+                    <div class="level-banner" id="hudLevelTitle" style="display: none !important;">Level 1: Facility Security Entrance</div>
 
                     <div class="hud-group right">
                         <div class="hud-item">
@@ -509,8 +525,25 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             if (window.soundEngine) {
+                window.soundEngine.init();
+                window.soundEngine.ensureContext();
+                window.soundEngine.startHomeBGM();
                 updateAudioButtonUI(window.soundEngine.isMuted);
             }
+
+            // Global interaction listeners to auto-resume AudioContext and play home BGM at earliest user gesture
+            const autoStartAudio = () => {
+                if (window.soundEngine && !window.soundEngine.isMuted) {
+                    window.soundEngine.ensureContext();
+                    if (!window.soundEngine.isPlayingHomeBGM && currentView === 'homeView') {
+                        window.soundEngine.startHomeBGM();
+                    }
+                }
+            };
+
+            ['click', 'pointerdown', 'touchstart', 'keydown', 'mousemove', 'scroll'].forEach(evt => {
+                window.addEventListener(evt, autoStartAudio, { passive: true });
+            });
         });
 
         function isMobileDevice() {
