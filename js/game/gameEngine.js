@@ -93,6 +93,13 @@ class GameEngine {
     }
 
     loadLevel(levelId) {
+        const maxLevels = (window.LEVELS && window.LEVELS.length) ? window.LEVELS.length : 5;
+        if (levelId > maxLevels || levelId < 1) {
+            levelId = 1;
+        }
+        if (levelId === 1) {
+            this.score = 0;
+        }
         this.currentLevelId = levelId;
         const rawLevel = window.LEVELS.find(l => l.id === levelId);
         if (!rawLevel) return;
@@ -153,17 +160,25 @@ class GameEngine {
             const frameTime = Math.min(0.1, (currentTime - this.lastTime) / 1000);
             this.lastTime = currentTime;
 
-            if (this.state === 'PLAYING') {
-                this.accumulator += frameTime;
-                while (this.accumulator >= fixedStep) {
-                    this.update(fixedStep);
-                    this.accumulator -= fixedStep;
+            const gameContainer = document.getElementById('gameView');
+            const isGameVisible = gameContainer && gameContainer.style.display !== 'none';
+
+            if (isGameVisible) {
+                if (this.state === 'PLAYING') {
+                    this.accumulator += frameTime;
+                    while (this.accumulator >= fixedStep) {
+                        this.update(fixedStep);
+                        this.accumulator -= fixedStep;
+                    }
+                } else {
+                    this.accumulator = 0;
                 }
+
+                this.render();
             } else {
                 this.accumulator = 0;
             }
 
-            this.render();
             requestAnimationFrame(loop);
         };
         requestAnimationFrame(loop);
@@ -211,6 +226,7 @@ class GameEngine {
 
         // Update Hazards
         this.hazards.forEach(haz => {
+            if (haz.update) haz.update(dt);
             if (Physics.checkAABB(this.player, haz)) {
                 if (this.player.takeDamage(haz.damage)) {
                     this.player.respawn();
@@ -406,7 +422,8 @@ class GameEngine {
             window.storage.updateHighScore(this.score);
         }
 
-        if (this.currentLevelId >= 5) {
+        const maxLevels = (window.LEVELS && window.LEVELS.length) ? window.LEVELS.length : 5;
+        if (this.currentLevelId >= maxLevels) {
             this.state = 'VICTORY';
             if (window.uiManager) window.uiManager.showVictoryModal(this.score);
         } else {

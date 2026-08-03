@@ -683,12 +683,206 @@ class SoundEngine {
         }
     }
 
-    stopBGM() {
-        this.isPlayingBGM = false;
-        if (this.bgmTimeout) {
-            clearTimeout(this.bgmTimeout);
-            this.bgmTimeout = null;
-        }
+    // =========================================================================
+    // DEDICATED STORY BRIEFING PAGE MUSIC TRACKS (Synthesized for Levels 1 - 5)
+    // =========================================================================
+    playStoryBriefingMusic(levelId = 1) {
+        if (this.isMuted || !this.ctx || this.musicVol <= 0) return;
+        this.ensureContext();
+        this.stopStoryMusic();
+
+        this.isPlayingStoryMusic = true;
+        const now = this.ctx.currentTime;
+        const lvl = Math.min(Math.max(levelId || 1, 1), 5);
+
+        try {
+            // Level 1: Green Valley Outskirts (Warm Ethereal Countryside Motif)
+            if (lvl === 1) {
+                const chordNotes = [146.83, 185.00, 220.00, 277.18, 329.63]; // D Maj9
+                chordNotes.forEach((f, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(f, now + i * 0.12);
+                    gain.gain.setValueAtTime(0.001, now + i * 0.12);
+                    gain.gain.linearRampToValueAtTime(0.18 * this.musicVol, now + i * 0.12 + 0.35);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 3.8);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + i * 0.12);
+                    osc.stop(now + i * 0.12 + 3.9);
+                });
+
+                const chimes = [587.33, 739.99, 880.00, 1108.73, 880.00, 739.99];
+                chimes.forEach((f, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(f, now + 0.6 + i * 0.32);
+                    gain.gain.setValueAtTime(0.001, now + 0.6 + i * 0.32);
+                    gain.gain.linearRampToValueAtTime(0.12 * this.musicVol, now + 0.6 + i * 0.32 + 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6 + i * 0.32 + 0.85);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + 0.6 + i * 0.32);
+                    osc.stop(now + 0.6 + i * 0.32 + 0.9);
+                });
+            }
+
+            // Level 2: Metro Skyline District (Futuristic Cyberpunk Neon Synth)
+            else if (lvl === 2) {
+                const bassLine = [82.41, 98.00, 110.00, 123.47]; // E2 -> G2 -> A2 -> B2
+                bassLine.forEach((f, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const filter = this.ctx.createBiquadFilter();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(f, now + i * 0.65);
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(320, now + i * 0.65);
+                    filter.frequency.exponentialRampToValueAtTime(1400, now + i * 0.65 + 0.3);
+                    gain.gain.setValueAtTime(0.24 * this.musicVol, now + i * 0.65);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.65 + 0.6);
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + i * 0.65);
+                    osc.stop(now + i * 0.65 + 0.62);
+                });
+
+                const neonArp = [659.25, 783.99, 987.77, 1174.66, 987.77, 783.99, 659.25, 523.25];
+                neonArp.forEach((f, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(f, now + i * 0.2);
+                    gain.gain.setValueAtTime(0.14 * this.musicVol, now + i * 0.2);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.2 + 0.32);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + i * 0.2);
+                    osc.stop(now + i * 0.2 + 0.35);
+                });
+            }
+
+            // Level 3: Industrial Power Zone (Heavy Industrial Resonant Grid)
+            else if (lvl === 3) {
+                const subOsc = this.ctx.createOscillator();
+                const subFilter = this.ctx.createBiquadFilter();
+                const subGain = this.ctx.createGain();
+                subOsc.type = 'sawtooth';
+                subOsc.frequency.setValueAtTime(65.41, now);
+                subFilter.type = 'lowpass';
+                subFilter.frequency.setValueAtTime(160, now);
+                subFilter.frequency.linearRampToValueAtTime(650, now + 1.6);
+                subFilter.frequency.linearRampToValueAtTime(180, now + 3.5);
+                subGain.gain.setValueAtTime(0.001, now);
+                subGain.gain.linearRampToValueAtTime(0.28 * this.musicVol, now + 1.0);
+                subGain.gain.exponentialRampToValueAtTime(0.001, now + 3.7);
+                subOsc.connect(subFilter);
+                subFilter.connect(subGain);
+                subGain.connect(this.ctx.destination);
+                subOsc.start(now);
+                subOsc.stop(now + 3.8);
+
+                const alarms = [261.63, 311.13, 392.00, 523.25];
+                alarms.forEach((f, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(f, now + 0.4 + i * 0.55);
+                    gain.gain.setValueAtTime(0.001, now + 0.4 + i * 0.55);
+                    gain.gain.linearRampToValueAtTime(0.12 * this.musicVol, now + 0.4 + i * 0.55 + 0.06);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4 + i * 0.55 + 0.48);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + 0.4 + i * 0.55);
+                    osc.stop(now + 0.4 + i * 0.55 + 0.5);
+                });
+            }
+
+            // Level 4: Research Facility Core (Subterranean Lab Ethereal Plasma)
+            else if (lvl === 4) {
+                const labNotes = [207.65, 261.63, 311.13, 392.00];
+                labNotes.forEach((f, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(f, now + i * 0.18);
+                    gain.gain.setValueAtTime(0.001, now + i * 0.18);
+                    gain.gain.linearRampToValueAtTime(0.16 * this.musicVol, now + i * 0.18 + 0.4);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.18 + 3.5);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + i * 0.18);
+                    osc.stop(now + i * 0.18 + 3.6);
+                });
+
+                const plasmaPulses = [830.61, 1046.50, 1244.51, 1661.22];
+                plasmaPulses.forEach((f, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const ringOsc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(f, now + 0.5 + i * 0.45);
+                    ringOsc.type = 'sine';
+                    ringOsc.frequency.setValueAtTime(f * 1.5, now + 0.5 + i * 0.45);
+                    gain.gain.setValueAtTime(0.001, now + 0.5 + i * 0.45);
+                    gain.gain.linearRampToValueAtTime(0.1 * this.musicVol, now + 0.5 + i * 0.45 + 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5 + i * 0.45 + 0.55);
+                    osc.connect(gain);
+                    ringOsc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + 0.5 + i * 0.45);
+                    ringOsc.start(now + 0.5 + i * 0.45);
+                    osc.stop(now + 0.5 + i * 0.45 + 0.58);
+                    ringOsc.stop(now + 0.5 + i * 0.45 + 0.58);
+                });
+            }
+
+            // Level 5: Shadow Nexus (Cyberpunk Reactor Citadel - Dark Epic Tactical Motif)
+            else if (lvl === 5) {
+                const brassNotes = [92.50, 110.00, 138.59, 185.00];
+                brassNotes.forEach((f, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const filter = this.ctx.createBiquadFilter();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(f, now + i * 0.38);
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(420, now + i * 0.38);
+                    filter.frequency.linearRampToValueAtTime(1700, now + i * 0.38 + 0.14);
+                    filter.frequency.exponentialRampToValueAtTime(360, now + i * 0.38 + 0.65);
+                    gain.gain.setValueAtTime(0.001, now + i * 0.38);
+                    gain.gain.linearRampToValueAtTime(0.28 * this.musicVol, now + i * 0.38 + 0.07);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.38 + 0.8);
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + i * 0.38);
+                    osc.stop(now + i * 0.38 + 0.83);
+                });
+
+                const epicCascade = [370.00, 440.00, 554.37, 739.99, 880.00, 1108.73];
+                epicCascade.forEach((f, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(f, now + 1.6 + i * 0.16);
+                    gain.gain.setValueAtTime(0.001, now + 1.6 + i * 0.16);
+                    gain.gain.linearRampToValueAtTime(0.16 * this.musicVol, now + 1.6 + i * 0.16 + 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.6 + i * 0.16 + 0.48);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + 1.6 + i * 0.16);
+                    osc.stop(now + 1.6 + i * 0.16 + 0.5);
+                });
+            }
+        } catch(e){}
+    }
+
+    stopStoryMusic() {
+        this.isPlayingStoryMusic = false;
     }
 }
 

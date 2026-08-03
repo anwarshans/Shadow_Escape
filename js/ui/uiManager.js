@@ -2,6 +2,14 @@
    Shadow Escape - UI Manager (HUD, Modals & Navigation)
    ========================================================================== */
 
+const STORY_BRIEFINGS = {
+    1: "Agent Shanu has breached the outer perimeter of Green Valley Outskirts. Security fighters patrol the staircase landing towers. Retrieve the encryption keycard to unlock the facility entrance.",
+    2: "Deep within Metro Skyline District, high-tech lasers and rooftop fighters guard the cargo transports. Obtain the keycard to infiltrate the inner city.",
+    3: "Industrial Power Zone: Toxic reactor channels and lab staircase guardians protect the main energy grid. Clear the vertical staircase shaft to reach the peak containment tower.",
+    4: "Research Facility Core: Plasma abyss staircases are locked down by aggressive defense forces. Maintain flight fuel, grab the master keycard, and execute emergency extraction.",
+    5: "Shadow Nexus: The ultimate stronghold of shadow command. Defeat elite staircase guardians, unlock the master door, and achieve final victory!"
+};
+
 class UIManager {
     constructor() {
         this.hudHealthFill = null;
@@ -16,6 +24,9 @@ class UIManager {
         this.gameOverModal = null;
         this.levelClearModal = null;
         this.victoryModal = null;
+
+        this.seenLevelIntros = new Set();
+        this.pendingIntro = null;
     }
 
     init() {
@@ -84,7 +95,36 @@ class UIManager {
         const btnNextLevel = document.getElementById('btnNextLevel');
         if (btnNextLevel) btnNextLevel.addEventListener('click', () => {
             this.hideAllModals();
-            window.gameEngine.loadLevel(window.gameEngine.currentLevelId + 1);
+            const maxLvl = (window.LEVELS && window.LEVELS.length) ? window.LEVELS.length : 5;
+            const nextLvl = window.gameEngine.currentLevelId + 1;
+            if (nextLvl > maxLvl) {
+                window.gameEngine.loadLevel(1);
+            } else {
+                window.gameEngine.loadLevel(nextLvl);
+            }
+        });
+
+        // Replay Level Sector
+        const btnReplaySector = document.getElementById('btnReplaySector');
+        if (btnReplaySector) btnReplaySector.addEventListener('click', () => {
+            this.hideAllModals();
+            window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
+        });
+
+        // Victory Modal Buttons
+        const btnVictoryPlayAgain = document.getElementById('btnVictoryPlayAgain');
+        if (btnVictoryPlayAgain) btnVictoryPlayAgain.addEventListener('click', () => {
+            this.hideAllModals();
+            window.gameEngine.loadLevel(1);
+        });
+
+        const btnVictoryLeaderboard = document.getElementById('btnVictoryLeaderboard');
+        if (btnVictoryLeaderboard) btnVictoryLeaderboard.addEventListener('click', () => {
+            this.openedLeaderboardFromVictory = true;
+            if (typeof window.openModal === 'function') {
+                window.openModal('modalLeaderboard');
+            }
+            if (this.victoryModal) this.victoryModal.classList.remove('active');
         });
 
         // Mobile Nav Toggle
@@ -126,9 +166,13 @@ class UIManager {
             }
         }
 
-        // Level Title
-        if (this.hudLevelTitle && engine.levelData) {
-            this.hudLevelTitle.innerText = engine.levelData.title;
+        // Level Indicator (LEVEL 1, LEVEL 2...)
+        if (engine.currentLevelId) {
+            const numEl = document.getElementById('hudLevelNum');
+            if (numEl) numEl.innerText = engine.currentLevelId;
+            if (this.hudLevelTitle && !numEl) {
+                this.hudLevelTitle.innerHTML = `<span class="lvl-label">LEVEL</span><span class="lvl-num">${engine.currentLevelId}</span>`;
+            }
         }
 
         // Timer Display
@@ -156,9 +200,16 @@ class UIManager {
     }
 
     showLevelClearModal(levelId, score) {
-        const scoreElem = document.getElementById('levelClearScore');
-        if (scoreElem) scoreElem.innerText = score.toString();
-        if (this.levelClearModal) this.levelClearModal.classList.add('active');
+        const timeSec = window.gameEngine ? Math.floor(window.gameEngine.levelTimer) : 0;
+        const crystals = window.gameEngine ? window.gameEngine.crystalsCollected : 0;
+
+        if (window.sectorMapManager) {
+            window.sectorMapManager.showSectorMap(levelId, score, timeSec, crystals);
+        } else {
+            const scoreElem = document.getElementById('levelClearScore');
+            if (scoreElem) scoreElem.innerText = score.toString();
+            if (this.levelClearModal) this.levelClearModal.classList.add('active');
+        }
     }
 
     showVictoryModal(totalScore) {
@@ -167,71 +218,124 @@ class UIManager {
         if (this.victoryModal) this.victoryModal.classList.add('active');
     }
 
-    showLevelIntro(levelData, onStartGame) {
-        const overlay = document.getElementById('levelIntroOverlay');
-        if (!overlay || !levelData) {
+    showLevelIntro(levelData, onStartGame, forceShow = true) {
+        if (!levelData) {
             if (onStartGame) onStartGame();
             return;
         }
 
+        // On mobile devices, delay intro until after device is rotated to landscape mode
+        const isMobile = window.innerWidth <= 950 || ('ontouchstart' in window);
+        const isPortrait = window.innerHeight > window.innerWidth;
+        const rotateOverlay = document.getElementById('rotateOverlay');
+        const isRotateOverlayActive = rotateOverlay && rotateOverlay.classList.contains('active');
+
+        if (isMobile && (isPortrait || isRotateOverlayActive)) {
+            this.pendingIntro = { levelData, onStartGame, forceShow };
+            return;
+        }
+
+        this.seenLevelIntros.add(levelData.id);
+        this.pendingIntro = null;
+
+        const overlay = document.getElementById('levelIntroOverlay');
+        if (!overlay) {
+            if (onStartGame) onStartGame();
+            return;
+        }
+
+        const bgImage = document.getElementById('introBgImage');
+        const levelId = Math.min(Math.max(levelData.id || 1, 1), 5);
+        if (bgImage) {
+            bgImage.style.backgroundImage = `url("uploads/animation img ${levelId}.png")`;
+        }
+
+        const chapterHeader = document.getElementById('introChapterHeader');
         const badge = document.getElementById('introBadge');
         const title = document.getElementById('introTitle');
         const location = document.getElementById('introLocation');
-        const objective = document.getElementById('introObjective');
+        const storyBox = document.getElementById('introStoryBox');
 
-        if (badge) badge.innerText = `— SECTOR / LEVEL 0${levelData.id || 1} —`;
+        if (chapterHeader) chapterHeader.innerText = `LEVEL 0${levelData.id || 1} // STORY MODE BRIEFING`;
+        if (badge) badge.innerText = `— LEVEL 0${levelData.id || 1} —`;
 
-        // Extract title name without "Level X: " prefix if present
         const rawTitle = levelData.title || `Stage ${levelData.id}`;
         const cleanTitle = rawTitle.replace(/^Level\s+\d+:\s*/i, '');
         if (title) title.innerText = cleanTitle.toUpperCase();
 
-        // Extract location description from subtitle
-        let locText = 'Unknown Sector';
+        let locText = 'Unknown Location';
         if (levelData.subtitle) {
             locText = levelData.subtitle.split(':')[0];
         }
         if (location) location.innerText = `📍 LOCATION: ${locText}`;
 
-        // Extract objective hint
-        let objText = 'Defeat Staircase Fighters, grab Key & reach Exit Door!';
-        if (levelData.subtitle && levelData.subtitle.includes(':')) {
-            const parts = levelData.subtitle.split(':');
-            if (parts[1]) objText = parts[1].trim();
-        }
-        if (objective) objective.innerText = `🎯 MISSION: ${objText}`;
+        const storyText = STORY_BRIEFINGS[levelData.id] || "Infiltrate the level, retrieve keycard, defeat staircase fighters, and reach the exit door!";
+        if (storyBox) storyBox.innerText = `"${storyText}"`;
+
+        if (this.introTimeout) clearTimeout(this.introTimeout);
 
         overlay.classList.remove('fade-out');
         overlay.style.display = 'flex';
+        void overlay.offsetWidth;
+        overlay.classList.add('active');
 
-        if (window.soundEngine && typeof window.soundEngine.playTone === 'function') {
-            window.soundEngine.playTone(440, 'triangle', 0.2, 0.4, 0.001, true);
-            setTimeout(() => {
-                if (window.soundEngine && typeof window.soundEngine.playTone === 'function') {
-                    window.soundEngine.playTone(880, 'sine', 0.3, 0.5, 0.001, true);
-                }
-            }, 150);
+        if (window.soundEngine) {
+            if (typeof window.soundEngine.playStoryBriefingMusic === 'function') {
+                window.soundEngine.playStoryBriefingMusic(levelId);
+            } else if (typeof window.soundEngine.playTone === 'function') {
+                window.soundEngine.playTone(320, 'triangle', 0.2, 0.4, 0.001, true);
+            }
         }
 
         let dismissed = false;
         const dismissIntro = () => {
             if (dismissed) return;
             dismissed = true;
-            overlay.removeEventListener('click', dismissIntro);
+            overlay.onclick = null;
+            if (window.soundEngine && typeof window.soundEngine.stopStoryMusic === 'function') {
+                window.soundEngine.stopStoryMusic();
+            }
             overlay.classList.add('fade-out');
+            overlay.classList.remove('active');
             setTimeout(() => {
                 overlay.style.display = 'none';
                 overlay.classList.remove('fade-out');
                 if (onStartGame) onStartGame();
-            }, 450);
+            }, 400);
         };
 
-        overlay.addEventListener('click', dismissIntro);
+        overlay.onclick = dismissIntro;
 
-        if (this.introTimeout) clearTimeout(this.introTimeout);
         this.introTimeout = setTimeout(() => {
             dismissIntro();
-        }, 2200);
+        }, 4000);
+    }
+
+    openStoryBriefingModal(levelId = 1) {
+        let levelData = null;
+        if (window.LEVELS && Array.isArray(window.LEVELS)) {
+            levelData = window.LEVELS.find(l => l.id === levelId);
+        }
+        if (!levelData) {
+            levelData = { id: levelId, title: `Level ${levelId}`, subtitle: 'Tactical Sector' };
+        }
+        this.showLevelIntro(levelData, null, true);
+    }
+
+    checkPendingIntro() {
+        if (this.pendingIntro) {
+            const pending = this.pendingIntro;
+            const isMobile = window.innerWidth <= 950 || ('ontouchstart' in window);
+            const isPortrait = window.innerHeight > window.innerWidth;
+            const rotateOverlay = document.getElementById('rotateOverlay');
+            const isRotateOverlayActive = rotateOverlay && rotateOverlay.classList.contains('active');
+
+            if (!isMobile || (!isPortrait && !isRotateOverlayActive)) {
+                const { levelData, onStartGame, forceShow } = pending;
+                this.pendingIntro = null;
+                this.showLevelIntro(levelData, onStartGame, forceShow);
+            }
+        }
     }
 
     hideAllModals() {

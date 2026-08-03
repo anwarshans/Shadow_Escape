@@ -89,7 +89,7 @@ body.is-fullscreen-game .game-screen-wrapper {
     image-rendering: pixelated;
 }
 
-/* Level Starting Intro Screen (Full Screen Black Overlay) */
+/* Story Mode Cinematic Intro Screen (Full Screen Black Overlay) */
 .level-intro-overlay {
     position: absolute;
     top: 0;
@@ -97,28 +97,152 @@ body.is-fullscreen-game .game-screen-wrapper {
     width: 100%;
     height: 100%;
     z-index: 150;
-    background: radial-gradient(circle at center, #0a0d14 0%, #030407 100%);
+    background: #020408;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     text-align: center;
-    padding: 1.5rem;
+    padding: 0;
     box-sizing: border-box;
     overflow: hidden;
     pointer-events: auto;
     cursor: pointer;
     user-select: none;
-    border-top: 3px solid var(--primary-gold);
-    border-bottom: 3px solid var(--primary-cyan);
-    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9);
-    transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.85s ease-in-out, visibility 0.85s ease-in-out;
+}
+
+.level-intro-overlay.active {
+    opacity: 1;
+    visibility: visible;
 }
 
 .level-intro-overlay.fade-out {
     opacity: 0;
-    transform: scale(1.05);
+    visibility: hidden;
     pointer-events: none;
+}
+
+/* Background Container & Animation Image Layers */
+.intro-bg-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.intro-bg-image {
+    position: absolute;
+    top: -5%;
+    left: -5%;
+    width: 110%;
+    height: 110%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    filter: brightness(0.85) contrast(1.1) saturate(1.1);
+    transform: scale(1.04);
+    transition: transform 6s ease-out, filter 1s ease-in-out;
+    will-change: transform;
+}
+
+.level-intro-overlay.active .intro-bg-image {
+    animation: introKenBurns 18s cubic-bezier(0.25, 1, 0.5, 1) infinite alternate;
+}
+
+@keyframes introKenBurns {
+    0% {
+        transform: scale(1.04) translate(0, 0);
+    }
+    50% {
+        transform: scale(1.11) translate(-1.5%, -1%);
+    }
+    100% {
+        transform: scale(1.07) translate(1.5%, 1.2%);
+    }
+}
+
+/* Light Dynamic Gradient & Vignette to Keep Art 100% Crisp & Visible */
+.intro-bg-gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background: 
+        radial-gradient(ellipse at center, rgba(6, 10, 20, 0.2) 0%, rgba(4, 7, 14, 0.5) 75%, rgba(2, 4, 8, 0.75) 100%),
+        linear-gradient(180deg, rgba(2, 4, 8, 0.65) 0%, rgba(4, 7, 14, 0.1) 35%, rgba(4, 7, 14, 0.1) 65%, rgba(2, 4, 8, 0.75) 100%);
+}
+
+.intro-bg-vignette {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.4);
+}
+
+.intro-bg-scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.08),
+        rgba(0, 0, 0, 0.08) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    opacity: 0.25;
+}
+
+/* Widescreen Letterbox Bars */
+.intro-letterbox {
+    width: 100%;
+    height: 38px;
+    background: rgba(4, 6, 12, 0.92);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    box-sizing: border-box;
+    font-family: var(--font-heading);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    z-index: 10;
+}
+
+.intro-letterbox.top {
+    border-bottom: 2px solid var(--primary-gold);
+    box-shadow: 0 4px 15px rgba(251, 191, 36, 0.25);
+}
+
+.intro-letterbox.bottom {
+    border-top: 2px solid var(--primary-cyan);
+    box-shadow: 0 -4px 15px rgba(0, 243, 255, 0.25);
+}
+
+.letterbox-label {
+    color: var(--primary-gold);
+}
+
+.letterbox-code {
+    color: var(--primary-cyan);
+    opacity: 0.8;
 }
 
 .intro-content {
@@ -128,7 +252,50 @@ body.is-fullscreen-game .game-screen-wrapper {
     justify-content: center;
     max-width: 650px;
     width: 90%;
+    padding: 1rem 0;
+    z-index: 10;
     animation: introPopIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Hero Badge */
+.intro-hero-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 0.4rem;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 12px rgba(0, 243, 255, 0.2);
+}
+
+.intro-logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.intro-hero-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.1;
+}
+
+.intro-agent-tag {
+    font-size: 0.52rem;
+    color: var(--primary-cyan);
+    letter-spacing: 1.5px;
+    font-weight: 800;
+}
+
+.intro-agent-name {
+    font-size: 0.72rem;
+    color: #ffffff;
+    letter-spacing: 1px;
+    font-weight: 900;
 }
 
 .intro-badge {
@@ -137,66 +304,112 @@ body.is-fullscreen-game .game-screen-wrapper {
     font-weight: 800;
     letter-spacing: 4px;
     color: var(--primary-cyan);
+    background: rgba(0, 243, 255, 0.08);
+    border: 1px solid rgba(0, 243, 255, 0.35);
+    padding: 3px 14px;
+    border-radius: 12px;
     text-shadow: 0 0 12px rgba(0, 243, 255, 0.8);
     text-transform: uppercase;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
 }
 
 .intro-title {
     font-family: var(--font-heading);
-    font-size: 2.4rem;
+    font-size: 2.7rem;
     font-weight: 900;
-    letter-spacing: 3px;
+    letter-spacing: 4px;
     margin: 0.2rem 0;
     text-transform: uppercase;
-    background: linear-gradient(135deg, #ffffff 0%, #fbbf24 60%, #f59e0b 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #fef08a 35%, #f59e0b 80%, #d97706 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 25px rgba(251, 191, 36, 0.6));
-    line-height: 1.2;
+    filter: drop-shadow(0 4px 15px rgba(245, 158, 11, 0.6)) drop-shadow(0 0 35px rgba(251, 191, 36, 0.4));
+    line-height: 1.15;
 }
 
 .intro-location {
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     color: #cbd5e1;
     letter-spacing: 1.2px;
     font-weight: 600;
-    margin-top: 0.5rem;
+    margin-top: 0.2rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-.intro-objective {
+/* Story Box */
+.intro-story-box {
     font-size: 0.82rem;
-    color: var(--primary-gold);
-    background: rgba(251, 191, 36, 0.08);
-    border: 1px solid rgba(251, 191, 36, 0.35);
-    padding: 0.45rem 1.2rem;
-    border-radius: 20px;
-    margin-top: 1rem;
+    line-height: 1.45;
+    color: #e2e8f0;
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-left: 4px solid var(--primary-gold);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    margin: 0.6rem 0;
+    max-width: 580px;
+    font-style: italic;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Tactical Directives */
+.intro-directives {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.3rem;
+}
+
+.directive-pill {
+    font-size: 0.64rem;
+    font-weight: 800;
     letter-spacing: 0.8px;
-    box-shadow: 0 0 15px rgba(251, 191, 36, 0.15);
+    padding: 3px 9px;
+    border-radius: 14px;
+    backdrop-filter: blur(4px);
+}
+
+.directive-pill.gold {
+    color: var(--primary-gold);
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+}
+
+.directive-pill.red {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.directive-pill.cyan {
+    color: var(--primary-cyan);
+    background: rgba(0, 243, 255, 0.12);
+    border: 1px solid rgba(0, 243, 255, 0.4);
 }
 
 .intro-divider {
-    width: 140px;
+    width: 120px;
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
-    margin: 1.5rem 0 1rem 0;
+    margin: 0.8rem 0 0.5rem 0;
 }
 
 .intro-status {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 2px;
     color: var(--primary-cyan);
 }
 
 .status-pulse {
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: var(--primary-cyan);
     box-shadow: 0 0 10px var(--primary-cyan);
@@ -204,10 +417,10 @@ body.is-fullscreen-game .game-screen-wrapper {
 }
 
 .intro-skip-hint {
-    font-size: 0.68rem;
+    font-size: 0.64rem;
     color: #64748b;
     letter-spacing: 1.5px;
-    margin-top: 1.2rem;
+    margin-top: 0.6rem;
     text-transform: uppercase;
     animation: fadeInBlink 1.8s infinite ease-in-out;
 }
@@ -367,24 +580,35 @@ body.is-fullscreen-game .game-screen-wrapper {
     filter: drop-shadow(0 0 12px var(--primary-gold));
 }
 
-/* Hide Level Title Banner during active gameplay */
-.level-banner {
-    display: none !important;
-}
-.level-banner {
-    font-size: 0.78rem;
-    font-weight: 800;
-    color: var(--primary-gold);
-    letter-spacing: 1.5px;
-    text-shadow: 0 0 10px var(--primary-gold);
-    background: rgba(6, 7, 12, 0.9);
-    padding: 5px 14px;
-    border-radius: 10px;
-    border: 1px solid rgba(251, 191, 36, 0.45);
+/* Compact In-Game Level Tag */
+.hud-level-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(6, 7, 12, 0.88);
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    padding: 3px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.3), inset 0 0 8px rgba(0, 0, 0, 0.8);
     white-space: nowrap;
-    text-align: center;
+    user-select: none;
     pointer-events: none;
-    box-shadow: 0 0 15px rgba(251, 191, 36, 0.25);
+}
+
+.hud-level-tag .lvl-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--primary-cyan);
+    text-shadow: 0 0 6px rgba(0, 243, 255, 0.6);
+}
+
+.hud-level-tag .lvl-num {
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: var(--primary-gold);
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.9);
 }
 
 /* Combat Controls Quick Hint Banner Popup */
@@ -733,9 +957,19 @@ body.is-fullscreen-game .game-screen-wrapper {
         width: min(100vw, calc((100dvh - 50px) * 16 / 9));
         height: min(calc(100dvh - 50px), calc(100vw * 9 / 16));
     }
-    .level-banner {
-        font-size: 0.68rem;
-        padding: 3px 8px;
+    .hud-level-tag {
+        padding: 2px 8px;
+        gap: 4px;
+    }
+    .hud-level-tag .lvl-label {
+        font-size: 0.58rem;
+        letter-spacing: 1px;
+    }
+    .hud-level-tag .lvl-num {
+        font-size: 0.78rem;
+    }
+    .intro-title {
+        font-size: 2.0rem;
     }
     .hud-item {
         font-size: 0.72rem;

@@ -17,6 +17,13 @@ class AssetManager {
             'uploads/bg3.png',
             'uploads/bg4.png',
             'uploads/bg5.png',
+
+            // Story Mode Briefing Level Background Images
+            'uploads/animation img 1.png',
+            'uploads/animation img 2.png',
+            'uploads/animation img 3.png',
+            'uploads/animation img 4.png',
+            'uploads/animation img 5.png',
             
             // Player Animation Sprites
             'uploads/player_stand.png',

@@ -305,11 +305,6 @@ class Fighter {
         ctx.fillStyle = hpColor;
         ctx.fillRect(barX, barY, barWidth * hpPct, barHeight);
 
-        // Fighter Label
-        ctx.font = 'bold 9px var(--font-heading), sans-serif';
-        ctx.fillStyle = '#ff3366';
-        ctx.textAlign = 'center';
-        ctx.fillText('STAIR FIGHTER', drawX + this.width / 2, drawY - 17);
 
         if (this.hurtTimer > 0) {
             ctx.filter = 'brightness(2) sepia(1) hue-rotate(-50deg) saturate(5)';

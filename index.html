@@ -66,6 +66,7 @@
                 </div>
                 <span class="logo-text">SHADOW ESCAPE</span>
             </a>
+            <button onclick="toggleAudioMute()" class="mobile-header-music-btn" id="btnMobileMusicToggle" title="Toggle Music & Sound" aria-label="Toggle Music">🎵 Music: ON</button>
             <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#" onclick="showView('homeView'); return false;" class="nav-link active" id="navHome">Home</a></li>
@@ -74,6 +75,7 @@
                 <li><a href="#" onclick="openModal('modalAbout'); return false;" class="nav-link">About</a></li>
                 <li><a href="#" onclick="openModal('modalContact'); return false;" class="nav-link">Contact</a></li>
                 <li><button onclick="toggleAudioMute()" class="nav-audio-btn" id="btnAudioToggle" title="Toggle Sound & Music">🔊 Sound: ON</button></li>
+                <li class="laptop-home-only"><button onclick="toggleGameFullscreen()" class="nav-fullscreen-btn" id="btnHomeFullscreen" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">⤢ Fullscreen</button></li>
             </ul>
         </header>
 
@@ -97,8 +99,10 @@
                     <div class="poster-actions-row">
                         <button onclick="showView('gameView')" class="poster-play-btn">PLAY NOW &raquo;</button>
                         <div class="poster-secondary-group">
+                            <button onclick="openStoryBriefingModal(1)" class="poster-secondary-btn" title="View Story Briefing Animation">🎬 BRIEFING</button>
                             <button onclick="openModal('modalAbout')" class="poster-secondary-btn">📖 GUIDE</button>
                             <button onclick="openModal('modalLeaderboard')" class="poster-secondary-btn">🏆 SCORES</button>
+                            <button onclick="toggleAudioMute()" class="poster-secondary-btn mobile-home-music-btn" id="btnPosterMobileMusic" title="Toggle Music">🎵 MUSIC</button>
                         </div>
                     </div>
 
@@ -176,18 +180,54 @@
                     <canvas id="gameCanvas" width="1280" height="720"></canvas>
                 </div>
 
-                <!-- Level Starting Intro Screen (Full Screen Black Overlay) -->
+                <!-- Story Mode Cinematic Intro Screen (Full Screen Overlay with Level Theme Backgrounds) -->
                 <div class="level-intro-overlay" id="levelIntroOverlay" style="display: none;">
+                    <div class="intro-bg-container">
+                        <div class="intro-bg-image" id="introBgImage" style="background-image: url('uploads/animation img 1.png');"></div>
+                        <div class="intro-bg-gradient-overlay"></div>
+                        <div class="intro-bg-vignette"></div>
+                        <div class="intro-bg-scanlines"></div>
+                    </div>
+
+                    <div class="intro-letterbox top">
+                        <span class="letterbox-label" id="introChapterHeader">LEVEL 01 // STORY MODE BRIEFING</span>
+                        <span class="letterbox-code">CLASSIFIED DIRECTIVE</span>
+                    </div>
+
                     <div class="intro-content">
-                        <div class="intro-badge" id="introBadge">— SECTOR / LEVEL 01 —</div>
+                        <div class="intro-hero-badge">
+                            <img src="uploads/logo.png" alt="Shadow Escape Badge" class="intro-logo">
+                            <div class="intro-hero-info">
+                                <span class="intro-agent-tag">INFILTRATION AGENT</span>
+                                <strong class="intro-agent-name">AGENT SHANU</strong>
+                            </div>
+                        </div>
+
+                        <div class="intro-badge" id="introBadge">— LEVEL 01 —</div>
                         <h1 class="intro-title" id="introTitle">GREEN VALLEY OUTSKIRTS</h1>
                         <div class="intro-location" id="introLocation">📍 LOCATION: Peaceful Countryside Village</div>
-                        <div class="intro-objective" id="introObjective">🎯 MISSION: Defeat the Fighter on the stairs & reach Exit Door</div>
+
+                        <div class="intro-story-box" id="introStoryBox">
+                            "Agent Shanu has breached the outer perimeter. Security fighters patrol the staircase landing towers. Retrieve the encryption keycard to unlock the facility entrance."
+                        </div>
+
+                        <div class="intro-directives">
+                            <span class="directive-pill gold">🔑 RETRIEVE KEYCARD</span>
+                            <span class="directive-pill red">⚔️ DEFEAT FIGHTERS</span>
+                            <span class="directive-pill cyan">🚪 REACH EXIT DOOR</span>
+                        </div>
+
                         <div class="intro-divider"></div>
+
                         <div class="intro-status">
-                            <span class="status-pulse"></span> DEPLOYING AGENT SHANU...
+                            <span class="status-pulse"></span> INFILTRATION PROTOCOL INITIATED...
                         </div>
                         <div class="intro-skip-hint">TAP OR CLICK ANYWHERE TO START</div>
+                    </div>
+
+                    <div class="intro-letterbox bottom">
+                        <span class="letterbox-label">SECURITY CLEARANCE: LEVEL 5</span>
+                        <span class="letterbox-code">TACTICAL DEPLOYMENT READY</span>
                     </div>
                 </div>
 
@@ -219,7 +259,11 @@
                         </div>
                     </div>
 
-                    <div class="level-banner" id="hudLevelTitle" style="display: none !important;">Level 1: Facility Security Entrance</div>
+                    <!-- Compact HUD Level Badge -->
+                    <div class="hud-level-tag" id="hudLevelTitle">
+                        <span class="lvl-label">LEVEL</span>
+                        <span class="lvl-num" id="hudLevelNum">1</span>
+                    </div>
 
                     <div class="hud-group right">
                         <div class="hud-item">
@@ -293,34 +337,102 @@
             </button>
         </div>
 
-        <!-- MODAL: LEADERBOARD -->
+        <!-- MODAL: LEADERBOARD & STATS -->
         <div class="modal-overlay" id="modalLeaderboard">
-            <div class="modal-content" style="max-width: 720px; text-align: left;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 class="modal-title" style="margin: 0;">LEADERBOARD & STATS</h2>
-                    <button onclick="closeModal('modalLeaderboard')" style="background: none; border: none; color: var(--primary-gold); font-size: 1.5rem; cursor: pointer;">✕</button>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-                    <div style="background: rgba(6,7,12,0.85); border: 1px solid var(--primary-gold); padding: 1rem; border-radius: var(--border-radius-sm); text-align: center; box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);">
-                        <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-heading);">HIGH SCORE</span>
-                        <div id="statHighScore" style="font-size: 1.8rem; font-family: var(--font-heading); color: var(--primary-gold); font-weight: 800; margin-top: 4px;">0</div>
+            <div class="modal-content" style="max-width: 760px; text-align: left; background: rgba(8, 12, 22, 0.96); border: 1px solid var(--primary-gold); box-shadow: 0 0 35px rgba(251, 191, 36, 0.25);">
+                <!-- Modal Title & Close -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.6rem;">🏆</span>
+                        <div>
+                            <h2 class="modal-title" style="margin: 0; font-size: 1.5rem; letter-spacing: 1px;">TACTICAL LEVEL RECORDS & STATS</h2>
+                            <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-muted);">Shadow Facility Operation Speedruns & Combat Performance</p>
+                        </div>
                     </div>
-                    <div style="background: rgba(6,7,12,0.85); border: 1px solid var(--primary-amber); padding: 1rem; border-radius: var(--border-radius-sm); text-align: center; box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
-                        <span style="color: var(--text-muted); font-size: 0.8rem; font-family: var(--font-heading);">CRYSTALS COLLECTED</span>
-                        <div id="statCrystals" style="font-size: 1.8rem; font-family: var(--font-heading); color: var(--primary-amber); font-weight: 800; margin-top: 4px;">0</div>
+                    <button onclick="closeModal('modalLeaderboard')" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 50%; width: 34px; height: 34px; color: var(--primary-gold); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">✕</button>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <div class="cyber-tabs">
+                    <button class="cyber-tab-btn active" id="tabBtnLevels" onclick="switchLeaderboardTab('levelsTab')">
+                        <span>🎯 LEVEL SPEEDRUNS</span>
+                    </button>
+                    <button class="cyber-tab-btn" id="tabBtnStats" onclick="switchLeaderboardTab('statsTab')">
+                        <span>📊 AGENT STATS</span>
+                    </button>
+                    <button class="cyber-tab-btn" id="tabBtnGlobal" onclick="switchLeaderboardTab('globalTab')">
+                        <span>🥇 HALL OF FAME</span>
+                    </button>
+                </div>
+
+                <!-- TAB 1: LEVEL SPEEDRUN RECORDS -->
+                <div class="tab-pane active" id="levelsTab">
+                    <!-- Overall Progress Header -->
+                    <div class="facility-progress-box">
+                        <div class="facility-progress-header">
+                            <span class="facility-progress-title">FACILITY INFILTRATION PROGRESS</span>
+                            <span id="progressText" style="color: var(--primary-gold); font-weight: 800;">0% CLEARED (0 / 5 LEVELS)</span>
+                        </div>
+                        <div class="facility-progress-track">
+                            <div class="facility-progress-fill" id="progressFillBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Level Cards List -->
+                    <div class="level-cards-list" id="levelCardsContainer">
+                        <!-- Populated by JS -->
                     </div>
                 </div>
-                <h4 style="color: var(--primary-gold); margin-bottom: 0.8rem;">SECTOR SPEEDRUN RECORDS</h4>
-                <table class="cyber-table">
-                    <thead>
-                        <tr>
-                            <th>SECTOR</th>
-                            <th>STATUS</th>
-                            <th>BEST TIME</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBestTimes"></tbody>
-                </table>
+
+                <!-- TAB 2: AGENT OVERVIEW STATS -->
+                <div class="tab-pane" id="statsTab">
+                    <!-- Agent Rank Banner -->
+                    <div class="agent-rank-banner">
+                        <div class="agent-rank-icon" id="statAgentRankIcon">⚔️</div>
+                        <div>
+                            <div class="agent-rank-title" id="statAgentRankTitle">CYBER INFILTRATOR</div>
+                            <div class="agent-rank-desc" id="statAgentRankDesc">Agent clearance level calculated from overall high scores and crystals retrieved.</div>
+                        </div>
+                    </div>
+
+                    <!-- Stat Cards Grid -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div style="background: rgba(6,9,18,0.9); border: 1px solid var(--primary-gold); padding: 1.1rem; border-radius: 8px; text-align: center; box-shadow: 0 0 15px rgba(251, 191, 36, 0.15);">
+                            <span style="color: var(--text-muted); font-size: 0.78rem; font-family: var(--font-heading); letter-spacing: 1px;">HIGH SCORE</span>
+                            <div id="statHighScore" style="font-size: 1.9rem; font-family: var(--font-heading); color: var(--primary-gold); font-weight: 900; margin-top: 4px;">0</div>
+                        </div>
+                        <div style="background: rgba(6,9,18,0.9); border: 1px solid #f59e0b; padding: 1.1rem; border-radius: 8px; text-align: center; box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);">
+                            <span style="color: var(--text-muted); font-size: 0.78rem; font-family: var(--font-heading); letter-spacing: 1px;">CRYSTALS COLLECTED</span>
+                            <div id="statCrystals" style="font-size: 1.9rem; font-family: var(--font-heading); color: #f59e0b; font-weight: 900; margin-top: 4px;">0</div>
+                        </div>
+                        <div style="background: rgba(6,9,18,0.9); border: 1px solid #06b6d4; padding: 1.1rem; border-radius: 8px; text-align: center; box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);">
+                            <span style="color: var(--text-muted); font-size: 0.78rem; font-family: var(--font-heading); letter-spacing: 1px;">LEVELS UNLOCKED</span>
+                            <div id="statUnlockedLevels" style="font-size: 1.9rem; font-family: var(--font-heading); color: #06b6d4; font-weight: 900; margin-top: 4px;">1 / 5</div>
+                        </div>
+                        <div style="background: rgba(6,9,18,0.9); border: 1px solid #10b981; padding: 1.1rem; border-radius: 8px; text-align: center; box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);">
+                            <span style="color: var(--text-muted); font-size: 0.78rem; font-family: var(--font-heading); letter-spacing: 1px;">TOTAL SPEEDRUN TIME</span>
+                            <div id="statTotalTime" style="font-size: 1.9rem; font-family: var(--font-heading); color: #10b981; font-weight: 900; margin-top: 4px;">00:00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: GLOBAL RANKINGS -->
+                <div class="tab-pane" id="globalTab">
+                    <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 0.8rem;">Top Infiltration Speedrunners across all Shadow Facility Sectors:</p>
+                    <table class="cyber-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">RANK</th>
+                                <th>AGENT CODENAME</th>
+                                <th>HIGH SCORE</th>
+                                <th>BEST TIME</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableGlobalLeaderboard">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -339,33 +451,198 @@
                     <li><b>2.5D Canvas Engine:</b> Extruded platform blocks, depth lighting & real-world parallax backgrounds.</li>
                     <li><b>Vanilla JavaScript (ES6+):</b> Ultra-fast 60 FPS physics without external dependencies.</li>
                     <li><b>Web Audio SFX:</b> Dynamic synthesized audio generator for realistic laser traps & movement.</li>
-                    <li><b>Mobile Optimized:</b> Full touch controls & responsive orientation handling.</li>
+                    <li><b>Mobile Optimized:</b> Full touch controls &amp; responsive orientation handling.</li>
                 </ul>
             </div>
         </div>
 
         <!-- MODAL: CONTACT -->
         <div class="modal-overlay" id="modalContact">
-            <div class="modal-content" style="max-width: 580px; text-align: left;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 class="modal-title" style="margin: 0;">CONTACT DEVELOPER</h2>
-                    <button onclick="closeModal('modalContact')" style="background: none; border: none; color: var(--primary-gold); font-size: 1.5rem; cursor: pointer;">✕</button>
+            <div class="modal-content contact-modal-card">
+                <!-- Ambient Glow Orbs -->
+                <div class="contact-bg-glow-1"></div>
+                <div class="contact-bg-glow-2"></div>
+
+                <div class="contact-modal-header">
+                    <div class="contact-status-badge">
+                        <span class="status-pulse-dot"></span> OPEN FOR COLLABORATION
+                    </div>
+                    <button onclick="closeModal('modalContact')" class="contact-close-btn" aria-label="Close modal">✕</button>
                 </div>
-                <form onsubmit="event.preventDefault(); alert('Message sent! Thank you for reaching out.'); closeModal('modalContact');">
-                    <div class="form-group">
-                        <label class="form-label">YOUR NAME</label>
-                        <input type="text" class="form-input" placeholder="e.g. Alex Mercer" required>
+
+                <div class="contact-profile-section">
+                    <div class="contact-avatar-wrapper">
+                        <div class="avatar-ring-animated"></div>
+                        <img src="uploads/Anwarsha Logo.png" alt="Anwarsha N S" class="contact-avatar-img">
+                        <div class="verified-badge" title="Verified Developer">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">EMAIL ADDRESS</label>
-                        <input type="email" class="form-input" placeholder="e.g. alex@example.com" required>
+                    <h2 class="contact-dev-name">Anwarsha <span class="gradient-text-gold">N S</span></h2>
+                    <p class="contact-dev-title">Full Stack Web Developer &amp; Game Creator</p>
+
+                    <div class="contact-tags-container">
+                        <button type="button" class="contact-tag tag-gold" onclick="showSkillInfo(this, '⚡ Full Stack: JavaScript (ES6+), Node.js, REST APIs, HTML5/CSS3')">⚡ Full Stack</button>
+                        <button type="button" class="contact-tag tag-cyan" onclick="showSkillInfo(this, '🎮 Game Engine: 2.5D Canvas, Physics 60FPS, Web Audio Synth')">🎮 Game Engine</button>
+                        <button type="button" class="contact-tag tag-amber" onclick="showSkillInfo(this, '🎨 UI/UX Design: Cyberpunk System, Glassmorphism & Animations')">🎨 UI/UX Design</button>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">MESSAGE</label>
-                        <textarea class="form-textarea" rows="4" placeholder="Write your message here..." required></textarea>
-                    </div>
-                    <button type="submit" class="poster-play-btn" style="width: 100%; justify-content: center; clip-path: none; border-radius: 8px;">SEND MESSAGE</button>
-                </form>
+                    <div id="contactSkillBadge" class="contact-skill-badge" style="display: none;"></div>
+                </div>
+
+                <div class="contact-links-list">
+                    <!-- Portfolio -->
+                    <a href="https://anwarshans.vercel.app/" target="_blank" rel="noopener noreferrer" class="contact-card card-portfolio">
+                        <div class="contact-card-left">
+                            <div class="contact-card-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                </svg>
+                            </div>
+                            <div class="contact-card-details">
+                                <span class="contact-card-label">PORTFOLIO</span>
+                                <span class="contact-card-value">anwarshans.vercel.app</span>
+                            </div>
+                        </div>
+                        <div class="contact-card-actions-wrapper">
+                            <button type="button" class="contact-action-btn" title="Copy Portfolio URL" onclick="event.preventDefault(); event.stopPropagation(); copyContactInfo('https://anwarshans.vercel.app/', 'Portfolio link copied!', this)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+                            <div class="contact-card-action">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                                    <polyline points="7 7 17 7 17 17"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Instagram -->
+                    <a href="https://instagram.com/anwarshxh" target="_blank" rel="noopener noreferrer" class="contact-card card-instagram">
+                        <div class="contact-card-left">
+                            <div class="contact-card-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                                </svg>
+                            </div>
+                            <div class="contact-card-details">
+                                <span class="contact-card-label">INSTAGRAM</span>
+                                <span class="contact-card-value">instagram.com/anwarshxh</span>
+                            </div>
+                        </div>
+                        <div class="contact-card-actions-wrapper">
+                            <button type="button" class="contact-action-btn" title="Copy Instagram Handle" onclick="event.preventDefault(); event.stopPropagation(); copyContactInfo('https://instagram.com/anwarshxh', 'Instagram link copied!', this)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+                            <div class="contact-card-action">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                                    <polyline points="7 7 17 7 17 17"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- LinkedIn -->
+                    <a href="https://linkedin.com/in/anwarshans" target="_blank" rel="noopener noreferrer" class="contact-card card-linkedin">
+                        <div class="contact-card-left">
+                            <div class="contact-card-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                    <rect x="2" y="9" width="4" height="12"></rect>
+                                    <circle cx="4" cy="4" r="2"></circle>
+                                </svg>
+                            </div>
+                            <div class="contact-card-details">
+                                <span class="contact-card-label">LINKEDIN</span>
+                                <span class="contact-card-value">linkedin.com/in/anwarshans</span>
+                            </div>
+                        </div>
+                        <div class="contact-card-actions-wrapper">
+                            <button type="button" class="contact-action-btn" title="Copy LinkedIn Profile" onclick="event.preventDefault(); event.stopPropagation(); copyContactInfo('https://linkedin.com/in/anwarshans', 'LinkedIn link copied!', this)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+                            <div class="contact-card-action">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                                    <polyline points="7 7 17 7 17 17"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Email -->
+                    <a href="mailto:anwarshans.dev@gmail.com" class="contact-card card-email">
+                        <div class="contact-card-left">
+                            <div class="contact-card-icon">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                            <div class="contact-card-details">
+                                <span class="contact-card-label">DIRECT EMAIL</span>
+                                <span class="contact-card-value">anwarshans.dev@gmail.com</span>
+                            </div>
+                        </div>
+                        <div class="contact-card-actions-wrapper">
+                            <button type="button" class="contact-action-btn" title="Copy Email Address" onclick="event.preventDefault(); event.stopPropagation(); copyContactInfo('anwarshans.dev@gmail.com', 'Email copied to clipboard!', this)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            </button>
+                            <div class="contact-card-action">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Quick Message Drawer Toggle -->
+                <button type="button" class="contact-quick-msg-toggle" id="btnToggleMsgForm" onclick="toggleContactMsgForm()">
+                    <span class="quick-msg-icon">💬</span>
+                    <span>SEND DIRECT MESSAGE</span>
+                    <span class="quick-msg-arrow" id="quickMsgArrow">▼</span>
+                </button>
+
+                <!-- Quick Message Form Container -->
+                <div class="contact-msg-form-container" id="contactMsgFormContainer" style="display: none;">
+                    <form onsubmit="sendDirectMessage(event)" class="contact-msg-form">
+                        <input type="text" id="msgName" placeholder="Your Name" required class="contact-form-input">
+                        <input type="email" id="msgEmail" placeholder="Your Email / Contact (Optional)" class="contact-form-input">
+                        <textarea id="msgBody" placeholder="Write your message here..." required rows="3" class="contact-form-textarea"></textarea>
+                        <button type="submit" class="contact-send-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                            <span>SEND MESSAGE VIA MAIL</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Floating Toast -->
+                <div id="contactToast" class="contact-toast">
+                    <span id="contactToastIcon">✓</span> <span id="contactToastMsg">Copied to clipboard!</span>
+                </div>
             </div>
         </div>
 
@@ -393,25 +670,142 @@
             </div>
         </div>
 
-        <div class="modal-overlay" id="levelClearModal">
-            <div class="modal-content">
-                <h2 class="modal-title" style="color: var(--accent-green); text-shadow: 0 0 15px rgba(16, 185, 129, 0.5);">SECTOR CLEARED!</h2>
-                <p style="color: var(--text-muted); margin-bottom: 1rem;">Security gate unlocked. Proceeding to next facility sector.</p>
-                <p style="font-size: 1.5rem; color: var(--primary-gold); font-family: var(--font-heading); margin-bottom: 2rem;">
-                    SCORE: <span id="levelClearScore">0</span>
-                </p>
-                <button class="poster-play-btn" id="btnNextLevel" style="width: 100%; justify-content: center; clip-path: none; border-radius: 8px;">NEXT LEVEL &raquo;</button>
+        <div class="modal-overlay sector-transition-modal" id="levelClearModal">
+            <div class="modal-content sector-map-modal-content">
+                <!-- Top Sci-Fi Header -->
+                <div class="sector-modal-header">
+                    <div class="sector-status-pill">
+                        <span class="sector-status-dot"></span>
+                        <span id="sectorHeaderTag">SECTOR 01 CLEARED</span>
+                    </div>
+                    <h2 class="sector-modal-title" id="sectorModalTitle">FACILITY PROGRESSION MAP</h2>
+                    <p class="sector-modal-desc" id="sectorModalDesc">Security clearance authorized. Transitioning to next sector.</p>
+                    
+                    <!-- Quick HUD Stats Banner -->
+                    <div class="sector-stats-bar">
+                        <div class="sector-stat-item">
+                            <span class="stat-label">SCORE</span>
+                            <span class="stat-value gold" id="levelClearScore">0</span>
+                        </div>
+                        <div class="sector-stat-divider"></div>
+                        <div class="sector-stat-item">
+                            <span class="stat-label">TIME</span>
+                            <span class="stat-value cyan" id="levelClearTime">00:00</span>
+                        </div>
+                        <div class="sector-stat-divider"></div>
+                        <div class="sector-stat-item">
+                            <span class="stat-label">CRYSTALS</span>
+                            <span class="stat-value green" id="levelClearCrystals">+0</span>
+                        </div>
+                        <div class="sector-stat-divider"></div>
+                        <div class="sector-stat-item">
+                            <span class="stat-label">CLEARANCE</span>
+                            <span class="stat-value green">SECTOR <span id="levelClearCurrentNum">1</span> PASSED</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Animated 5-Level Map Area -->
+                <div class="sector-map-wrapper">
+                    <canvas id="sectorMapCanvas" class="sector-map-canvas"></canvas>
+
+                    <!-- HTML Overlay Cards for 5 Levels -->
+                    <div class="sector-nodes-container" id="sectorNodesContainer">
+                        <!-- Level 1 Node -->
+                        <div class="sector-node-card" data-level="1" id="sectorNode1">
+                            <div class="node-badge-icon">✓</div>
+                            <div class="node-thumbnail" style="background-image: url('uploads/animation img 1.png');"></div>
+                            <div class="node-info">
+                                <span class="node-lvl-tag">SECTOR 01</span>
+                                <h4 class="node-lvl-title">Green Valley</h4>
+                            </div>
+                        </div>
+
+                        <!-- Level 2 Node -->
+                        <div class="sector-node-card" data-level="2" id="sectorNode2">
+                            <div class="node-badge-icon">02</div>
+                            <div class="node-thumbnail" style="background-image: url('uploads/animation img 2.png');"></div>
+                            <div class="node-info">
+                                <span class="node-lvl-tag">SECTOR 02</span>
+                                <h4 class="node-lvl-title">Metro Skyline</h4>
+                            </div>
+                        </div>
+
+                        <!-- Level 3 Node -->
+                        <div class="sector-node-card" data-level="3" id="sectorNode3">
+                            <div class="node-badge-icon">03</div>
+                            <div class="node-thumbnail" style="background-image: url('uploads/animation img 3.png');"></div>
+                            <div class="node-info">
+                                <span class="node-lvl-tag">SECTOR 03</span>
+                                <h4 class="node-lvl-title">Power Zone</h4>
+                            </div>
+                        </div>
+
+                        <!-- Level 4 Node -->
+                        <div class="sector-node-card" data-level="4" id="sectorNode4">
+                            <div class="node-badge-icon">04</div>
+                            <div class="node-thumbnail" style="background-image: url('uploads/animation img 4.png');"></div>
+                            <div class="node-info">
+                                <span class="node-lvl-tag">SECTOR 04</span>
+                                <h4 class="node-lvl-title">Research Core</h4>
+                            </div>
+                        </div>
+
+                        <!-- Level 5 Node -->
+                        <div class="sector-node-card" data-level="5" id="sectorNode5">
+                            <div class="node-badge-icon">05</div>
+                            <div class="node-thumbnail" style="background-image: url('uploads/animation img 5.png');"></div>
+                            <div class="node-info">
+                                <span class="node-lvl-tag">SECTOR 05</span>
+                                <h4 class="node-lvl-title">Shadow Nexus</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Animated Runner Avatar Sprite -->
+                    <div id="mapRunnerAvatar" class="map-runner-avatar">
+                        <img src="uploads/player.png" alt="Runner Avatar" />
+                        <div class="runner-pulse-ring"></div>
+                    </div>
+                </div>
+
+                <!-- Active Sector Preview Panel -->
+                <div class="sector-preview-card" id="sectorPreviewCard">
+                    <div class="preview-bg" id="sectorPreviewBg"></div>
+                    <div class="preview-content">
+                        <span class="preview-badge" id="sectorPreviewBadge">NEXT TARGET // SECTOR 02</span>
+                        <h3 class="preview-title" id="sectorPreviewTitle">METRO SKYLINE DISTRICT</h3>
+                        <p class="preview-sub" id="sectorPreviewSub">Futuristic Metropolitan City: Defeat Fighters guarding cargo staircases!</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="sector-action-row">
+                    <button class="poster-secondary-btn" id="btnReplaySector" style="min-width: 140px; padding: 0.85rem 1.2rem;">
+                        🔄 REPLAY LEVEL
+                    </button>
+                    <button class="poster-play-btn" id="btnNextLevel" style="flex: 1; justify-content: center; clip-path: none; border-radius: 8px; font-size: 1.05rem; padding: 0.85rem 1.5rem;">
+                        PROCEED TO NEXT SECTOR &raquo;
+                    </button>
+                    <button class="poster-secondary-btn" onclick="window.uiManager.hideAllModals(); showView('homeView');" style="min-width: 130px; padding: 0.85rem 1.2rem;">
+                        MAIN MENU
+                    </button>
+                </div>
             </div>
         </div>
 
         <div class="modal-overlay" id="victoryModal">
-            <div class="modal-content" style="border-color: var(--primary-gold);">
-                <h2 class="modal-title" style="color: var(--primary-gold);">FACILITY ESCAPED!</h2>
-                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Congratulations! You bypassed all 5 security sectors and survived.</p>
+            <div class="modal-content" style="border-color: var(--primary-gold); box-shadow: 0 0 45px rgba(251, 191, 36, 0.4);">
+                <h2 class="modal-title" style="color: var(--primary-gold); text-shadow: 0 0 15px rgba(251, 191, 36, 0.5);">FACILITY ESCAPED!</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Congratulations! You bypassed all 5 security sectors and escaped the Shadow Citadel.</p>
                 <p style="font-size: 1.8rem; color: var(--primary-gold); font-family: var(--font-heading); margin-bottom: 2rem;">
                     FINAL SCORE: <span id="victoryScore">0</span>
                 </p>
-                <button class="poster-play-btn" onclick="openModal('modalLeaderboard'); closeModal('victoryModal');" style="width: 100%; justify-content: center; clip-path: none; border-radius: 8px;">VIEW LEADERBOARD</button>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <button class="poster-play-btn" id="btnVictoryPlayAgain" style="width: 100%; justify-content: center; clip-path: none; border-radius: 8px;">PLAY AGAIN &raquo;</button>
+                    <button class="poster-secondary-btn" id="btnVictoryLeaderboard" style="width: 100%; justify-content: center;">🏆 VIEW LEADERBOARD</button>
+                    <button class="poster-secondary-btn" onclick="window.uiManager.hideAllModals(); showView('homeView');" style="width: 100%; justify-content: center;">MAIN MENU</button>
+                </div>
             </div>
         </div>
     </div>
@@ -431,6 +825,7 @@
     <script src="js/game/collectibles.js"></script>
     <script src="js/game/levelData.js"></script>
     <script src="js/game/gameEngine.js"></script>
+    <script src="js/ui/sectorMapManager.js"></script>
     <script src="js/ui/uiManager.js"></script>
     <script>
         let currentView = 'homeView';
@@ -445,6 +840,9 @@
                 rotateOverlay.classList.add('active');
             } else {
                 rotateOverlay.classList.remove('active');
+                if (window.uiManager && typeof window.uiManager.checkPendingIntro === 'function') {
+                    window.uiManager.checkPendingIntro();
+                }
             }
         }
 
@@ -467,10 +865,7 @@
                 if (window.soundEngine) window.soundEngine.stopHomeBGM();
                 if (!window.gameEngine.canvas) {
                     window.gameEngine.init('gameCanvas');
-                } else {
-                    window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
                 }
-
                 if (isMobileDevice()) {
                     requestMobileGameMode();
                 }
@@ -521,6 +916,16 @@
                 btn.innerHTML = isMuted ? '🔇 Muted' : '🔊 Sound: ON';
                 btn.classList.toggle('muted', isMuted);
             }
+            const mobileBtn = document.getElementById('btnMobileMusicToggle');
+            if (mobileBtn) {
+                mobileBtn.innerHTML = isMuted ? '🔇 Muted' : '🎵 Music: ON';
+                mobileBtn.classList.toggle('muted', isMuted);
+            }
+            const posterMobileBtn = document.getElementById('btnPosterMobileMusic');
+            if (posterMobileBtn) {
+                posterMobileBtn.innerHTML = isMuted ? '🔇 MUTED' : '🎵 MUSIC';
+                posterMobileBtn.classList.toggle('muted', isMuted);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -541,8 +946,8 @@
                 }
             };
 
-            ['click', 'pointerdown', 'touchstart', 'keydown', 'mousemove', 'scroll'].forEach(evt => {
-                window.addEventListener(evt, autoStartAudio, { passive: true });
+            ['click', 'pointerdown', 'touchstart', 'keydown'].forEach(evt => {
+                window.addEventListener(evt, autoStartAudio, { passive: true, once: true });
             });
         });
 
@@ -564,13 +969,21 @@
         }
 
         function updateFullscreenToggleLabel() {
-            const fullscreenToggle = document.getElementById('btnFullscreenToggle');
-            if (!fullscreenToggle) return;
-
             const isFullscreen = Boolean(document.fullscreenElement);
-            fullscreenToggle.textContent = isFullscreen ? '✕' : '⤢';
-            fullscreenToggle.setAttribute('aria-label', isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen');
-            fullscreenToggle.classList.toggle('exit-mode', isFullscreen);
+
+            const fullscreenToggle = document.getElementById('btnFullscreenToggle');
+            if (fullscreenToggle) {
+                fullscreenToggle.textContent = isFullscreen ? '✕' : '⤢';
+                fullscreenToggle.setAttribute('aria-label', isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen');
+                fullscreenToggle.classList.toggle('exit-mode', isFullscreen);
+            }
+
+            const laptopNavBtn = document.getElementById('btnHomeFullscreen');
+            if (laptopNavBtn) {
+                laptopNavBtn.innerHTML = isFullscreen ? '🗗 Exit Fullscreen' : '⤢ Fullscreen';
+                laptopNavBtn.setAttribute('aria-label', isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen');
+                laptopNavBtn.classList.toggle('active', isFullscreen);
+            }
         }
 
         async function requestGameFullscreen() {
@@ -604,7 +1017,12 @@
             } else {
                 await requestGameFullscreen();
             }
-            setTimeout(checkOrientation, 300);
+            setTimeout(() => {
+                checkOrientation();
+                if (window.uiManager && typeof window.uiManager.checkPendingIntro === 'function') {
+                    window.uiManager.checkPendingIntro();
+                }
+            }, 300);
         }
         window.handleRotatePlay = handleRotatePlay;
 
@@ -649,50 +1067,356 @@
 
         function openModal(modalId) {
             const m = document.getElementById(modalId);
-            if (m) m.classList.add('active');
+            if (m) {
+                m.style.display = 'flex';
+                m.classList.remove('closing');
+                void m.offsetWidth;
+                m.classList.add('active');
+            }
             if (modalId === 'modalLeaderboard') populateLeaderboard();
         }
 
         function closeModal(modalId) {
             const m = document.getElementById(modalId);
-            if (m) m.classList.remove('active');
+            if (m) {
+                m.classList.add('closing');
+                m.classList.remove('active');
+                setTimeout(() => {
+                    m.style.display = 'none';
+                    m.classList.remove('closing');
+                }, 350);
+            }
+            if (modalId === 'modalLeaderboard' && window.uiManager && window.uiManager.openedLeaderboardFromVictory) {
+                window.uiManager.openedLeaderboardFromVictory = false;
+                if (window.gameEngine && window.gameEngine.state === 'VICTORY') {
+                    window.uiManager.showVictoryModal(window.gameEngine.score);
+                }
+            }
+        }
+
+        function copyContactInfo(text, msg, btnEl) {
+            if (window.soundEngine) window.soundEngine.playUIClick();
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {}
+                document.body.removeChild(textArea);
+            }
+            if (btnEl) {
+                const originalHTML = btnEl.innerHTML;
+                btnEl.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                btnEl.style.borderColor = '#10b981';
+                setTimeout(() => {
+                    btnEl.innerHTML = originalHTML;
+                    btnEl.style.borderColor = '';
+                }, 1800);
+            }
+            const toast = document.getElementById('contactToast');
+            const toastMsg = document.getElementById('contactToastMsg');
+            if (toast && toastMsg) {
+                toastMsg.textContent = msg || 'Copied to clipboard!';
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2200);
+            }
+        }
+
+        function showSkillInfo(btn, infoText) {
+            if (window.soundEngine) window.soundEngine.playUIHover();
+            const badge = document.getElementById('contactSkillBadge');
+            if (badge) {
+                badge.style.display = 'block';
+                badge.textContent = infoText;
+            }
+        }
+
+        function toggleContactMsgForm() {
+            if (window.soundEngine) window.soundEngine.playUIClick();
+            const formContainer = document.getElementById('contactMsgFormContainer');
+            const toggleBtn = document.getElementById('btnToggleMsgForm');
+            if (formContainer && toggleBtn) {
+                const isHidden = formContainer.style.display === 'none';
+                formContainer.style.display = isHidden ? 'block' : 'none';
+                toggleBtn.classList.toggle('active', isHidden);
+            }
+        }
+
+        function sendDirectMessage(event) {
+            event.preventDefault();
+            if (window.soundEngine) window.soundEngine.playUIClick();
+            const name = document.getElementById('msgName')?.value || 'Guest';
+            const email = document.getElementById('msgEmail')?.value || '';
+            const body = document.getElementById('msgBody')?.value || '';
+
+            const subject = encodeURIComponent(`Contact from ${name} via Shadow Escape`);
+            const mailBody = encodeURIComponent(`Name: ${name}\nContact: ${email}\n\nMessage:\n${body}`);
+            window.open(`mailto:anwarshans.dev@gmail.com?subject=${subject}&body=${mailBody}`, '_blank');
+
+            const toast = document.getElementById('contactToast');
+            const toastMsg = document.getElementById('contactToastMsg');
+            if (toast && toastMsg) {
+                toastMsg.textContent = 'Opening Mail Client...';
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2200);
+            }
+
+            const formContainer = document.getElementById('contactMsgFormContainer');
+            if (formContainer) formContainer.style.display = 'none';
+            document.getElementById('btnToggleMsgForm')?.classList.remove('active');
+        }
+
+        // Interactive 3D Holographic Card Tilt & Mouse Tracking
+        document.addEventListener('DOMContentLoaded', () => {
+            const card = document.querySelector('.contact-modal-card');
+            if (!card) return;
+
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = ((y - centerY) / centerY) * -8;
+                const rotateY = ((x - centerX) / centerX) * 8;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.01, 1.01, 1.01)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+            });
+
+            // SFX Hover Listeners
+            document.querySelectorAll('.contact-card, .contact-action-btn, .contact-tag').forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    if (window.soundEngine) window.soundEngine.playUIHover();
+                });
+            });
+        });
+
+        function switchLeaderboardTab(tabId) {
+            document.querySelectorAll('.cyber-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+
+            const targetPane = document.getElementById(tabId);
+            if (targetPane) targetPane.classList.add('active');
+
+            if (tabId === 'levelsTab') document.getElementById('tabBtnLevels')?.classList.add('active');
+            if (tabId === 'statsTab') document.getElementById('tabBtnStats')?.classList.add('active');
+            if (tabId === 'globalTab') document.getElementById('tabBtnGlobal')?.classList.add('active');
+
+            if (window.soundEngine) window.soundEngine.playUIHover();
+        }
+
+        function launchLevelFromLeaderboard(levelId) {
+            closeModal('modalLeaderboard');
+            showView('gameView');
+            if (window.gameEngine) {
+                window.gameEngine.loadLevel(levelId);
+            }
+        }
+
+        function openStoryBriefingModal(levelId = 1) {
+            if (window.uiManager) {
+                window.uiManager.openStoryBriefingModal(levelId);
+            }
         }
 
         function populateLeaderboard() {
             const data = window.storage ? window.storage.data : {};
-            document.getElementById('statHighScore').innerText = data.highScore || 0;
-            document.getElementById('statCrystals').innerText = data.totalCrystals || 0;
+            const unlockedLvl = data.unlockedLevel || 1;
+            const highScore = data.highScore || 0;
+            const totalCrystals = data.totalCrystals || 0;
+            const levelTimes = data.levelTimes || {};
 
-            const stageNames = [
-                "1. Facility Entrance",
-                "2. Storage Room",
-                "3. Research Lab",
-                "4. Reactor Core",
-                "5. Final Escape"
+            // 1. Stats overview values
+            const statScoreEl = document.getElementById('statHighScore');
+            if (statScoreEl) statScoreEl.innerText = highScore.toLocaleString();
+            const statCrystEl = document.getElementById('statCrystals');
+            if (statCrystEl) statCrystEl.innerText = totalCrystals.toLocaleString();
+            const statUnlockedEl = document.getElementById('statUnlockedLevels');
+            if (statUnlockedEl) statUnlockedEl.innerText = `${unlockedLvl} / 5`;
+
+            // Calculate total time
+            let totalSeconds = 0;
+            let levelsCompletedCount = 0;
+            Object.values(levelTimes).forEach(sec => {
+                if (sec) {
+                    totalSeconds += sec;
+                    levelsCompletedCount++;
+                }
+            });
+            const totM = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const totS = (totalSeconds % 60).toString().padStart(2, '0');
+            const statTotalTimeEl = document.getElementById('statTotalTime');
+            if (statTotalTimeEl) statTotalTimeEl.innerText = `${totM}:${totS}`;
+
+            // Progress Bar
+            const percent = Math.min(100, Math.round((unlockedLvl / 5) * 100));
+            const progressFillBar = document.getElementById('progressFillBar');
+            if (progressFillBar) progressFillBar.style.width = `${percent}%`;
+            const progressText = document.getElementById('progressText');
+            if (progressText) progressText.innerText = `${percent}% CLEARED (${unlockedLvl} / 5 LEVELS UNLOCKED)`;
+
+            // Agent Rank Tier calculation
+            let rankTitle = "CYBER ROOKIE";
+            let rankIcon = "🔰";
+            let rankDesc = "Breached the outer facility perimeter. Keep ascending to rank up!";
+
+            if (highScore >= 20000 || unlockedLvl >= 5) {
+                rankTitle = "SHADOW LEGEND";
+                rankIcon = "👑";
+                rankDesc = "Elite Operative with master control over all Shadow Facility Sectors.";
+            } else if (highScore >= 12000 || unlockedLvl >= 4) {
+                rankTitle = "STRIKE COMMANDER";
+                rankIcon = "⚡";
+                rankDesc = "Expert combat escapee with high-speed keycard retrieval tactics.";
+            } else if (highScore >= 5000 || unlockedLvl >= 3) {
+                rankTitle = "CYBER OPERATIVE";
+                rankIcon = "⚔️";
+                rankDesc = "Hardened combatant capable of bypassing automated defense staircases.";
+            }
+
+            const rIconEl = document.getElementById('statAgentRankIcon');
+            if (rIconEl) rIconEl.innerText = rankIcon;
+            const rTitleEl = document.getElementById('statAgentRankTitle');
+            if (rTitleEl) rTitleEl.innerText = rankTitle;
+            const rDescEl = document.getElementById('statAgentRankDesc');
+            if (rDescEl) rDescEl.innerText = rankDesc;
+
+            // 2. Interactive Level Cards
+            const levelInfoList = [
+                { id: 1, name: "Level 1: Green Valley Outskirts", subtitle: "Peaceful Countryside Village", parTime: 15 },
+                { id: 2, name: "Level 2: Metro Skyline District", subtitle: "Futuristic Metropolitan City", parTime: 25 },
+                { id: 3, name: "Level 3: Industrial Power Zone", subtitle: "Factories & Industrial Grid", parTime: 40 },
+                { id: 4, name: "Level 4: Research Facility Core", subtitle: "High-Tech Laboratory Abyss", parTime: 30 },
+                { id: 5, name: "Level 5: Shadow Nexus", subtitle: "Reactor Core Citadel", parTime: 35 }
             ];
 
-            const tbody = document.getElementById('tableBestTimes');
-            if (!tbody) return;
-            tbody.innerHTML = stageNames.map((name, i) => {
-                const lvlId = i + 1;
-                const isUnlocked = lvlId <= (data.unlockedLevel || 1);
-                const timeSec = data.levelTimes ? data.levelTimes[lvlId] : null;
+            const cardsContainer = document.getElementById('levelCardsContainer');
+            if (cardsContainer) {
+                cardsContainer.innerHTML = levelInfoList.map(lvl => {
+                    const isUnlocked = lvl.id <= unlockedLvl;
+                    const timeSec = levelTimes[lvl.id];
+                    const isCompleted = !!timeSec;
 
-                let timeStr = '—';
-                if (timeSec) {
-                    const m = Math.floor(timeSec / 60).toString().padStart(2, '0');
-                    const s = (timeSec % 60).toString().padStart(2, '0');
-                    timeStr = `${m}:${s}`;
-                }
+                    let statusClass = 'locked';
+                    let statusLabel = '🔒 LOCKED';
+                    if (isCompleted) {
+                        statusClass = 'completed';
+                        statusLabel = '⚡ CLEARED';
+                    } else if (isUnlocked) {
+                        statusClass = 'unlocked';
+                        statusLabel = '🔓 UNLOCKED';
+                    }
 
-                return `
-                    <tr>
-                        <td><b>${name}</b></td>
-                        <td><span style="color: ${isUnlocked ? 'var(--accent-green)' : 'var(--text-muted)'}">${isUnlocked ? 'UNLOCKED' : 'LOCKED'}</span></td>
-                        <td style="color: var(--accent-gold); font-family: var(--font-heading);">${timeStr}</td>
-                    </tr>
-                `;
-            }).join('');
+                    // Format level best time
+                    let timeDisplay = '—';
+                    if (timeSec) {
+                        const m = Math.floor(timeSec / 60).toString().padStart(2, '0');
+                        const s = (timeSec % 60).toString().padStart(2, '0');
+                        timeDisplay = `${m}:${s}`;
+                    }
+
+                    // Star Rating calculation (1 to 3 stars based on speedrun time)
+                    let starsHtml = '';
+                    if (isCompleted) {
+                        let starCount = 1;
+                        if (timeSec <= lvl.parTime) starCount = 3;
+                        else if (timeSec <= lvl.parTime * 1.5) starCount = 2;
+
+                        starsHtml = `
+                            <div class="level-stars" title="${starCount} Star Speedrun Rating">
+                                <span class="${starCount >= 1 ? 'star-filled' : 'star-empty'}">★</span>
+                                <span class="${starCount >= 2 ? 'star-filled' : 'star-empty'}">★</span>
+                                <span class="${starCount >= 3 ? 'star-filled' : 'star-empty'}">★</span>
+                            </div>
+                        `;
+                    } else {
+                        starsHtml = `
+                            <div class="level-stars">
+                                <span class="star-empty">★</span>
+                                <span class="star-empty">★</span>
+                                <span class="star-empty">★</span>
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div class="level-card ${statusClass}" style="--lvl-bg: url('uploads/animation img ${lvl.id}.png');">
+                            <div class="level-card-bg-thumb"></div>
+                            <div class="level-card-main">
+                                <div class="level-info-group">
+                                    <div class="level-badge">
+                                        <span>LVL</span>
+                                        <span class="level-badge-num">0${lvl.id}</span>
+                                    </div>
+                                    <div class="level-text-group">
+                                        <div class="level-title-text">${lvl.name}</div>
+                                        <div class="level-subtitle-text">${lvl.subtitle}</div>
+                                    </div>
+                                </div>
+                                <div class="level-meta-group">
+                                    <span class="level-status-pill ${statusClass}">${statusLabel}</span>
+                                    ${starsHtml}
+                                    <div class="level-time-box" title="Best Speedrun Time">
+                                        <span>⏱️</span>
+                                        <span>${timeDisplay}</span>
+                                    </div>
+                                    <button onclick="openStoryBriefingModal(${lvl.id})" class="level-briefing-btn" title="View Story Briefing Animation">
+                                        <span>🎬 BRIEFING</span>
+                                    </button>
+                                    <button onclick="launchLevelFromLeaderboard(${lvl.id})" class="level-play-btn" ${isUnlocked ? '' : 'disabled'}>
+                                        <span>${isUnlocked ? '⚔️ PLAY' : '🔒 LOCKED'}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // 3. Populate Global Leaderboard
+            const globalTbody = document.getElementById('tableGlobalLeaderboard');
+            if (globalTbody) {
+                const runners = [
+                    { name: 'Shadow_X', score: 28450, time: '01:45', isUser: false },
+                    { name: 'Agent_Shanu (You)', score: Math.max(highScore, 19520), time: '02:15', isUser: true },
+                    { name: 'Cipher_Ghost', score: 17300, time: '02:40', isUser: false },
+                    { name: 'Vortex_Runner', score: 15100, time: '03:05', isUser: false },
+                    { name: 'Neon_Blade', score: 12800, time: '03:30', isUser: false }
+                ];
+
+                // Sort high scores descending
+                runners.sort((a, b) => b.score - a.score);
+
+                globalTbody.innerHTML = runners.map((r, idx) => {
+                    const rank = idx + 1;
+                    let badgeClass = 'top-other';
+                    if (rank === 1) badgeClass = 'top-1';
+                    else if (rank === 2) badgeClass = 'top-2';
+                    else if (rank === 3) badgeClass = 'top-3';
+
+                    const rowStyle = r.isUser ? 'background: rgba(251, 191, 36, 0.12); font-weight: 700;' : '';
+
+                    return `
+                        <tr style="${rowStyle}">
+                            <td><span class="rank-badge ${badgeClass}">${rank}</span></td>
+                            <td><b style="color: ${r.isUser ? 'var(--primary-gold)' : '#ffffff'};">${r.name}</b></td>
+                            <td style="color: var(--primary-gold); font-family: var(--font-heading);">${r.score.toLocaleString()}</td>
+                            <td style="color: var(--text-muted); font-family: var(--font-heading);">${r.time}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
         }
     </script>
 </body>
