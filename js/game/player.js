@@ -345,7 +345,7 @@ class Player {
 
             ctx.fillStyle = this.isFlying ? '#fbbf24' : '#00f3ff';
             ctx.shadowColor = ctx.fillStyle;
-            ctx.shadowBlur = window.gamePerformanceMode ? 6 : 12;
+            ctx.shadowBlur = window.gamePerformanceMode ? 0 : 12;
             ctx.beginPath();
             ctx.arc(drawX + 22, drawY + 14, 11, 0, Math.PI * 2);
             ctx.fill();
@@ -366,8 +366,10 @@ class Player {
         if (this.isFighting || this.attackTimer > 0) {
             ctx.save();
             ctx.strokeStyle = '#00f3ff';
-            ctx.shadowColor = '#00f3ff';
-            ctx.shadowBlur = 18;
+            if (!window.gamePerformanceMode) {
+                ctx.shadowColor = '#00f3ff';
+                ctx.shadowBlur = 18;
+            }
             ctx.lineWidth = 4;
             ctx.beginPath();
             const arcCenterX = this.isFacingRight ? drawX + this.width + 12 : drawX - 12;

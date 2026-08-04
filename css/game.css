@@ -86,7 +86,10 @@ body.is-fullscreen-game .game-screen-wrapper {
     width: 100%;
     height: 100%;
     display: block;
-    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 /* Story Mode Cinematic Intro Screen (Full Screen Black Overlay) */
@@ -711,12 +714,16 @@ body.is-fullscreen-game .game-screen-wrapper {
     align-items: flex-end;
     pointer-events: none;
     z-index: 20;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .touch-cluster {
     display: flex;
     gap: 12px;
     pointer-events: auto;
+    touch-action: none;
 }
 
 .touch-btn {
@@ -734,7 +741,10 @@ body.is-fullscreen-game .game-screen-wrapper {
     justify-content: center;
     box-shadow: 0 0 20px rgba(251, 191, 36, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
     user-select: none;
-    touch-action: manipulation;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: none;
+    will-change: transform;
     transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
 

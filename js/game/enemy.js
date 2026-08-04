@@ -467,13 +467,17 @@ class FlyingDrone {
 
         // 2. Drone Sprite or Fallback Vector
         if (this.spriteLoaded || (this.spriteImg && this.spriteImg.loaded)) {
-            ctx.shadowColor = '#b026ff';
-            ctx.shadowBlur = window.gamePerformanceMode ? 6 : 14;
+            if (!window.gamePerformanceMode) {
+                ctx.shadowColor = '#b026ff';
+                ctx.shadowBlur = 14;
+            }
             ctx.drawImage(this.spriteImg, drawX, drawY, this.width, this.height);
         } else {
             ctx.fillStyle = '#b026ff';
-            ctx.shadowColor = '#b026ff';
-            ctx.shadowBlur = window.gamePerformanceMode ? 6 : 12;
+            if (!window.gamePerformanceMode) {
+                ctx.shadowColor = '#b026ff';
+                ctx.shadowBlur = 12;
+            }
 
             ctx.beginPath();
             ctx.moveTo(drawX + 26, drawY);

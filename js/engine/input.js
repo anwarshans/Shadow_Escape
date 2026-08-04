@@ -47,7 +47,7 @@ class InputHandler {
             if (!btn) return;
 
             const handleStart = (e) => {
-                e.preventDefault();
+                if (e.cancelable) e.preventDefault();
                 this.touch[keyName] = true;
                 if (keyName === 'jump') {
                     this.jumpPressed = true;
@@ -56,19 +56,20 @@ class InputHandler {
             };
 
             const handleEnd = (e) => {
-                e.preventDefault();
+                if (e.cancelable) e.preventDefault();
                 this.touch[keyName] = false;
             };
 
             btn.addEventListener('touchstart', handleStart, { passive: false });
             btn.addEventListener('touchend', handleEnd, { passive: false });
+            btn.addEventListener('touchcancel', handleEnd, { passive: false });
             btn.addEventListener('mousedown', handleStart);
             btn.addEventListener('mouseup', handleEnd);
             btn.addEventListener('mouseleave', handleEnd);
+            btn.addEventListener('contextmenu', (e) => e.preventDefault());
         };
 
-        // Attach elements when DOM is ready
-        document.addEventListener('DOMContentLoaded', () => {
+        const attachControls = () => {
             bindBtn('btnTouchLeft', 'left');
             bindBtn('btnTouchRight', 'right');
             bindBtn('btnTouchJump', 'jump');
@@ -86,8 +87,19 @@ class InputHandler {
                 canvas.addEventListener('mouseup', () => {
                     this.touch.flight = false;
                 });
+                canvas.addEventListener('touchstart', (e) => {
+                    if (window.soundEngine) window.soundEngine.ensureContext();
+                }, { passive: true });
             }
-        });
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', attachControls);
+        } else {
+            attachControls();
+        }
+
+        window.addEventListener('blur', () => this.reset());
     }
 
     // Directional getters

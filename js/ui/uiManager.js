@@ -142,49 +142,68 @@ class UIManager {
 
         // Health Bar
         if (this.hudHealthFill) {
-            const pct = Math.max(0, (engine.player.hp / engine.player.maxHp) * 100);
-            this.hudHealthFill.style.width = `${pct}%`;
+            const pct = Math.round(Math.max(0, (engine.player.hp / engine.player.maxHp) * 100));
+            if (pct !== this.lastHudState.hpPct) {
+                this.hudHealthFill.style.width = `${pct}%`;
+                this.lastHudState.hpPct = pct;
+            }
         }
 
         // Flight Fuel Bar
         if (this.hudFuelFill) {
-            const fuelPct = Math.max(0, (engine.player.flightFuel / engine.player.maxFlightFuel) * 100);
-            this.hudFuelFill.style.width = `${fuelPct}%`;
+            const fuelPct = Math.round(Math.max(0, (engine.player.flightFuel / engine.player.maxFlightFuel) * 100));
+            if (fuelPct !== this.lastHudState.fuelPct) {
+                this.hudFuelFill.style.width = `${fuelPct}%`;
+                this.lastHudState.fuelPct = fuelPct;
+            }
         }
 
         // Crystals Counter
         if (this.hudCrystalsVal) {
-            this.hudCrystalsVal.innerText = `${engine.crystalsCollected}/${engine.totalCrystalsInLevel}`;
+            const cText = `${engine.crystalsCollected}/${engine.totalCrystalsInLevel}`;
+            if (cText !== this.lastHudState.crystalsText) {
+                this.hudCrystalsVal.innerText = cText;
+                this.lastHudState.crystalsText = cText;
+            }
         }
 
         // Key Indicator
-        if (this.hudKeyIndicator) {
+        if (this.hudKeyIndicator && engine.hasKey !== this.lastHudState.hasKey) {
             if (engine.hasKey) {
                 this.hudKeyIndicator.classList.add('acquired');
             } else {
                 this.hudKeyIndicator.classList.remove('acquired');
             }
+            this.lastHudState.hasKey = engine.hasKey;
         }
 
         // Level Indicator (LEVEL 1, LEVEL 2...)
-        if (engine.currentLevelId) {
-            const numEl = document.getElementById('hudLevelNum');
-            if (numEl) numEl.innerText = engine.currentLevelId;
-            if (this.hudLevelTitle && !numEl) {
+        if (engine.currentLevelId && engine.currentLevelId !== this.lastHudState.levelId) {
+            if (this.hudLevelNum) this.hudLevelNum.innerText = engine.currentLevelId;
+            else if (this.hudLevelTitle) {
                 this.hudLevelTitle.innerHTML = `<span class="lvl-label">LEVEL</span><span class="lvl-num">${engine.currentLevelId}</span>`;
             }
+            this.lastHudState.levelId = engine.currentLevelId;
         }
 
         // Timer Display
         if (this.hudTimerVal) {
             const mins = Math.floor(engine.levelTimer / 60).toString().padStart(2, '0');
             const secs = Math.floor(engine.levelTimer % 60).toString().padStart(2, '0');
-            this.hudTimerVal.innerText = `${mins}:${secs}`;
+            const tText = `${mins}:${secs}`;
+            if (tText !== this.lastHudState.timerText) {
+                this.hudTimerVal.innerText = tText;
+                this.lastHudState.timerText = tText;
+            }
         }
 
         // Score
         if (this.hudScoreVal) {
-            this.hudScoreVal.innerText = engine.score.toString();
+            const sText = engine.score.toString();
+            if (sText !== this.lastHudState.scoreText) {
+                this.hudScoreVal.innerText = sText;
+                this.lastHudState.scoreText = sText;
+            }
         }
     }
 

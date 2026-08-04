@@ -66,12 +66,14 @@ class GameEngine {
     }
 
     refreshPerformanceMode() {
-        this.performanceMode = window.innerWidth <= 1440 || window.innerHeight <= 850;
+        const isMobileDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(navigator.userAgent);
+        this.isMobileViewport = isMobileDevice || window.innerWidth <= 950;
+        this.performanceMode = isMobileDevice || window.innerWidth <= 1440 || window.innerHeight <= 850;
         window.gamePerformanceMode = this.performanceMode;
     }
 
     getSceneZoom() {
-        return (window.innerWidth <= 950 || ('ontouchstart' in window && window.innerWidth <= 1024)) ? this.mobileSceneZoom : this.sceneZoom;
+        return this.isMobileViewport ? this.mobileSceneZoom : this.sceneZoom;
     }
 
     isVisible(entity, cameraOffset, padding = 120) {
@@ -155,20 +157,25 @@ class GameEngine {
         this.lastTime = performance.now();
         this.accumulator = 0;
         const fixedStep = 1 / 60;
+        const gameContainer = document.getElementById('gameView');
 
         const loop = (currentTime) => {
-            const frameTime = Math.min(0.1, (currentTime - this.lastTime) / 1000);
+            const frameTime = Math.min(0.08, (currentTime - this.lastTime) / 1000);
             this.lastTime = currentTime;
 
-            const gameContainer = document.getElementById('gameView');
-            const isGameVisible = gameContainer && gameContainer.style.display !== 'none';
+            const isGameVisible = gameContainer ? gameContainer.style.display !== 'none' : true;
 
             if (isGameVisible) {
                 if (this.state === 'PLAYING') {
                     this.accumulator += frameTime;
-                    while (this.accumulator >= fixedStep) {
+                    let steps = 0;
+                    while (this.accumulator >= fixedStep && steps < 3) {
                         this.update(fixedStep);
                         this.accumulator -= fixedStep;
+                        steps++;
+                    }
+                    if (this.accumulator >= fixedStep) {
+                        this.accumulator = 0;
                     }
                 } else {
                     this.accumulator = 0;

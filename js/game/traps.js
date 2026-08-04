@@ -44,15 +44,20 @@ class LaserTrap {
 
         // Emitter Nodes
         ctx.fillStyle = '#ff007f';
-        ctx.shadowColor = '#ff007f';
-        ctx.shadowBlur = window.gamePerformanceMode ? 5 : 10;
+        if (!window.gamePerformanceMode) {
+            ctx.shadowColor = '#ff007f';
+            ctx.shadowBlur = 10;
+        }
         ctx.fillRect(drawX1 - 5, drawY1 - 5, 10, 10);
         ctx.fillRect(drawX2 - 5, drawY2 - 5, 10, 10);
 
         if (this.isActive) {
             // Outer Glowing Energy Beam
             ctx.strokeStyle = '#ff007f';
-            ctx.shadowBlur = window.gamePerformanceMode ? 7 : 15;
+            if (!window.gamePerformanceMode) {
+                ctx.shadowColor = '#ff007f';
+                ctx.shadowBlur = 15;
+            }
             ctx.lineWidth = 6;
             ctx.beginPath();
             ctx.moveTo(drawX1, drawY1);
@@ -194,8 +199,10 @@ class HazardZone {
             grad.addColorStop(1, 'rgba(176, 38, 255, 0.95)');
 
             ctx.fillStyle = grad;
-            ctx.shadowColor = '#ff007f';
-            ctx.shadowBlur = window.gamePerformanceMode ? 7 : 15;
+            if (!window.gamePerformanceMode) {
+                ctx.shadowColor = '#ff007f';
+                ctx.shadowBlur = 15;
+            }
             ctx.fillRect(drawX, drawY, this.width, this.height);
 
             // Pulsing surface wave
@@ -380,8 +387,10 @@ class HazardZone {
                 ctx.rotate(e.angle);
                 ctx.globalAlpha = alpha;
                 ctx.fillStyle = e.color;
-                ctx.shadowColor = e.color;
-                ctx.shadowBlur = 8;
+                if (!window.gamePerformanceMode) {
+                    ctx.shadowColor = e.color;
+                    ctx.shadowBlur = 8;
+                }
 
                 const sz = e.size;
                 ctx.beginPath();

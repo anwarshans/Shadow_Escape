@@ -71,14 +71,19 @@ class SoundEngine {
     }
 
     cleanupAudioNodes() {
-        this.activeNodes = this.activeNodes.filter(node => {
-            try {
-                if (node && typeof node.stop === 'function') {
-                    node.stop(0);
-                }
-            } catch (e) {}
-            return false;
-        });
+        if (this.activeNodes && this.activeNodes.length > 0) {
+            this.activeNodes.forEach(node => {
+                try {
+                    if (node && typeof node.stop === 'function') {
+                        node.stop(0);
+                    }
+                    if (node && typeof node.disconnect === 'function') {
+                        node.disconnect();
+                    }
+                } catch (e) {}
+            });
+        }
+        this.activeNodes = [];
     }
 
     ensureContext() {
@@ -641,6 +646,7 @@ class SoundEngine {
                 return;
             }
             try {
+                this.cleanupAudioNodes();
                 const now = this.ctx.currentTime;
                 const barDuration = 4.0; // 4 seconds loop pattern
 

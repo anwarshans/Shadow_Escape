@@ -143,8 +143,10 @@ class Renderer2D3D {
         
         // Glowing Built-In Top Edge Lights
         ctx.strokeStyle = accentLightColor;
-        ctx.shadowColor = accentLightColor;
-        ctx.shadowBlur = 12;
+        if (!window.gamePerformanceMode) {
+            ctx.shadowColor = accentLightColor;
+            ctx.shadowBlur = 12;
+        }
         ctx.lineWidth = 2.5;
         ctx.beginPath();
         ctx.moveTo(x, y);
@@ -171,8 +173,10 @@ class Renderer2D3D {
 
         // Built-in Corner Light Accents (Matching Level Palette)
         ctx.fillStyle = accentLightColor;
-        ctx.shadowColor = accentLightColor;
-        ctx.shadowBlur = 10;
+        if (!window.gamePerformanceMode) {
+            ctx.shadowColor = accentLightColor;
+            ctx.shadowBlur = 10;
+        }
         ctx.fillRect(x, y, 5, 5);
         ctx.fillRect(x + w - 5, y, 5, 5);
         ctx.shadowBlur = 0;

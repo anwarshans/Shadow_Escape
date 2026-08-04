@@ -40,13 +40,17 @@ class EnergyCrystal {
         ctx.save();
 
         if (this.spriteLoaded || (this.spriteImg && this.spriteImg.loaded)) {
-            ctx.shadowColor = '#00f3ff';
-            ctx.shadowBlur = window.gamePerformanceMode ? 8 : 15;
+            if (!window.gamePerformanceMode) {
+                ctx.shadowColor = '#00f3ff';
+                ctx.shadowBlur = 15;
+            }
             ctx.drawImage(this.spriteImg, drawX, drawY, this.width, this.height);
         } else {
             ctx.translate(drawX + 15, drawY + 15);
-            ctx.shadowColor = '#00f3ff';
-            ctx.shadowBlur = window.gamePerformanceMode ? 8 : 15;
+            if (!window.gamePerformanceMode) {
+                ctx.shadowColor = '#00f3ff';
+                ctx.shadowBlur = 15;
+            }
 
             ctx.beginPath();
             ctx.moveTo(0, -15);
@@ -95,8 +99,10 @@ class Keycard {
         // 0. Golden Pulsing Beacon Light Ring
         const pulse = 14 + Math.sin(this.auraAngle * 2) * 6;
         ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
-        ctx.shadowColor = '#fbbf24';
-        ctx.shadowBlur = window.gamePerformanceMode ? 10 : 20;
+        if (!window.gamePerformanceMode) {
+            ctx.shadowColor = '#fbbf24';
+            ctx.shadowBlur = 20;
+        }
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(drawX + 18, drawY + 18, pulse, 0, Math.PI * 2);
@@ -164,8 +170,10 @@ class ExitDoor {
         ctx.fillStyle = '#0a1024';
         ctx.fillRect(drawX, drawY, this.width, this.height);
         ctx.strokeStyle = this.isUnlocked ? '#00ff88' : '#ff3366';
-        ctx.shadowColor = this.isUnlocked ? '#00ff88' : '#ff3366';
-        ctx.shadowBlur = window.gamePerformanceMode ? 9 : 18;
+        if (!window.gamePerformanceMode) {
+            ctx.shadowColor = this.isUnlocked ? '#00ff88' : '#ff3366';
+            ctx.shadowBlur = 18;
+        }
         ctx.lineWidth = 4;
         ctx.strokeRect(drawX, drawY, this.width, this.height);
 
@@ -203,8 +211,10 @@ class Checkpoint {
         ctx.fillRect(drawX + 10, drawY, 8, this.height);
 
         ctx.fillStyle = this.activated ? '#00ff88' : '#00f3ff';
-        ctx.shadowColor = this.activated ? '#00ff88' : '#00f3ff';
-        ctx.shadowBlur = window.gamePerformanceMode ? 7 : 14;
+        if (!window.gamePerformanceMode) {
+            ctx.shadowColor = this.activated ? '#00ff88' : '#00f3ff';
+            ctx.shadowBlur = 14;
+        }
 
         ctx.beginPath();
         ctx.arc(drawX + 14, drawY + 10, 10, 0, Math.PI * 2);

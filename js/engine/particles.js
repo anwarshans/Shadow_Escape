@@ -30,8 +30,10 @@ class Particle {
         ctx.save();
         ctx.globalAlpha = this.alpha;
         ctx.fillStyle = this.color;
-        ctx.shadowColor = this.color;
-        ctx.shadowBlur = 8;
+        if (!window.gamePerformanceMode) {
+            ctx.shadowColor = this.color;
+            ctx.shadowBlur = 8;
+        }
 
         const drawX = this.x - cameraOffset.x;
         const drawY = this.y - cameraOffset.y;
@@ -170,8 +172,10 @@ class ParticleSystem {
             ctx.save();
             ctx.globalAlpha = (g.life / g.lifeMax) * 0.5;
             ctx.fillStyle = '#00f3ff';
-            ctx.shadowColor = '#00f3ff';
-            ctx.shadowBlur = window.gamePerformanceMode ? 6 : 15;
+            if (!window.gamePerformanceMode) {
+                ctx.shadowColor = '#00f3ff';
+                ctx.shadowBlur = 15;
+            }
             const drawX = g.x - cameraOffset.x;
             const drawY = g.y - cameraOffset.y;
             ctx.fillRect(drawX, drawY, g.width, g.height);
