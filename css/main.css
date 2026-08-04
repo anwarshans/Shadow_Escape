@@ -480,11 +480,15 @@ h1, h2, h3, h4 {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
     .navbar {
-        padding: 0.4rem 0.6rem;
-        height: 54px;
-        min-height: 54px;
+        padding: 0.4rem 0.8rem !important;
+        height: 56px !important;
+        min-height: 56px !important;
+    }
+
+    .nav-brand {
+        gap: 8px;
     }
 
     .nav-brand .logo-icon {
@@ -498,16 +502,18 @@ h1, h2, h3, h4 {
     }
 
     .mobile-header-music-btn {
-        padding: 4px 8px;
-        font-size: 0.72rem;
-        margin-right: 4px;
+        padding: 4px 9px !important;
+        font-size: 0.75rem !important;
+        border-radius: 14px !important;
+        margin-left: auto !important;
+        margin-right: 6px !important;
+        gap: 4px !important;
     }
 
-    .mobile-header-music-btn .music-label-full {
-        display: none !important;
-    }
-
-    .mobile-header-music-btn .music-label-short {
-        display: inline !important;
+    .mobile-nav-toggle {
+        font-size: 1.6rem !important;
+        padding: 0 2px;
+        line-height: 1;
+        flex-shrink: 0;
     }
 }
