@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Shadow Escape - Adventure Game Online | Anwarsha's Game | Shanu's Game | 2.5D Cyber Platformer</title>
     <meta name="description" content="Shadow Escape is Anwarsha N S's 2.5D cyber platformer browser game, also known as Anwarsha's Game and Shanu's Game. Escape an abandoned facility, dodge lasers, and collect crystals.">
     <meta name="keywords" content="Shadow Escape Online, Anwarsha's Game, Shanu's Game, Anwarsha N S Game, Anwarsha N S Development, Anwarsha N S Developement, 2.5D cyber platformer, browser game, HTML5 platformer, vanilla JavaScript game, indie game, facility escape game">
@@ -176,7 +176,6 @@
         <!-- VIEW 2: GAMEPLAY SCREEN -->
         <main id="gameView" class="spa-view game-page-container" style="display: none;">
             <div class="game-screen-wrapper" id="gameWrapper">
-                <button class="fullscreen-toggle" id="btnFullscreenToggle" type="button" aria-label="Enter fullscreen" hidden>⤢</button>
                 <div class="shake-target" id="shakeContainer">
                     <canvas id="gameCanvas" width="1280" height="720"></canvas>
                 </div>
@@ -277,7 +276,8 @@
                             <span class="hud-value" id="hudScoreVal">0</span>
                         </div>
 
-                        <!-- 3-Lines Escape / Pause Menu Button -->
+                        <!-- Action Controls: Fullscreen Toggle & Pause Menu -->
+                        <button class="fullscreen-toggle" id="btnFullscreenToggle" type="button" aria-label="Enter fullscreen" title="Toggle Fullscreen" hidden>⤢</button>
                         <button class="hud-pause-btn" id="btnGamePauseToggle" onclick="window.gameEngine && window.gameEngine.togglePause()" title="Escape / Pause Menu" aria-label="Pause Menu">☰</button>
                     </div>
                 </div>
@@ -340,29 +340,32 @@
 
         <!-- MODAL: LEADERBOARD & STATS -->
         <div class="modal-overlay" id="modalLeaderboard">
-            <div class="modal-content" style="max-width: 760px; text-align: left; background: rgba(8, 12, 22, 0.96); border: 1px solid var(--primary-gold); box-shadow: 0 0 35px rgba(251, 191, 36, 0.25);">
+            <div class="modal-content modal-leaderboard-card">
                 <!-- Modal Title & Close -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 1.6rem;">🏆</span>
-                        <div>
-                            <h2 class="modal-title" style="margin: 0; font-size: 1.5rem; letter-spacing: 1px;">TACTICAL LEVEL RECORDS & STATS</h2>
-                            <p style="margin: 2px 0 0 0; font-size: 0.78rem; color: var(--text-muted);">Shadow Facility Operation Speedruns & Combat Performance</p>
+                <div class="modal-header-cyber">
+                    <div class="modal-header-left">
+                        <div class="modal-header-badge">🏆</div>
+                        <div class="modal-header-text">
+                            <h2 class="modal-title-cyber">TACTICAL RECORDS & STATS</h2>
+                            <p class="modal-subtitle-cyber">Shadow Facility Speedruns & Combat Performance</p>
                         </div>
                     </div>
-                    <button onclick="closeModal('modalLeaderboard')" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 50%; width: 34px; height: 34px; color: var(--primary-gold); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">✕</button>
+                    <button class="modal-close-cyber-btn" onclick="closeModal('modalLeaderboard')" aria-label="Close Modal">✕</button>
                 </div>
 
                 <!-- Navigation Tabs -->
                 <div class="cyber-tabs">
                     <button class="cyber-tab-btn active" id="tabBtnLevels" onclick="switchLeaderboardTab('levelsTab')">
-                        <span>🎯 LEVEL SPEEDRUNS</span>
+                        <span class="tab-icon">🎯</span>
+                        <span class="tab-label">SPEEDRUNS</span>
                     </button>
                     <button class="cyber-tab-btn" id="tabBtnStats" onclick="switchLeaderboardTab('statsTab')">
-                        <span>📊 AGENT STATS</span>
+                        <span class="tab-icon">📊</span>
+                        <span class="tab-label">AGENT STATS</span>
                     </button>
                     <button class="cyber-tab-btn" id="tabBtnGlobal" onclick="switchLeaderboardTab('globalTab')">
-                        <span>🥇 HALL OF FAME</span>
+                        <span class="tab-icon">🥇</span>
+                        <span class="tab-label">HALL OF FAME</span>
                     </button>
                 </div>
 
@@ -371,8 +374,8 @@
                     <!-- Overall Progress Header -->
                     <div class="facility-progress-box">
                         <div class="facility-progress-header">
-                            <span class="facility-progress-title">FACILITY INFILTRATION PROGRESS</span>
-                            <span id="progressText" style="color: var(--primary-gold); font-weight: 800;">0% CLEARED (0 / 5 LEVELS)</span>
+                            <span class="facility-progress-title">FACILITY INFILTRATION</span>
+                            <span id="progressText" class="facility-progress-val">0% CLEARED (0 / 5)</span>
                         </div>
                         <div class="facility-progress-track">
                             <div class="facility-progress-fill" id="progressFillBar" style="width: 0%;"></div>
@@ -390,49 +393,51 @@
                     <!-- Agent Rank Banner -->
                     <div class="agent-rank-banner">
                         <div class="agent-rank-icon" id="statAgentRankIcon">⚔️</div>
-                        <div>
+                        <div class="agent-rank-text-group">
                             <div class="agent-rank-title" id="statAgentRankTitle">CYBER INFILTRATOR</div>
                             <div class="agent-rank-desc" id="statAgentRankDesc">Agent clearance level calculated from overall high scores and crystals retrieved.</div>
                         </div>
                     </div>
 
                     <!-- Stat Cards Grid -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                        <div style="background: rgba(6,9,18,0.9); border: 1px solid var(--primary-gold); padding: 1.1rem; border-radius: 8px; text-align: center; box-shadow: 0 0 15px rgba(251, 191, 36, 0.15);">
-                            <span style="color: var(--text-muted); font-size: 0.78rem; font-family: var(--font-heading); letter-spacing: 1px;">HIGH SCORE</span>
-                            <div id="statHighScore" style="font-size: 1.9rem; font-family: var(--font-heading); color: var(--primary-gold); font-weight: 900; margin-top: 4px;">0</div>
+                    <div class="stats-cards-grid">
+                        <div class="stat-card stat-card-gold">
+                            <span class="stat-card-label">HIGH SCORE</span>
+                            <div id="statHighScore" class="stat-card-val val-gold">0</div>
                         </div>
-                        <div style="background: rgba(6,9,18,0.9); border: 1px solid #f59e0b; padding: 1.1rem; border-radius: 8px; text-align: center; box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);">
-                            <span style="color: var(--text-muted); font-size: 0.78rem; font-family: var(--font-heading); letter-spacing: 1px;">CRYSTALS COLLECTED</span>
-                            <div id="statCrystals" style="font-size: 1.9rem; font-family: var(--font-heading); color: #f59e0b; font-weight: 900; margin-top: 4px;">0</div>
+                        <div class="stat-card stat-card-amber">
+                            <span class="stat-card-label">CRYSTALS COLLECTED</span>
+                            <div id="statCrystals" class="stat-card-val val-amber">0</div>
                         </div>
-                        <div style="background: rgba(6,9,18,0.9); border: 1px solid #06b6d4; padding: 1.1rem; border-radius: 8px; text-align: center; box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);">
-                            <span style="color: var(--text-muted); font-size: 0.78rem; font-family: var(--font-heading); letter-spacing: 1px;">LEVELS UNLOCKED</span>
-                            <div id="statUnlockedLevels" style="font-size: 1.9rem; font-family: var(--font-heading); color: #06b6d4; font-weight: 900; margin-top: 4px;">1 / 5</div>
+                        <div class="stat-card stat-card-cyan">
+                            <span class="stat-card-label">LEVELS UNLOCKED</span>
+                            <div id="statUnlockedLevels" class="stat-card-val val-cyan">1 / 5</div>
                         </div>
-                        <div style="background: rgba(6,9,18,0.9); border: 1px solid #10b981; padding: 1.1rem; border-radius: 8px; text-align: center; box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);">
-                            <span style="color: var(--text-muted); font-size: 0.78rem; font-family: var(--font-heading); letter-spacing: 1px;">TOTAL SPEEDRUN TIME</span>
-                            <div id="statTotalTime" style="font-size: 1.9rem; font-family: var(--font-heading); color: #10b981; font-weight: 900; margin-top: 4px;">00:00</div>
+                        <div class="stat-card stat-card-emerald">
+                            <span class="stat-card-label">TOTAL SPEEDRUN TIME</span>
+                            <div id="statTotalTime" class="stat-card-val val-emerald">00:00</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- TAB 3: GLOBAL RANKINGS -->
                 <div class="tab-pane" id="globalTab">
-                    <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 0.8rem;">Top Infiltration Speedrunners across all Shadow Facility Sectors:</p>
-                    <table class="cyber-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 60px;">RANK</th>
-                                <th>AGENT CODENAME</th>
-                                <th>HIGH SCORE</th>
-                                <th>BEST TIME</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableGlobalLeaderboard">
-                            <!-- Populated dynamically -->
-                        </tbody>
-                    </table>
+                    <p class="global-tab-subtitle">Top Speedrunners across all Shadow Facility Sectors:</p>
+                    <div class="cyber-table-wrapper">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">RANK</th>
+                                    <th>AGENT CODENAME</th>
+                                    <th>HIGH SCORE</th>
+                                    <th>BEST TIME</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableGlobalLeaderboard">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -649,24 +654,24 @@
 
         <!-- GAMEPLAY MODALS -->
         <div class="modal-overlay" id="pauseModal">
-            <div class="modal-content">
-                <h2 class="modal-title">SYSTEM PAUSED</h2>
-                <p style="color: var(--text-muted); margin-bottom: 2rem;">Take a breath before stepping back into the facility.</p>
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    <button class="poster-play-btn" id="btnResume" style="clip-path: none; border-radius: 8px; justify-content: center;">RESUME GAME</button>
-                    <button class="poster-secondary-btn" id="btnRestart" style="width: 100%;">RESTART LEVEL</button>
-                    <button class="cyber-btn danger" onclick="window.uiManager.hideAllModals(); showView('homeView');" style="width: 100%;">EXIT TO MAIN MENU</button>
+            <div class="modal-content pause-modal-content">
+                <h2 class="modal-title pause-modal-title">SYSTEM PAUSED</h2>
+                <p class="pause-modal-desc">Take a breath before stepping back into the facility.</p>
+                <div class="pause-actions-group">
+                    <button class="poster-play-btn pause-btn" id="btnResume">RESUME GAME</button>
+                    <button class="poster-secondary-btn pause-btn" id="btnRestart">RESTART LEVEL</button>
+                    <button class="cyber-btn danger pause-btn" onclick="window.uiManager.hideAllModals(); showView('homeView');">EXIT TO MAIN MENU</button>
                 </div>
             </div>
         </div>
 
         <div class="modal-overlay" id="gameOverModal">
-            <div class="modal-content" style="border-color: var(--accent-red); box-shadow: 0 0 45px rgba(239, 68, 68, 0.4);">
-                <h2 class="modal-title" style="color: var(--accent-red); text-shadow: 0 0 15px rgba(239, 68, 68, 0.5);">CRITICAL FAILURE</h2>
-                <p style="color: var(--text-muted); margin-bottom: 2rem;">Security guards or hazard grids eliminated your runner.</p>
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    <button class="cyber-btn danger" id="btnGameOverRestart" style="width: 100%; min-height: 50px;">RETRY LEVEL</button>
-                    <button class="poster-secondary-btn" onclick="window.uiManager.hideAllModals(); showView('homeView');" style="width: 100%;">MAIN MENU</button>
+            <div class="modal-content game-over-modal-content">
+                <h2 class="modal-title game-over-title">CRITICAL FAILURE</h2>
+                <p class="game-over-desc">Security guards or hazard grids eliminated your runner.</p>
+                <div class="game-over-actions-group">
+                    <button class="cyber-btn danger game-over-btn" id="btnGameOverRestart">RETRY LEVEL</button>
+                    <button class="poster-secondary-btn game-over-btn" onclick="window.uiManager.hideAllModals(); showView('homeView');">MAIN MENU</button>
                 </div>
             </div>
         </div>
@@ -1403,7 +1408,7 @@
                             <div class="level-card-main">
                                 <div class="level-info-group">
                                     <div class="level-badge">
-                                        <span>LVL</span>
+                                        <span class="level-badge-lbl">LVL</span>
                                         <span class="level-badge-num">0${lvl.id}</span>
                                     </div>
                                     <div class="level-text-group">
@@ -1415,15 +1420,9 @@
                                     <span class="level-status-pill ${statusClass}">${statusLabel}</span>
                                     ${starsHtml}
                                     <div class="level-time-box" title="Best Speedrun Time">
-                                        <span>⏱️</span>
-                                        <span>${timeDisplay}</span>
+                                        <span class="time-box-icon">⏱️</span>
+                                        <span class="time-box-val">${timeDisplay}</span>
                                     </div>
-                                    <button onclick="openStoryBriefingModal(${lvl.id})" class="level-briefing-btn" title="View Story Briefing Animation">
-                                        <span>🎬 BRIEFING</span>
-                                    </button>
-                                    <button onclick="launchLevelFromLeaderboard(${lvl.id})" class="level-play-btn" ${isUnlocked ? '' : 'disabled'}>
-                                        <span>${isUnlocked ? '⚔️ PLAY' : '🔒 LOCKED'}</span>
-                                    </button>
                                 </div>
                             </div>
                         </div>

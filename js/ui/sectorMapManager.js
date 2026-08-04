@@ -109,12 +109,16 @@ class SectorMapManager {
             }
         });
 
-        // Window resize
-        window.addEventListener('resize', () => {
+        // Window resize & orientation change
+        const handleResize = () => {
             if (this.modal && this.modal.classList.contains('active')) {
                 this.resizeCanvas();
                 this.updateNodePositions();
             }
+        };
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(handleResize, 100);
         });
     }
 
@@ -280,6 +284,15 @@ class SectorMapManager {
                 nodeCard.style.top = `${cardPy}px`;
             }
         });
+
+        // Sync current runner avatar position when not actively mid-animation
+        const currentTargetWp = this.calculatedWaypoints[this.targetLevel] || this.calculatedWaypoints[this.clearedLevel];
+        if (currentTargetWp) {
+            this.runnerEndPos = { ...currentTargetWp };
+            if (!this.isAnimating && this.runnerAvatar) {
+                this.updateRunnerAvatarPos(currentTargetWp.x, currentTargetWp.y);
+            }
+        }
     }
 
     updateNodeStates() {
