@@ -508,6 +508,9 @@ class UIManager {
             clearInterval(this.scoreCounterInterval);
             this.scoreCounterInterval = null;
         }
+        if (window.soundEngine && typeof window.soundEngine.stopStoryMusic === 'function') {
+            window.soundEngine.stopStoryMusic();
+        }
 
         [this.pauseModal, this.gameOverModal, this.levelClearModal, this.victoryModal].forEach(m => {
             if (m) m.classList.remove('active');

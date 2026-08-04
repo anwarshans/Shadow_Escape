@@ -94,7 +94,7 @@ class SoundEngine {
             return this.ctx.resume().then(() => {
                 const homeView = document.getElementById('homeView');
                 const isHomeVisible = homeView && homeView.style.display !== 'none';
-                if ((this.pendingHomeBgm || isHomeVisible) && !this.isPlayingHomeBGM && !this.isMuted) {
+                if ((this.pendingHomeBgm || isHomeVisible) && (!this.isPlayingHomeBGM || (this.goldenBrownAudio && this.goldenBrownAudio.paused)) && !this.isMuted) {
                     this.pendingHomeBgm = false;
                     this.startHomeBGM();
                 }
@@ -633,7 +633,7 @@ class SoundEngine {
     }
 
     // =========================================================================
-    // PROFESSIONAL HOME SCREEN BACKGROUND SONG (BGM)
+    // PROFESSIONAL HOME SCREEN BACKGROUND SONG (BGM): THE STRANGLERS - GOLDEN BROWN
     // =========================================================================
     startHomeBGM() {
         if (this.isMuted || this.musicVol <= 0) return;
@@ -641,158 +641,30 @@ class SoundEngine {
         if (this.ctx && this.ctx.state === 'suspended') {
             this.pendingHomeBgm = true;
             this.ensureContext();
-            return;
         }
 
-        this.ensureContext();
-        if (this.ctx && this.ctx.state === 'suspended') {
-            this.pendingHomeBgm = true;
-            return;
-        }
-
-        if (this.isPlayingHomeBGM) return;
-        this.cleanupAudioNodes();
+        this.stopStoryMusic();
         this.isPlayingHomeBGM = true;
         this.pendingHomeBgm = false;
 
-        // Cyberpunk Ambient Title Theme Synth Loop (F Minor Atmospheric Motif)
-        const runHomeLoop = () => {
-            if (!this.isPlayingHomeBGM || this.isMuted || !this.ctx || this.ctx.state === 'suspended') {
-                if (this.ctx && this.ctx.state === 'suspended') {
-                    this.isPlayingHomeBGM = false;
-                    this.pendingHomeBgm = true;
-                }
-                return;
+        try {
+            if (!this.goldenBrownAudio) {
+                this.goldenBrownAudio = new Audio('uploads/golden_brown.mp4');
+                this.goldenBrownAudio.loop = true;
             }
-            try {
-                this.cleanupAudioNodes();
-                const now = this.ctx.currentTime;
-                const barDuration = 4.0; // 4 seconds loop pattern
-
-                // 1. Deep Sub-Bass & Mid-Bass Pulse (F2 -> Ab2 -> Eb2 -> Db2)
-                const bassSequence = [
-                    { freq: 87.31, time: 0.0 },   // F2
-                    { freq: 103.83, time: 1.0 },  // Ab2
-                    { freq: 77.78, time: 2.0 },   // Eb2
-                    { freq: 69.30, time: 3.0 }    // Db2
-                ];
-                bassSequence.forEach((note) => {
-                    const osc = this.ctx.createOscillator();
-                    const subOsc = this.ctx.createOscillator();
-                    const filter = this.ctx.createBiquadFilter();
-                    const gain = this.ctx.createGain();
-
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(note.freq, now + note.time);
-
-                    subOsc.type = 'sine';
-                    subOsc.frequency.setValueAtTime(note.freq / 2, now + note.time);
-
-                    filter.type = 'lowpass';
-                    filter.frequency.setValueAtTime(220, now + note.time);
-                    filter.frequency.linearRampToValueAtTime(580, now + note.time + 0.4);
-                    filter.frequency.exponentialRampToValueAtTime(180, now + note.time + 0.95);
-
-                    gain.gain.setValueAtTime(0.001, now + note.time);
-                    gain.gain.linearRampToValueAtTime(0.3 * this.musicVol, now + note.time + 0.12);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + note.time + 0.96);
-
-                    osc.connect(filter);
-                    subOsc.connect(filter);
-                    filter.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    this.activeNodes.push(osc, subOsc, filter, gain);
-
-                    osc.start(now + note.time);
-                    subOsc.start(now + note.time);
-                    osc.stop(now + note.time + 0.98);
-                    subOsc.stop(now + note.time + 0.98);
-                });
-
-                // 2. High-Tech Sci-Fi Arpeggio Sequence (F Minor 9th Motif: F4, Ab4, C5, Eb5, G5, Eb5, C5, Ab4)
-                const arpNotes = [349.23, 415.30, 523.25, 622.25, 783.99, 622.25, 523.25, 415.30];
-                arpNotes.forEach((freq, idx) => {
-                    const osc = this.ctx.createOscillator();
-                    const ringOsc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, now + idx * 0.5);
-
-                    ringOsc.type = 'sine';
-                    ringOsc.frequency.setValueAtTime(freq * 2.0, now + idx * 0.5);
-
-                    gain.gain.setValueAtTime(0.001, now + idx * 0.5);
-                    gain.gain.linearRampToValueAtTime(0.16 * this.musicVol, now + idx * 0.5 + 0.04);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.5 + 0.46);
-
-                    osc.connect(gain);
-                    ringOsc.connect(gain);
-                    gain.connect(this.ctx.destination);
-
-                    osc.start(now + idx * 0.5);
-                    ringOsc.start(now + idx * 0.5);
-                    osc.stop(now + idx * 0.5 + 0.48);
-                    ringOsc.stop(now + idx * 0.5 + 0.48);
-                });
-
-                // 3. Ambient Pad Swells (Fm -> Db -> Eb -> Fm)
-                const padChords = [
-                    { notes: [174.61, 207.65, 261.63], start: 0.0, dur: 1.9 },
-                    { notes: [138.59, 174.61, 207.65], start: 2.0, dur: 1.9 }
-                ];
-                padChords.forEach((chord) => {
-                    chord.notes.forEach((freq) => {
-                        const osc = this.ctx.createOscillator();
-                        const filter = this.ctx.createBiquadFilter();
-                        const gain = this.ctx.createGain();
-
-                        osc.type = 'triangle';
-                        osc.frequency.setValueAtTime(freq, now + chord.start);
-
-                        filter.type = 'lowpass';
-                        filter.frequency.setValueAtTime(280, now + chord.start);
-                        filter.frequency.linearRampToValueAtTime(800, now + chord.start + 0.9);
-                        filter.frequency.linearRampToValueAtTime(240, now + chord.start + chord.dur);
-
-                        gain.gain.setValueAtTime(0.001, now + chord.start);
-                        gain.gain.linearRampToValueAtTime(0.14 * this.musicVol, now + chord.start + 0.4);
-                        gain.gain.linearRampToValueAtTime(0.001, now + chord.start + chord.dur - 0.05);
-
-                        osc.connect(filter);
-                        filter.connect(gain);
-                        gain.connect(this.ctx.destination);
-                        this.activeNodes.push(osc, filter, gain);
-
-                        osc.start(now + chord.start);
-                        osc.stop(now + chord.start + chord.dur);
+            this.goldenBrownAudio.volume = Math.min(1.0, (this.musicVol || 0.85) * 0.95);
+            if (this.goldenBrownAudio.paused) {
+                const playPromise = this.goldenBrownAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => {
+                        console.log('Home BGM autoplay info:', e);
+                        this.pendingHomeBgm = true;
                     });
-                });
-
-                // 4. Cyber Kick Thump Beat (Beats 1 & 3)
-                [0.0, 2.0].forEach((t) => {
-                    const kickOsc = this.ctx.createOscillator();
-                    const kickGain = this.ctx.createGain();
-                    kickOsc.type = 'sine';
-                    kickOsc.frequency.setValueAtTime(120, now + t);
-                    kickOsc.frequency.exponentialRampToValueAtTime(35, now + t + 0.18);
-
-                    kickGain.gain.setValueAtTime(0.35 * this.musicVol, now + t);
-                    kickGain.gain.exponentialRampToValueAtTime(0.001, now + t + 0.18);
-
-                    kickOsc.connect(kickGain);
-                    kickGain.connect(this.ctx.destination);
-                    this.activeNodes.push(kickOsc, kickGain);
-
-                    kickOsc.start(now + t);
-                    kickOsc.stop(now + t + 0.2);
-                });
-
-                this.homeBgmTimeout = setTimeout(runHomeLoop, barDuration * 1000 - 50);
-            } catch(e){}
-        };
-
-        runHomeLoop();
+                }
+            }
+        } catch (e) {
+            console.warn('Home BGM audio error:', e);
+        }
     }
 
     stopHomeBGM() {
@@ -801,6 +673,12 @@ class SoundEngine {
         if (this.homeBgmTimeout) {
             clearTimeout(this.homeBgmTimeout);
             this.homeBgmTimeout = null;
+        }
+        if (this.goldenBrownAudio) {
+            try {
+                this.goldenBrownAudio.pause();
+                this.goldenBrownAudio.currentTime = 0;
+            } catch (e) {}
         }
         this.cleanupAudioNodes();
     }
@@ -824,6 +702,24 @@ class SoundEngine {
             clearTimeout(this.bgmTimeout);
             this.bgmTimeout = null;
         }
+    }
+
+    // =========================================================================
+    // THE STRANGLERS - GOLDEN BROWN (Exact Song Audio Playback)
+    // =========================================================================
+    playGoldenBrownLoveStory() {
+        this.startHomeBGM();
+    }
+
+    stopStoryMusic() {
+        this.isPlayingStoryMusic = false;
+        if (this.goldenBrownAudio) {
+            try {
+                this.goldenBrownAudio.pause();
+                this.goldenBrownAudio.currentTime = 0;
+            } catch (e) {}
+        }
+        this.cleanupAudioNodes();
     }
 
     // =========================================================================

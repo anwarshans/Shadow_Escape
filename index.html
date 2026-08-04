@@ -679,115 +679,119 @@
                 <div class="cyber-corner bottom-left"></div>
                 <div class="cyber-corner bottom-right"></div>
 
-                <!-- Top Sci-Fi Header -->
-                <div class="sector-modal-header">
-                    <div class="sector-header-top-row">
-                        <div class="sector-status-pill">
-                            <span class="sector-status-dot"></span>
-                            <span id="sectorHeaderTag">SECTOR 01 CLEARED</span>
+                <!-- Top AAA World Map Header -->
+                <div class="world-map-header">
+                    <div class="world-map-title-block">
+                        <div class="map-title-row">
+                            <span class="map-title-slash">//</span>
+                            <h2 class="map-main-title">WORLD MAP</h2>
                         </div>
-                        <span class="sector-sub-tag">CLEARANCE GRANTED // TACTICAL MAP UPDATED</span>
+                        <p class="map-sub-title">CHOOSE YOUR DESTINATION</p>
                     </div>
-                    <h2 class="sector-modal-title" id="sectorModalTitle">FACILITY PROGRESSION MAP</h2>
-                    <p class="sector-modal-desc" id="sectorModalDesc">Security clearance authorized. Transitioning to next sector.</p>
-                    
-                    <!-- Quick HUD Stats Banner Grid -->
-                    <div class="sector-stats-bar">
-                        <div class="sector-stat-item stat-score">
-                            <div class="stat-header">
-                                <span class="stat-icon">🏆</span>
-                                <span class="stat-label">TOTAL SCORE</span>
+
+                    <!-- Right Top HUD Stats Pills -->
+                    <div class="world-map-stats-row">
+                        <div class="world-hud-pill pill-stars">
+                            <span class="hud-pill-icon">⭐</span>
+                            <div class="hud-pill-text">
+                                <span class="hud-pill-label">TOTAL SCORE</span>
+                                <span class="hud-pill-val gold" id="levelClearScore">4,040</span>
                             </div>
-                            <span class="stat-value gold" id="levelClearScore">0</span>
                         </div>
-                        <div class="sector-stat-item stat-time">
-                            <div class="stat-header">
-                                <span class="stat-icon">⏱️</span>
-                                <span class="stat-label">CLEAR TIME</span>
+                        <div class="world-hud-pill pill-crystals">
+                            <span class="hud-pill-icon">💎</span>
+                            <div class="hud-pill-text">
+                                <span class="hud-pill-label">CRYSTALS</span>
+                                <span class="hud-pill-val cyan" id="levelClearCrystals">+6</span>
                             </div>
-                            <span class="stat-value cyan" id="levelClearTime">00:00</span>
-                        </div>
-                        <div class="sector-stat-item stat-crystals">
-                            <div class="stat-header">
-                                <span class="stat-icon">💎</span>
-                                <span class="stat-label">CRYSTALS</span>
-                            </div>
-                            <span class="stat-value green" id="levelClearCrystals">+0</span>
-                        </div>
-                        <div class="sector-stat-item stat-clearance">
-                            <div class="stat-header">
-                                <span class="stat-icon">🛡️</span>
-                                <span class="stat-label">CLEARANCE</span>
-                            </div>
-                            <span class="stat-value green">SECTOR <span id="levelClearCurrentNum">1</span> PASSED</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Animated 5-Level Map Area -->
+                <!-- Main Stage: Animated 5-Level World Map Area -->
                 <div class="sector-map-wrapper">
                     <div class="sector-map-bg-grid"></div>
                     <canvas id="sectorMapCanvas" class="sector-map-canvas"></canvas>
 
-                    <!-- HTML Overlay Cards for 5 Levels -->
+                    <!-- HTML Overlay Cards for 5 Sectors -->
                     <div class="sector-nodes-container" id="sectorNodesContainer">
-                        <!-- Level 1 Node -->
-                        <div class="sector-node-card" data-level="1" id="sectorNode1">
-                            <div class="node-thumbnail-frame">
-                                <div class="node-thumbnail" style="background-image: url('uploads/animation img 1.png');"></div>
-                                <div class="node-badge-icon">✓</div>
+                        <!-- Level 1 Card (Green Valley) -->
+                        <div class="sector-card-node theme-green" data-level="1" id="sectorNode1">
+                            <div class="card-header-bar">
+                                <span class="card-lvl-num">01</span>
+                                <span class="card-lvl-name">GREEN VALLEY</span>
                             </div>
-                            <div class="node-info">
-                                <span class="node-lvl-tag">SECTOR 01</span>
-                                <h4 class="node-lvl-title">Green Valley</h4>
+                            <div class="card-thumb-wrapper">
+                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 1.png');"></div>
+                                <div class="card-badge-overlay">✓</div>
                             </div>
-                        </div>
-
-                        <!-- Level 2 Node -->
-                        <div class="sector-node-card" data-level="2" id="sectorNode2">
-                            <div class="node-thumbnail-frame">
-                                <div class="node-thumbnail" style="background-image: url('uploads/animation img 2.png');"></div>
-                                <div class="node-badge-icon">02</div>
-                            </div>
-                            <div class="node-info">
-                                <span class="node-lvl-tag">SECTOR 02</span>
-                                <h4 class="node-lvl-title">Metro Skyline</h4>
+                            <div class="card-footer-bar">
+                                <span class="diff-tag tag-easy">EASY</span>
+                                <span class="card-stars-val">⭐ 30/30</span>
                             </div>
                         </div>
 
-                        <!-- Level 3 Node -->
-                        <div class="sector-node-card" data-level="3" id="sectorNode3">
-                            <div class="node-thumbnail-frame">
-                                <div class="node-thumbnail" style="background-image: url('uploads/animation img 3.png');"></div>
-                                <div class="node-badge-icon">03</div>
+                        <!-- Level 2 Card (Metro Skyline) -->
+                        <div class="sector-card-node theme-cyan" data-level="2" id="sectorNode2">
+                            <div class="card-header-bar">
+                                <span class="card-lvl-num">02</span>
+                                <span class="card-lvl-name">METRO SKYLINE</span>
                             </div>
-                            <div class="node-info">
-                                <span class="node-lvl-tag">SECTOR 03</span>
-                                <h4 class="node-lvl-title">Power Zone</h4>
+                            <div class="card-thumb-wrapper">
+                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 2.png');"></div>
+                                <div class="card-badge-overlay">02</div>
                             </div>
-                        </div>
-
-                        <!-- Level 4 Node -->
-                        <div class="sector-node-card" data-level="4" id="sectorNode4">
-                            <div class="node-thumbnail-frame">
-                                <div class="node-thumbnail" style="background-image: url('uploads/animation img 4.png');"></div>
-                                <div class="node-badge-icon">04</div>
-                            </div>
-                            <div class="node-info">
-                                <span class="node-lvl-tag">SECTOR 04</span>
-                                <h4 class="node-lvl-title">Research Core</h4>
+                            <div class="card-footer-bar">
+                                <span class="diff-tag tag-normal">NORMAL</span>
+                                <span class="card-stars-val">⭐ 0/30</span>
                             </div>
                         </div>
 
-                        <!-- Level 5 Node -->
-                        <div class="sector-node-card" data-level="5" id="sectorNode5">
-                            <div class="node-thumbnail-frame">
-                                <div class="node-thumbnail" style="background-image: url('uploads/animation img 5.png');"></div>
-                                <div class="node-badge-icon">05</div>
+                        <!-- Level 3 Card (Power Zone) -->
+                        <div class="sector-card-node theme-orange" data-level="3" id="sectorNode3">
+                            <div class="card-header-bar">
+                                <span class="card-lvl-num">03</span>
+                                <span class="card-lvl-name">POWER ZONE</span>
                             </div>
-                            <div class="node-info">
-                                <span class="node-lvl-tag">SECTOR 05</span>
-                                <h4 class="node-lvl-title">Shadow Nexus</h4>
+                            <div class="card-thumb-wrapper">
+                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 3.png');"></div>
+                                <div class="card-badge-overlay">🔒</div>
+                            </div>
+                            <div class="card-footer-bar">
+                                <span class="diff-tag tag-hard">HARD</span>
+                                <span class="card-stars-val">⭐ 0/30</span>
+                            </div>
+                        </div>
+
+                        <!-- Level 4 Card (Research Core) -->
+                        <div class="sector-card-node theme-purple" data-level="4" id="sectorNode4">
+                            <div class="card-header-bar">
+                                <span class="card-lvl-num">04</span>
+                                <span class="card-lvl-name">RESEARCH CORE</span>
+                            </div>
+                            <div class="card-thumb-wrapper">
+                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 4.png');"></div>
+                                <div class="card-badge-overlay">🔒</div>
+                            </div>
+                            <div class="card-footer-bar">
+                                <span class="diff-tag tag-very-hard">VERY HARD</span>
+                                <span class="card-stars-val">⭐ 0/30</span>
+                            </div>
+                        </div>
+
+                        <!-- Level 5 Card (Shadow Nexus) -->
+                        <div class="sector-card-node theme-red" data-level="5" id="sectorNode5">
+                            <div class="card-header-bar">
+                                <span class="card-lvl-num">05</span>
+                                <span class="card-lvl-name">SHADOW NEXUS</span>
+                            </div>
+                            <div class="card-thumb-wrapper">
+                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 5.png');"></div>
+                                <div class="card-badge-overlay">🔒</div>
+                            </div>
+                            <div class="card-footer-bar">
+                                <span class="diff-tag tag-extreme">EXTREME</span>
+                                <span class="card-stars-val">⭐ 0/30</span>
                             </div>
                         </div>
                     </div>
@@ -801,26 +805,18 @@
                     </div>
                 </div>
 
-                <!-- Active Sector Preview Panel -->
-                <div class="sector-preview-card" id="sectorPreviewCard">
-                    <div class="preview-bg" id="sectorPreviewBg"></div>
-                    <div class="preview-content">
-                        <span class="preview-badge" id="sectorPreviewBadge">NEXT TARGET // SECTOR 02</span>
-                        <h3 class="preview-title" id="sectorPreviewTitle">METRO SKYLINE DISTRICT</h3>
-                        <p class="preview-sub" id="sectorPreviewSub">Futuristic Metropolitan City: Defeat Fighters guarding cargo staircases!</p>
-                    </div>
-                </div>
+                <!-- Bottom AAA World Map Footer Bar -->
+                <div class="world-map-footer">
+                    <button class="map-btn map-btn-back" onclick="window.uiManager.hideAllModals(); showView('homeView');">
+                        <span class="btn-arrow-left">←</span> BACK
+                    </button>
 
-                <!-- Action Buttons -->
-                <div class="sector-action-row">
-                    <button class="sector-btn sector-btn-secondary" id="btnReplaySector">
-                        <span class="btn-icon">🔄</span> REPLAY LEVEL
-                    </button>
-                    <button class="sector-btn sector-btn-primary" id="btnNextLevel">
-                        PROCEED TO NEXT SECTOR <span class="btn-arrow">➔</span>
-                    </button>
-                    <button class="sector-btn sector-btn-secondary" onclick="window.uiManager.hideAllModals(); showView('homeView');">
-                        <span class="btn-icon">⬡</span> MAIN MENU
+                    <div class="map-footer-tagline">
+                        <span>EVERY PATH. EVERY CHALLENGE. ONE GOAL — <strong class="gold-highlight">ESCAPE THE SHADOW.</strong></span>
+                    </div>
+
+                    <button class="map-btn map-btn-prepare" id="btnNextLevel">
+                        PREPARE MISSION <span class="btn-arrow-right">➔</span>
                     </button>
                 </div>
             </div>
