@@ -142,7 +142,9 @@ class UIManager {
         const navLinks = document.getElementById('navLinks');
         if (navToggle && navLinks) {
             navToggle.addEventListener('click', () => {
-                navLinks.classList.toggle('open');
+                const isOpen = navLinks.classList.toggle('open');
+                navToggle.classList.toggle('active', isOpen);
+                navToggle.innerHTML = isOpen ? '✕' : '☰';
             });
         }
     }

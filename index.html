@@ -66,9 +66,12 @@
                 </div>
                 <span class="logo-text">SHADOW ESCAPE</span>
             </a>
-            <button onclick="toggleGameFullscreen()" class="mobile-header-fullscreen-btn" id="btnMobileHeaderFullscreen" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">⤢ <span class="fs-label-short">FULL</span></button>
-            <button onclick="toggleAudioMute()" class="mobile-header-music-btn" id="btnMobileMusicToggle" title="Toggle Music & Sound" aria-label="Toggle Music"><span class="music-icon-only">🎵</span><span class="music-label-short">ON</span></button>
-            <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
+            <!-- Mobile Header Action Buttons Cluster -->
+            <div class="mobile-header-actions">
+                <button onclick="toggleGameFullscreen()" class="mobile-header-btn mobile-header-fullscreen-btn" id="btnMobileHeaderFullscreen" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">⤢</button>
+                <button onclick="toggleAudioMute()" class="mobile-header-btn mobile-header-music-btn" id="btnMobileMusicToggle" title="Toggle Music & Sound" aria-label="Toggle Music">🎵</button>
+                <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
+            </div>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#" onclick="showView('homeView'); return false;" class="nav-link active" id="navHome">Home</a></li>
                 <li><a href="#" onclick="openModal('modalLeaderboard'); return false;" class="nav-link">Leaderboard</a></li>
@@ -970,8 +973,9 @@
             }
             const mobileBtn = document.getElementById('btnMobileMusicToggle');
             if (mobileBtn) {
-                mobileBtn.innerHTML = isMuted ? '🔇 Muted' : '🎵 Music: ON';
+                mobileBtn.innerHTML = isMuted ? '🔇' : '🎵';
                 mobileBtn.classList.toggle('muted', isMuted);
+                mobileBtn.setAttribute('aria-label', isMuted ? 'Unmute music' : 'Mute music');
             }
             const posterMobileBtn = document.getElementById('btnPosterMobileMusic');
             if (posterMobileBtn) {
@@ -1039,7 +1043,7 @@
 
             const mobileHeaderFsBtn = document.getElementById('btnMobileHeaderFullscreen');
             if (mobileHeaderFsBtn) {
-                mobileHeaderFsBtn.innerHTML = isFullscreen ? '🗗 <span class="fs-label-short">EXIT</span>' : '⤢ <span class="fs-label-short">FULL</span>';
+                mobileHeaderFsBtn.innerHTML = isFullscreen ? '🗗' : '⤢';
                 mobileHeaderFsBtn.setAttribute('aria-label', isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen');
                 mobileHeaderFsBtn.classList.toggle('active', isFullscreen);
             }

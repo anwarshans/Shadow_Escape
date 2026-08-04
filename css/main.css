@@ -328,46 +328,64 @@ body::after {
     box-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
 }
 
-.mobile-header-music-btn.muted {
-    color: var(--text-muted, #94a3b8);
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.15);
-    text-shadow: none;
+/* Mobile Header Actions Cluster */
+.mobile-header-actions {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
-.mobile-header-fullscreen-btn {
-    display: none;
+.mobile-header-btn {
     font-family: var(--font-heading);
-    font-size: 0.78rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: var(--primary-gold, #fbbf24);
     background: rgba(251, 191, 36, 0.12);
-    border: 1px solid rgba(251, 191, 36, 0.4);
-    padding: 5px 12px;
-    border-radius: 16px;
-    letter-spacing: 0.8px;
+    border: 1.5px solid rgba(251, 191, 36, 0.4);
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    white-space: nowrap;
-    text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
     flex-shrink: 0;
     line-height: 1;
+    user-select: none;
+    padding: 0;
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.15);
+    outline: none;
 }
 
-.mobile-header-fullscreen-btn:hover, .mobile-header-fullscreen-btn:active {
+.mobile-header-btn:hover, .mobile-header-btn:active {
     background: rgba(251, 191, 36, 0.25);
     border-color: var(--primary-gold, #fbbf24);
-    box-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+    box-shadow: 0 0 14px rgba(251, 191, 36, 0.4);
+    transform: scale(1.05);
 }
 
-.mobile-header-fullscreen-btn.active {
+.mobile-header-btn.active {
     color: #ffffff;
     background: linear-gradient(135deg, #d97706, #fbbf24);
     border-color: #fef08a;
     box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+}
+
+.mobile-header-btn.muted {
+    color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: none;
+}
+
+.mobile-nav-toggle {
+    font-size: 1.15rem !important;
+    line-height: 1 !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
 }
 
 .laptop-home-only {
@@ -505,8 +523,8 @@ h1, h2, h3, h4 {
         display: flex;
     }
 
-    .mobile-header-fullscreen-btn {
-        display: inline-flex;
+    .mobile-header-actions {
+        display: flex;
     }
 
     .laptop-home-only {
@@ -530,47 +548,33 @@ h1, h2, h3, h4 {
 
 @media (max-width: 600px) {
     .navbar {
-        padding: 0.4rem 0.8rem !important;
-        height: 56px !important;
-        min-height: 56px !important;
+        padding: 0.4rem 0.6rem !important;
+        height: 52px !important;
+        min-height: 52px !important;
     }
 
     .nav-brand {
-        gap: 8px;
+        gap: 6px;
     }
 
     .nav-brand .logo-icon {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
     }
 
     .nav-brand .logo-text {
-        font-size: 1.05rem !important;
-        letter-spacing: 1px !important;
+        font-size: 0.9rem !important;
+        letter-spacing: 0.5px !important;
     }
 
-    .mobile-header-fullscreen-btn {
-        padding: 4px 8px !important;
-        font-size: 0.75rem !important;
-        border-radius: 14px !important;
-        margin-left: auto !important;
-        margin-right: 4px !important;
-        gap: 3px !important;
+    .mobile-header-actions {
+        gap: 5px;
     }
 
-    .mobile-header-music-btn {
-        padding: 4px 8px !important;
-        font-size: 0.75rem !important;
-        border-radius: 14px !important;
-        margin-left: 0 !important;
-        margin-right: 6px !important;
-        gap: 3px !important;
-    }
-
-    .mobile-nav-toggle {
-        font-size: 1.6rem !important;
-        padding: 0 2px;
-        line-height: 1;
-        flex-shrink: 0;
+    .mobile-header-btn, .mobile-nav-toggle {
+        width: 31px !important;
+        height: 31px !important;
+        font-size: 0.82rem !important;
+        border-radius: 8px !important;
     }
 }
