@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://shadowescapegame.vercel.app/</loc>
-    <lastmod>2026-07-29</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-08-04</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://shadowescapegame.vercel.app/uploads/preview.png</image:loc>
+      <image:title>Shadow Escape - Shadow Escape Adventure Game Online | Anwarsha's Game | Shanu's Game | Anwarsha N S's Game</image:title>
+      <image:caption>Shadow Escape Cover Image for Anwarsha's game, Shanu's game, and Anwarsha N S's game</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://shadowescapegame.vercel.app/index.html</loc>
-    <lastmod>2026-07-29</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-08-04</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://shadowescapegame.vercel.app/uploads/preview.png</image:loc>
+      <image:title>Shadow Escape Adventure Game Online Cover Photo</image:title>
+    </image:image>
   </url>
 </urlset>

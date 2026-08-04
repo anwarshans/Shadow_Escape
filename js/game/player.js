@@ -309,21 +309,21 @@ class Player {
             const aspect = activeImg.naturalWidth / activeImg.naturalHeight;
 
             // Height tuned per action state, width derived from natural image aspect ratio
-            let drawHeight = 78;
+            let drawHeight = 84;
             let widthScale = 1.0;
 
             if (this.currentAction === 'stand') {
-                drawHeight = 80; // Perfect tall standing hero stance
+                drawHeight = 86; // Heroic tall standing hero stance
             } else if (this.currentAction === 'slow_walk') {
-                drawHeight = 78;
+                drawHeight = 84;
             } else if (this.currentAction === 'run') {
-                drawHeight = 72;
-                widthScale = 0.86; // Reduced running player width slightly as requested
+                drawHeight = 78;
+                widthScale = 0.88;
             } else if (this.currentAction === 'jump') {
-                drawHeight = 58;
-                widthScale = 0.78; // Reduced width of jumping person as requested
+                drawHeight = 66;
+                widthScale = 0.82;
             } else if (this.currentAction === 'flight') {
-                drawHeight = 72; // Fight knife combat action stance
+                drawHeight = 78; // Fight knife combat action stance
             }
 
             const drawWidth = drawHeight * aspect * widthScale; // Scaled width

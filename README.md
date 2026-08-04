@@ -1,10 +1,12 @@
-# Shadow Escape ⚡ (2.5D Cyber Platformer Game)
+# Shadow Escape ⚡ (Shadow Escape Adventure Game Online)
+
+![Shadow Escape Cover Preview Banner](uploads/preview.png)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-cyan.svg)](LICENSE)
 [![Stack](https://img.shields.io/badge/Stack-HTML5%20%7C%20CSS3%20%7C%20Vanilla%20JS-purple.svg)]()
 [![Rendering](https://img.shields.io/badge/Engine-2.5D%20Canvas%20Renderer-ff007f.svg)]()
 
-**Shadow Escape** is a polished, high-performance 2.5D browser platformer adventure game built strictly with **HTML5 Canvas, CSS3, and Vanilla JavaScript (ES6+)**—with zero external game engines (No Phaser, Unity, or Godot). Designed specifically to showcase high-level software engineering, custom canvas rendering, physics systems, Web Audio API synthesis, and responsive mobile/laptop UX for developer portfolios hosted on GitHub and Vercel.
+**Shadow Escape** is an action-packed 2.5D browser platformer adventure game built strictly with **HTML5 Canvas, CSS3, and Vanilla JavaScript (ES6+)**. Play the official **shadow escape adventure game online** (also known as **shadow escape online**, **Anwarsha's game**, **Shanu's game**, and **Anwarsha N S's game**) created by developer **Anwarsha N S**.
 
 ---
 
