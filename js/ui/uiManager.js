@@ -281,10 +281,10 @@ class UIManager {
     }
 
     setupVictoryParallaxTilt() {
-        const heroWrapper = document.getElementById('heroCharacterWrapper');
-        const heroContainer = document.getElementById('victoryHeroContainer');
-        const bottomDock = document.getElementById('victoryBottomDock');
-        if (!this.victoryModal || !heroContainer) return;
+        const bgLayer = document.getElementById('victoryTempleBg');
+        const statsCard = document.getElementById('victoryRightStatsCard');
+        const headerStage = document.getElementById('victoryHeaderStage');
+        if (!this.victoryModal) return;
 
         const handleMove = (e) => {
             if (!this.victoryModal || !this.victoryModal.classList.contains('active')) return;
@@ -296,20 +296,24 @@ class UIManager {
             const dx = (clientX - cx) / cx; // -1 to 1
             const dy = (clientY - cy) / cy; // -1 to 1
 
-            const tiltX = -dy * 10; // deg
-            const tiltY = dx * 12;  // deg
+            const tiltX = -dy * 8; // deg
+            const tiltY = dx * 10; // deg
 
-            if (heroWrapper) {
-                heroWrapper.style.transform = `scale(1) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(30px)`;
+            if (bgLayer) {
+                bgLayer.style.transform = `scale(1.05) translate(${dx * -15}px, ${dy * -15}px)`;
             }
-            if (bottomDock) {
-                bottomDock.style.transform = `translateY(0) rotateX(${tiltX * 0.3}deg) rotateY(${tiltY * 0.3}deg)`;
+            if (statsCard) {
+                statsCard.style.transform = `translateX(0) rotateX(${tiltX * 0.8}deg) rotateY(${tiltY * 0.8}deg)`;
+            }
+            if (headerStage) {
+                headerStage.style.transform = `translateY(0) rotateX(${tiltX * 0.4}deg) rotateY(${tiltY * 0.4}deg)`;
             }
         };
 
         const handleReset = () => {
-            if (heroWrapper) heroWrapper.style.transform = 'scale(1) rotateX(0deg) rotateY(0deg) translateZ(0px)';
-            if (bottomDock) bottomDock.style.transform = 'translateY(0) rotateX(0deg) rotateY(0deg)';
+            if (bgLayer) bgLayer.style.transform = 'scale(1) translate(0, 0)';
+            if (statsCard) statsCard.style.transform = 'translateX(0) rotateX(0deg) rotateY(0deg)';
+            if (headerStage) headerStage.style.transform = 'translateY(0) rotateX(0deg) rotateY(0deg)';
         };
 
         this.victoryModal.addEventListener('mousemove', handleMove);

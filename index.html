@@ -10,17 +10,17 @@
     <meta name="application-name" content="Shadow Escape">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="https://shadowescapegame.vercel.app/">
-    <link rel="image_src" href="https://shadowescapegame.vercel.app/uploads/preview.png">
+    <link rel="image_src" href="https://shadowescapegame.vercel.app/uploads/preview.jpg">
 
     <!-- Open Graph / Facebook / WhatsApp Share Links -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://shadowescapegame.vercel.app/">
     <meta property="og:site_name" content="Shadow Escape Adventure Game Online">
-    <meta property="og:title" content="Shadow Escape - Shadow Escape Adventure Game Online | Anwarsha's Game & Shanu's Game">
+    <meta property="og:title" content="Shadow Escape - Shadow Escape Adventure Game Online | Anwarsha's Game &amp; Shanu's Game">
     <meta property="og:description" content="Play Shadow Escape online! The ultimate shadow escape adventure game online created by Anwarsha N S (Anwarsha's game / Shanu's game / Anwarsha N S's game). Infiltrate security sectors, retrieve keycards, and escape online.">
-    <meta property="og:image" content="https://shadowescapegame.vercel.app/uploads/preview.png">
-    <meta property="og:image:secure_url" content="https://shadowescapegame.vercel.app/uploads/preview.png">
-    <meta property="og:image:type" content="image/png">
+    <meta property="og:image" content="https://shadowescapegame.vercel.app/uploads/preview.jpg">
+    <meta property="og:image:secure_url" content="https://shadowescapegame.vercel.app/uploads/preview.jpg">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Shadow Escape - Shadow Escape Adventure Game Online Cover Image">
@@ -30,7 +30,7 @@
     <meta property="twitter:url" content="https://shadowescapegame.vercel.app/">
     <meta property="twitter:title" content="Shadow Escape - Shadow Escape Adventure Game Online | Anwarsha's Game | Shanu's Game">
     <meta property="twitter:description" content="Play Shadow Escape online! Created by Anwarsha N S (Anwarsha's game / Shanu's game / Anwarsha N S's game). Action-packed 2.5D cyber platformer game.">
-    <meta property="twitter:image" content="https://shadowescapegame.vercel.app/uploads/preview.png">
+    <meta property="twitter:image" content="https://shadowescapegame.vercel.app/uploads/preview.jpg">
     <meta property="twitter:image:alt" content="Shadow Escape - Shadow Escape Adventure Game Online Cover Image">
     
     <link rel="manifest" href="manifest.json">
@@ -60,8 +60,8 @@
         "applicationCategory": "Game",
         "operatingSystem": "Any",
         "url": "https://shadowescapegame.vercel.app/",
-        "image": "https://shadowescapegame.vercel.app/uploads/preview.png",
-        "screenshot": "https://shadowescapegame.vercel.app/uploads/preview.png",
+        "image": "https://shadowescapegame.vercel.app/uploads/preview.jpg",
+        "screenshot": "https://shadowescapegame.vercel.app/uploads/preview.jpg",
         "author": {
           "@type": "Person",
           "name": "Anwarsha N S",
@@ -342,11 +342,13 @@
                     <div class="touch-cluster left-cluster">
                         <button class="touch-btn directional-btn" id="btnTouchLeft" title="Move Left" aria-label="Move Left">◄</button>
                         <button class="touch-btn directional-btn" id="btnTouchRight" title="Move Right" aria-label="Move Right">►</button>
-                        <button class="touch-btn dash-btn power-btn" id="btnTouchDash" title="Power / Speed Dash" aria-label="Power Dash">⚡</button>
                     </div>
                     <div class="touch-cluster right-cluster">
                         <button class="touch-btn attack-btn" id="btnTouchFlight" title="Fight / Attack" aria-label="Attack">⚔️</button>
-                        <button class="touch-btn jump-btn" id="btnTouchJump" title="Jump" aria-label="Jump">▲</button>
+                        <div class="vertical-action-stack">
+                            <button class="touch-btn dash-btn power-btn" id="btnTouchDash" title="Power / Speed Dash" aria-label="Power Dash">⚡</button>
+                            <button class="touch-btn jump-btn" id="btnTouchJump" title="Jump" aria-label="Jump">▲</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1058,7 +1060,7 @@
         </div>
 
         <div class="victory-modal-overlay" id="victoryModal">
-            <!-- Fullscreen Animated Temple Environment Backdrop Layer -->
+            <!-- Seamless Fullscreen 3D Video Backdrop Layer with Hero Sprinting & Glowing Crystals -->
             <div class="victory-temple-bg-layer" id="victoryTempleBg"></div>
             <div class="victory-light-beams"></div>
             <div class="victory-backdrop-glow"></div>
@@ -1066,7 +1068,7 @@
             <!-- Canvas for 60 FPS Particle Physics, Falling Confetti & Glowing Blue Sparks -->
             <canvas id="victoryCanvas"></canvas>
 
-            <!-- Landing Shockwave Burst Effect -->
+            <!-- Shockwave Entrance Burst Effect -->
             <div class="victory-shockwave" id="victoryShockwave"></div>
 
             <!-- Top Left HUD: Crown New Record Badge Box -->
@@ -1074,15 +1076,7 @@
                 <div class="record-crown-icon">👑</div>
                 <div class="record-info">
                     <span class="record-label">NEW RECORD!</span>
-                    <span class="record-score-val" id="victoryRecordScore">3,930</span>
-                </div>
-            </div>
-
-            <!-- Left / Center Stage: Joyful Hero Character Sprinting Forward out of Portal -->
-            <div class="victory-hero-sprint-container" id="victoryHeroContainer">
-                <div class="hero-portal-aura"></div>
-                <div class="hero-sprint-character" id="heroCharacterWrapper">
-                    <img src="uploads/victory_hero_yellow_shirt.jpg" class="hero-sprint-img" alt="Joyful Hero Sprinting Forward in Triumph" />
+                    <span class="record-score-val" id="victoryRecordScore">3,760</span>
                 </div>
             </div>
 
@@ -1110,7 +1104,7 @@
                 <div class="stats-card-row score-row">
                     <span class="row-label">SCORE</span>
                     <div class="row-value-group">
-                        <span class="score-main-number" id="victoryScore">3,930</span>
+                        <span class="score-main-number" id="victoryScore">3,760</span>
                         <span class="new-record-pill">NEW RECORD!</span>
                     </div>
                 </div>

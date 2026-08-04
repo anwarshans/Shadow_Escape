@@ -3799,17 +3799,30 @@
     visibility: visible;
 }
 
-/* Fullscreen Ambient Temple Track Background Layer */
+/* Fullscreen Ambient Temple Track Background Layer (Seamless 3D Video Backdrop) */
 .victory-temple-bg-layer {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('../uploads/victory_temple_bg.jpg') center center / cover no-repeat;
+    background: url('../uploads/victory_cinematic_arena.jpg') center center / cover no-repeat;
     pointer-events: none;
     z-index: 1;
-    filter: brightness(0.85) contrast(1.1);
+    filter: brightness(0.92) contrast(1.1);
+    transform: scale(1.12);
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.victory-modal-overlay.active .victory-temple-bg-layer {
+    transform: scale(1);
+    animation: videoCameraPan 8s ease-in-out infinite alternate;
+}
+
+@keyframes videoCameraPan {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.03) translate(-8px, -4px); }
+    100% { transform: scale(1) translate(4px, 4px); }
 }
 
 .victory-backdrop-glow {
@@ -3917,7 +3930,7 @@
     letter-spacing: 1px;
 }
 
-/* Left / Center Stage: Joyful Hero Sprinting Forward out of Portal */
+/* Center Stage: Seamless 3D Hero Video Arena Stage */
 .victory-hero-sprint-container {
     position: relative;
     z-index: 8;
@@ -3929,49 +3942,7 @@
     width: 100%;
     height: 100%;
     perspective: 1000px;
-}
-
-.hero-sprint-character {
-    position: relative;
-    max-height: 65vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: scale(0.15) translateY(240px);
-    opacity: 0;
-    transition: transform 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.22), opacity 0.4s ease;
-}
-
-.victory-modal-overlay.active .hero-sprint-character {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-    transition-delay: 0.15s;
-    animation: heroTriumphSprintFloat 3.8s ease-in-out infinite alternate 1s;
-}
-
-@keyframes heroTriumphSprintFloat {
-    0% { transform: translateY(0) scale(1) rotate(0deg); }
-    100% { transform: translateY(-12px) scale(1.03) rotate(1deg); }
-}
-
-.hero-sprint-img {
-    max-height: 62vh;
-    max-width: 45vw;
-    object-fit: contain;
-    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.95))
-            drop-shadow(0 0 50px rgba(251, 191, 36, 0.6))
-            brightness(1.12) contrast(1.1);
-    border-radius: 20px;
-}
-
-.hero-portal-aura {
-    position: absolute;
-    width: 380px;
-    height: 380px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, rgba(251, 191, 36, 0.2) 50%, rgba(0,0,0,0) 75%);
     pointer-events: none;
-    animation: badgePulse 3s ease-in-out infinite alternate;
 }
 
 /* Top Right Header: 3 Gold Stars + YOU ESCAPED! 3D Title + Purple Ribbon Banner */

@@ -738,6 +738,15 @@ body.is-fullscreen-game .game-screen-wrapper {
 
 .touch-cluster {
     display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    pointer-events: auto;
+    touch-action: none;
+}
+
+.vertical-action-stack {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 10px;
     pointer-events: auto;
@@ -1146,6 +1155,10 @@ body.is-fullscreen-game .game-screen-wrapper {
 
     .touch-cluster {
         gap: 10px;
+    }
+
+    .vertical-action-stack {
+        gap: 8px;
     }
 
     .touch-btn {
