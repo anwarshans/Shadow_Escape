@@ -335,6 +335,41 @@ body::after {
     text-shadow: none;
 }
 
+.mobile-header-fullscreen-btn {
+    display: none;
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--primary-gold, #fbbf24);
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    padding: 5px 12px;
+    border-radius: 16px;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    white-space: nowrap;
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.mobile-header-fullscreen-btn:hover, .mobile-header-fullscreen-btn:active {
+    background: rgba(251, 191, 36, 0.25);
+    border-color: var(--primary-gold, #fbbf24);
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+}
+
+.mobile-header-fullscreen-btn.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, #d97706, #fbbf24);
+    border-color: #fef08a;
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+}
+
 .laptop-home-only {
     display: list-item;
 }
@@ -470,9 +505,22 @@ h1, h2, h3, h4 {
         display: flex;
     }
 
-    .laptop-home-only,
-    .laptop-home-fullscreen-btn {
-        display: none !important;
+    .mobile-header-fullscreen-btn {
+        display: inline-flex;
+    }
+
+    .laptop-home-only {
+        display: block !important;
+        width: 100%;
+        margin-top: 0.4rem;
+    }
+
+    .laptop-home-only .nav-fullscreen-btn {
+        width: 100%;
+        height: 42px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        justify-content: center;
     }
 
     .mobile-home-music-btn {
@@ -501,13 +549,22 @@ h1, h2, h3, h4 {
         letter-spacing: 1px !important;
     }
 
-    .mobile-header-music-btn {
-        padding: 4px 9px !important;
+    .mobile-header-fullscreen-btn {
+        padding: 4px 8px !important;
         font-size: 0.75rem !important;
         border-radius: 14px !important;
         margin-left: auto !important;
+        margin-right: 4px !important;
+        gap: 3px !important;
+    }
+
+    .mobile-header-music-btn {
+        padding: 4px 8px !important;
+        font-size: 0.75rem !important;
+        border-radius: 14px !important;
+        margin-left: 0 !important;
         margin-right: 6px !important;
-        gap: 4px !important;
+        gap: 3px !important;
     }
 
     .mobile-nav-toggle {
