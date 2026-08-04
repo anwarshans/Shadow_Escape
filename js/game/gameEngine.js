@@ -358,7 +358,9 @@ class GameEngine {
             }
         });
         if (this.key && !this.key.collected) {
-            this.key.draw(this.ctx, cameraOffset);
+            if (this.isVisible(this.key, cameraOffset, 160)) {
+                this.key.draw(this.ctx, cameraOffset);
+            }
 
             // Offscreen Keycard Tracker Beacon
             if (!this.isVisible(this.key, cameraOffset, 50) && this.player) {
@@ -372,8 +374,6 @@ class GameEngine {
 
                 this.ctx.save();
                 this.ctx.fillStyle = '#fbbf24';
-                this.ctx.shadowColor = '#fbbf24';
-                this.ctx.shadowBlur = 12;
                 this.ctx.beginPath();
                 this.ctx.arc(clampedX, clampedY, 12, 0, Math.PI * 2);
                 this.ctx.fill();

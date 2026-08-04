@@ -98,49 +98,46 @@ class HazardZone {
 
         if (this.isReactorFluid) return;
 
-        // 1. Spawn Volumetric Flame Particles
-        const spawnCount = Math.max(1, Math.floor(this.width / 10));
-        for (let i = 0; i < spawnCount; i++) {
-            if (Math.random() < 0.85) {
-                const pX = this.x + Math.random() * this.width;
-                const pY = this.y + this.height - Math.random() * 6;
-                this.flameParticles.push({
-                    x: pX,
-                    y: pY,
-                    vx: (Math.random() - 0.5) * 18,
-                    vy: -Math.random() * 60 - 50,
-                    size: Math.random() * 10 + 10,
-                    maxLife: 0.35 + Math.random() * 0.35,
-                    life: 1.0,
-                    seed: Math.random() * 10
-                });
-            }
+        // 1. Spawn Volumetric Flame Particles (capped to max 12 for lag-free 60FPS)
+        if (this.flameParticles.length < 12) {
+            const pX = this.x + Math.random() * this.width;
+            const pY = this.y + this.height - Math.random() * 6;
+            this.flameParticles.push({
+                x: pX,
+                y: pY,
+                vx: (Math.random() - 0.5) * 14,
+                vy: -Math.random() * 50 - 40,
+                size: Math.random() * 8 + 8,
+                maxLife: 0.3 + Math.random() * 0.3,
+                life: 1.0,
+                seed: Math.random() * 10
+            });
         }
 
-        // 2. Spawn Dark Smoke Wisps
-        if (Math.random() < 0.35) {
+        // 2. Spawn Dark Smoke Wisps (capped to max 6)
+        if (this.smokeParticles.length < 6 && Math.random() < 0.4) {
             this.smokeParticles.push({
                 x: this.x + Math.random() * this.width,
                 y: this.y + this.height * 0.25 - Math.random() * 10,
-                vx: (Math.random() - 0.5) * 22,
-                vy: -Math.random() * 32 - 22,
-                size: Math.random() * 12 + 14,
-                maxLife: 0.8 + Math.random() * 0.6,
+                vx: (Math.random() - 0.5) * 18,
+                vy: -Math.random() * 25 - 18,
+                size: Math.random() * 10 + 12,
+                maxLife: 0.7 + Math.random() * 0.5,
                 life: 1.0
             });
         }
 
-        // 3. Spawn Stylized Star/Diamond Ember Sparks
-        if (Math.random() < 0.65) {
+        // 3. Spawn Stylized Ember Sparks (capped to max 8)
+        if (this.embers.length < 8 && Math.random() < 0.5) {
             this.embers.push({
                 x: this.x + Math.random() * this.width,
                 y: this.y + this.height - Math.random() * 8,
-                vx: (Math.random() - 0.5) * 32,
-                vy: -Math.random() * 75 - 45,
-                size: Math.random() * 2.2 + 1.2,
+                vx: (Math.random() - 0.5) * 24,
+                vy: -Math.random() * 60 - 35,
+                size: Math.random() * 2.0 + 1.0,
                 angle: Math.random() * Math.PI * 2,
-                rotSpeed: (Math.random() - 0.5) * 12,
-                maxLife: 0.55 + Math.random() * 0.55,
+                rotSpeed: (Math.random() - 0.5) * 10,
+                maxLife: 0.5 + Math.random() * 0.4,
                 life: 1.0,
                 color: Math.random() > 0.3 ? '#ffea00' : '#ff5500'
             });
@@ -154,9 +151,9 @@ class HazardZone {
                 this.flameParticles.splice(i, 1);
                 continue;
             }
-            p.x += (p.vx + Math.sin(this.animTime * 9 + p.seed) * 20) * dt;
+            p.x += (p.vx + Math.sin(this.animTime * 9 + p.seed) * 15) * dt;
             p.y += p.vy * dt;
-            p.size += dt * 9;
+            p.size += dt * 7;
         }
 
         // Update Smoke Particles
@@ -167,9 +164,9 @@ class HazardZone {
                 this.smokeParticles.splice(i, 1);
                 continue;
             }
-            s.x += (s.vx + Math.sin(this.animTime * 4 + i) * 14) * dt;
+            s.x += (s.vx + Math.sin(this.animTime * 4 + i) * 10) * dt;
             s.y += s.vy * dt;
-            s.size += dt * 18;
+            s.size += dt * 14;
         }
 
         // Update Ember Particles
@@ -180,7 +177,7 @@ class HazardZone {
                 this.embers.splice(i, 1);
                 continue;
             }
-            e.x += (e.vx + Math.sin(this.animTime * 11 + i) * 24) * dt;
+            e.x += (e.vx + Math.sin(this.animTime * 11 + i) * 18) * dt;
             e.y += e.vy * dt;
             e.angle += e.rotSpeed * dt;
         }
@@ -199,30 +196,19 @@ class HazardZone {
             grad.addColorStop(1, 'rgba(176, 38, 255, 0.95)');
 
             ctx.fillStyle = grad;
-            if (!window.gamePerformanceMode) {
-                ctx.shadowColor = '#ff007f';
-                ctx.shadowBlur = 15;
-            }
             ctx.fillRect(drawX, drawY, this.width, this.height);
 
             // Pulsing surface wave
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(drawX, drawY, this.width, 3);
         } else {
-            // Original Stylized Sci-Fi Fire Effect
+            // Original Stylized Sci-Fi Fire Effect (Fast 60FPS Render)
             const time = this.animTime * 6;
 
             // --- STEP 1: Ambient Pulsing Heat Aura Base ---
-            const glowGrad = ctx.createRadialGradient(
-                drawX + this.width / 2, drawY + this.height, 0,
-                drawX + this.width / 2, drawY + this.height, Math.max(this.width, this.height * 2.0)
-            );
-            const glowPulse = 0.3 + Math.sin(time * 4.5) * 0.09;
-            glowGrad.addColorStop(0, `rgba(255, 80, 0, ${glowPulse})`);
-            glowGrad.addColorStop(0.45, `rgba(220, 20, 60, ${glowPulse * 0.5})`);
-            glowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            ctx.fillStyle = glowGrad;
-            ctx.fillRect(drawX - 30, drawY - 35, this.width + 60, this.height + 50);
+            const glowPulse = 0.25 + Math.sin(time * 4.5) * 0.08;
+            ctx.fillStyle = `rgba(255, 80, 0, ${glowPulse})`;
+            ctx.fillRect(drawX - 10, drawY - 15, this.width + 20, this.height + 25);
 
             // --- STEP 2: Dark Smoke Wisps ---
             ctx.globalCompositeOperation = 'source-over';
@@ -231,14 +217,9 @@ class HazardZone {
                 const sx = s.x - cameraOffset.x;
                 const sy = s.y - cameraOffset.y;
                 const progress = 1.0 - s.life;
-                const alpha = Math.sin(progress * Math.PI) * 0.16;
+                const alpha = Math.sin(progress * Math.PI) * 0.18;
 
-                const smokeGrad = ctx.createRadialGradient(sx, sy, 0, sx, sy, s.size);
-                smokeGrad.addColorStop(0, `rgba(30, 20, 25, ${alpha})`);
-                smokeGrad.addColorStop(0.65, `rgba(18, 12, 16, ${alpha * 0.4})`);
-                smokeGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-                ctx.fillStyle = smokeGrad;
+                ctx.fillStyle = `rgba(25, 15, 20, ${alpha})`;
                 ctx.beginPath();
                 ctx.arc(sx, sy, s.size, 0, Math.PI * 2);
                 ctx.fill();

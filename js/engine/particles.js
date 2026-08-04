@@ -30,10 +30,6 @@ class Particle {
         ctx.save();
         ctx.globalAlpha = this.alpha;
         ctx.fillStyle = this.color;
-        if (!window.gamePerformanceMode) {
-            ctx.shadowColor = this.color;
-            ctx.shadowBlur = 8;
-        }
 
         const drawX = this.x - cameraOffset.x;
         const drawY = this.y - cameraOffset.y;

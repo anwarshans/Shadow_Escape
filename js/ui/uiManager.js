@@ -27,6 +27,16 @@ class UIManager {
 
         this.seenLevelIntros = new Set();
         this.pendingIntro = null;
+
+        this.lastHudState = {
+            hpPct: -1,
+            fuelPct: -1,
+            crystalsText: '',
+            hasKey: null,
+            levelId: -1,
+            timerText: '',
+            scoreText: ''
+        };
     }
 
     init() {

@@ -143,16 +143,11 @@ class Renderer2D3D {
         
         // Glowing Built-In Top Edge Lights
         ctx.strokeStyle = accentLightColor;
-        if (!window.gamePerformanceMode) {
-            ctx.shadowColor = accentLightColor;
-            ctx.shadowBlur = 12;
-        }
         ctx.lineWidth = 2.5;
         ctx.beginPath();
         ctx.moveTo(x, y);
         ctx.lineTo(x + w, y);
         ctx.stroke();
-        ctx.shadowBlur = 0;
 
         // 4. Main Front Face
         const frontGrad = ctx.createLinearGradient(x, y, x, y + h);
@@ -173,13 +168,8 @@ class Renderer2D3D {
 
         // Built-in Corner Light Accents (Matching Level Palette)
         ctx.fillStyle = accentLightColor;
-        if (!window.gamePerformanceMode) {
-            ctx.shadowColor = accentLightColor;
-            ctx.shadowBlur = 10;
-        }
         ctx.fillRect(x, y, 5, 5);
         ctx.fillRect(x + w - 5, y, 5, 5);
-        ctx.shadowBlur = 0;
 
         ctx.restore();
     }

@@ -40,17 +40,9 @@ class EnergyCrystal {
         ctx.save();
 
         if (this.spriteLoaded || (this.spriteImg && this.spriteImg.loaded)) {
-            if (!window.gamePerformanceMode) {
-                ctx.shadowColor = '#00f3ff';
-                ctx.shadowBlur = 15;
-            }
             ctx.drawImage(this.spriteImg, drawX, drawY, this.width, this.height);
         } else {
             ctx.translate(drawX + 15, drawY + 15);
-            if (!window.gamePerformanceMode) {
-                ctx.shadowColor = '#00f3ff';
-                ctx.shadowBlur = 15;
-            }
 
             ctx.beginPath();
             ctx.moveTo(0, -15);
@@ -99,10 +91,6 @@ class Keycard {
         // 0. Golden Pulsing Beacon Light Ring
         const pulse = 14 + Math.sin(this.auraAngle * 2) * 6;
         ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
-        if (!window.gamePerformanceMode) {
-            ctx.shadowColor = '#fbbf24';
-            ctx.shadowBlur = 20;
-        }
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(drawX + 18, drawY + 18, pulse, 0, Math.PI * 2);
