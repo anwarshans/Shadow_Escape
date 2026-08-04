@@ -314,6 +314,14 @@ body::after {
     text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
 }
 
+.mobile-header-music-btn .music-label-full {
+    display: inline;
+}
+
+.mobile-header-music-btn .music-label-short {
+    display: none;
+}
+
 .mobile-header-music-btn:hover, .mobile-header-music-btn:active {
     background: rgba(251, 191, 36, 0.25);
     border-color: var(--primary-gold, #fbbf24);
@@ -469,5 +477,37 @@ h1, h2, h3, h4 {
 
     .mobile-home-music-btn {
         display: inline-flex;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0.4rem 0.6rem;
+        height: 54px;
+        min-height: 54px;
+    }
+
+    .nav-brand .logo-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .nav-brand .logo-text {
+        font-size: 1.05rem !important;
+        letter-spacing: 1px !important;
+    }
+
+    .mobile-header-music-btn {
+        padding: 4px 8px;
+        font-size: 0.72rem;
+        margin-right: 4px;
+    }
+
+    .mobile-header-music-btn .music-label-full {
+        display: none !important;
+    }
+
+    .mobile-header-music-btn .music-label-short {
+        display: inline !important;
     }
 }
