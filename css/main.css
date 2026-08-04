@@ -262,9 +262,9 @@ body::after {
     font-family: var(--font-heading);
     font-size: 0.82rem;
     font-weight: 700;
-    color: var(--primary-cyan, #00f3ff);
-    background: rgba(0, 243, 255, 0.12);
-    border: 1px solid rgba(0, 243, 255, 0.4);
+    color: var(--primary-gold, #fbbf24);
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.45);
     padding: 0 14px;
     height: 34px;
     border-radius: 20px;
@@ -282,17 +282,17 @@ body::after {
 }
 
 .nav-fullscreen-btn:hover {
-    background: rgba(0, 243, 255, 0.25);
-    border-color: var(--primary-cyan, #00f3ff);
-    box-shadow: 0 0 12px rgba(0, 243, 255, 0.5);
+    background: rgba(251, 191, 36, 0.25);
+    border-color: var(--primary-gold, #fbbf24);
+    box-shadow: 0 0 14px rgba(251, 191, 36, 0.5);
     transform: translateY(-1px);
 }
 
 .nav-fullscreen-btn.active {
-    color: var(--primary-gold, #fbbf24);
-    background: rgba(251, 191, 36, 0.15);
-    border-color: rgba(251, 191, 36, 0.5);
-    box-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
+    color: #ffffff;
+    background: linear-gradient(135deg, #d97706, #fbbf24);
+    border-color: #fef08a;
+    box-shadow: 0 0 16px rgba(251, 191, 36, 0.6);
 }
 
 .mobile-header-music-btn {

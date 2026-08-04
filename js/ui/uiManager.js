@@ -241,10 +241,142 @@ class UIManager {
         }
     }
 
-    showVictoryModal(totalScore) {
+    showVictoryModal(totalScore = 0) {
+        if (!this.victoryModal) this.victoryModal = document.getElementById('victoryModal');
+        if (!this.victoryModal) return;
+
+        this.victoryModal.classList.add('active');
+
+        // Play grand celebratory audio fanfare
+        if (window.soundEngine) {
+            if (typeof window.soundEngine.playGrandVictory === 'function') {
+                window.soundEngine.playGrandVictory();
+            } else if (typeof window.soundEngine.playLevelClear === 'function') {
+                window.soundEngine.playLevelClear();
+            }
+        }
+
+        // Start Canvas Particle Confetti & Gold Sparks
+        this.startVictoryParticleCanvas();
+
+        // Animate Score Counting Up
+        this.animateVictoryScore(totalScore);
+    }
+
+    startVictoryParticleCanvas() {
+        const canvas = document.getElementById('victoryCanvas');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        const handleResize = () => {
+            if (!canvas) return;
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        };
+        window.addEventListener('resize', handleResize);
+
+        // Confetti & Particle Sparks Array
+        const particles = [];
+        const colors = ['#fbbf24', '#fef08a', '#d97706', '#ffffff', '#06b6d4', '#38bdf8'];
+        const particleCount = Math.min(100, Math.floor(width / 10));
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height - height,
+                size: Math.random() * 8 + 3,
+                speedY: Math.random() * 3 + 2,
+                speedX: (Math.random() - 0.5) * 2,
+                rotation: Math.random() * 360,
+                rotSpeed: (Math.random() - 0.5) * 6,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                shape: Math.random() > 0.4 ? 'rect' : 'circle',
+                opacity: Math.random() * 0.8 + 0.2
+            });
+        }
+
+        if (this.victoryAnimFrame) cancelAnimationFrame(this.victoryAnimFrame);
+
+        const render = () => {
+            if (!this.victoryModal || !this.victoryModal.classList.contains('active')) {
+                window.removeEventListener('resize', handleResize);
+                return;
+            }
+
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                p.y += p.speedY;
+                p.x += p.speedX + Math.sin(p.y * 0.02) * 0.5;
+                p.rotation += p.rotSpeed;
+
+                if (p.y > height + 20) {
+                    p.y = -20;
+                    p.x = Math.random() * width;
+                }
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.globalAlpha = p.opacity;
+                ctx.fillStyle = p.color;
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = 8;
+
+                if (p.shape === 'rect') {
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            this.victoryAnimFrame = requestAnimationFrame(render);
+        };
+
+        render();
+    }
+
+    animateVictoryScore(targetScore = 0) {
         const scoreElem = document.getElementById('victoryScore');
-        if (scoreElem) scoreElem.innerText = totalScore.toString();
-        if (this.victoryModal) this.victoryModal.classList.add('active');
+        if (!scoreElem) return;
+
+        scoreElem.innerText = '0';
+
+        if (this.scoreCounterInterval) clearInterval(this.scoreCounterInterval);
+
+        const finalVal = parseInt(targetScore, 10) || 0;
+        if (finalVal <= 0) {
+            scoreElem.innerText = '0';
+            return;
+        }
+
+        const duration = 1800; // ms
+        const steps = 40;
+        const stepTime = duration / steps;
+        const increment = Math.ceil(finalVal / steps);
+        let current = 0;
+
+        this.scoreCounterInterval = setInterval(() => {
+            current += increment;
+            if (current >= finalVal) {
+                current = finalVal;
+                clearInterval(this.scoreCounterInterval);
+            }
+            scoreElem.innerText = current.toLocaleString();
+            scoreElem.classList.add('pulse');
+            setTimeout(() => scoreElem.classList.remove('pulse'), 150);
+
+            if (window.soundEngine && typeof window.soundEngine.playTone === 'function' && current < finalVal) {
+                window.soundEngine.playTone(800 + (current % 400), 'sine', 0.03, 0.15, 0.001, false);
+            }
+        }, stepTime);
     }
 
     showLevelIntro(levelData, onStartGame, forceShow = true) {
@@ -368,6 +500,15 @@ class UIManager {
     }
 
     hideAllModals() {
+        if (this.victoryAnimFrame) {
+            cancelAnimationFrame(this.victoryAnimFrame);
+            this.victoryAnimFrame = null;
+        }
+        if (this.scoreCounterInterval) {
+            clearInterval(this.scoreCounterInterval);
+            this.scoreCounterInterval = null;
+        }
+
         [this.pauseModal, this.gameOverModal, this.levelClearModal, this.victoryModal].forEach(m => {
             if (m) m.classList.remove('active');
         });

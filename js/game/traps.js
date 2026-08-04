@@ -42,35 +42,75 @@ class LaserTrap {
 
         ctx.save();
 
-        // Emitter Nodes
-        ctx.fillStyle = '#ff007f';
-        if (!window.gamePerformanceMode) {
-            ctx.shadowColor = '#ff007f';
-            ctx.shadowBlur = 10;
-        }
-        ctx.fillRect(drawX1 - 5, drawY1 - 5, 10, 10);
-        ctx.fillRect(drawX2 - 5, drawY2 - 5, 10, 10);
+        const time = performance.now() * 0.003;
+        const colorAccent = this.isActive ? '#ff007f' : '#334155';
 
+        // 1. High-Tech Metallic Emitter Nodes
+        [ { x: drawX1, y: drawY1 }, { x: drawX2, y: drawY2 } ].forEach(node => {
+            // Dark Metallic Housing
+            ctx.fillStyle = '#0f172a';
+            ctx.strokeStyle = colorAccent;
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Status LED Ring
+            ctx.fillStyle = this.isActive ? (Math.sin(time * 10) > 0 ? '#ff007f' : '#00f3ff') : '#475569';
+            if (this.isActive && !window.gamePerformanceMode) {
+                ctx.shadowColor = ctx.fillStyle;
+                ctx.shadowBlur = 12;
+            }
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, 4, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        // 2. Active High-Tech Laser Energy Beam
         if (this.isActive) {
-            // Outer Glowing Energy Beam
+            // Outer Energy Glow Wave
+            const beamPulse = 7 + Math.sin(time * 8) * 2;
             ctx.strokeStyle = '#ff007f';
             if (!window.gamePerformanceMode) {
                 ctx.shadowColor = '#ff007f';
-                ctx.shadowBlur = 15;
+                ctx.shadowBlur = 18;
             }
-            ctx.lineWidth = 6;
+            ctx.lineWidth = beamPulse;
             ctx.beginPath();
             ctx.moveTo(drawX1, drawY1);
             ctx.lineTo(drawX2, drawY2);
             ctx.stroke();
 
-            // Inner Intense Core Beam
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 2;
+            // Secondary Neon Cyan Layer
+            ctx.strokeStyle = '#00f3ff';
+            ctx.lineWidth = beamPulse * 0.5;
             ctx.beginPath();
             ctx.moveTo(drawX1, drawY1);
             ctx.lineTo(drawX2, drawY2);
             ctx.stroke();
+
+            // Pure White Intense Core Beam
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(drawX1, drawY1);
+            ctx.lineTo(drawX2, drawY2);
+            ctx.stroke();
+
+            // Laser Node Spark Flares
+            [ { x: drawX1, y: drawY1 }, { x: drawX2, y: drawY2 } ].forEach(node => {
+                ctx.fillStyle = '#ffffff';
+                if (!window.gamePerformanceMode) {
+                    ctx.shadowColor = '#00f3ff';
+                    ctx.shadowBlur = 15;
+                }
+                const flareSize = 5 + Math.random() * 3;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, flareSize, 0, Math.PI * 2);
+                ctx.fill();
+            });
         }
 
         ctx.restore();
@@ -87,59 +127,110 @@ class HazardZone {
         this.damage = 100; // Instant respawn damage
         this.animTime = Math.random() * 100;
         
-        // Original Stylized Fire particle pools
+        // Particle pools
         this.flameParticles = [];
         this.smokeParticles = [];
         this.embers = [];
+        this.plasmaBubbles = [];
     }
 
     update(dt) {
         this.animTime += dt;
 
-        if (this.isReactorFluid) return;
+        if (this.isReactorFluid) {
+            // 1. Spawn Plasma Bubbles rising from depth
+            if (this.plasmaBubbles.length < 14 && Math.random() < 0.6) {
+                this.plasmaBubbles.push({
+                    x: this.x + Math.random() * this.width,
+                    y: this.y + this.height - Math.random() * 10,
+                    vy: -Math.random() * 35 - 25,
+                    vx: (Math.random() - 0.5) * 12,
+                    radius: Math.random() * 4 + 2,
+                    life: 1.0,
+                    maxLife: 0.6 + Math.random() * 0.5,
+                    color: Math.random() > 0.4 ? '#22d3ee' : '#f43f5e'
+                });
+            }
 
-        // 1. Spawn Volumetric Flame Particles (capped to max 12 for lag-free 60FPS)
-        if (this.flameParticles.length < 12) {
+            // Update Plasma Bubbles
+            for (let i = this.plasmaBubbles.length - 1; i >= 0; i--) {
+                const b = this.plasmaBubbles[i];
+                b.life -= dt / b.maxLife;
+                if (b.life <= 0 || b.y <= this.y) {
+                    // Surface pop spark
+                    if (b.y <= this.y + 12 && Math.random() < 0.8) {
+                        this.embers.push({
+                            x: b.x,
+                            y: this.y,
+                            vx: (Math.random() - 0.5) * 40,
+                            vy: -Math.random() * 50 - 20,
+                            size: Math.random() * 2 + 1,
+                            maxLife: 0.35 + Math.random() * 0.3,
+                            life: 1.0,
+                            color: b.color
+                        });
+                    }
+                    this.plasmaBubbles.splice(i, 1);
+                    continue;
+                }
+                b.y += b.vy * dt;
+                b.x += (b.vx + Math.sin(this.animTime * 8 + i) * 15) * dt;
+            }
+
+            // Update Embers for reactor surface pops
+            for (let i = this.embers.length - 1; i >= 0; i--) {
+                const e = this.embers[i];
+                e.life -= dt / e.maxLife;
+                if (e.life <= 0) {
+                    this.embers.splice(i, 1);
+                    continue;
+                }
+                e.x += e.vx * dt;
+                e.y += e.vy * dt;
+            }
+            return;
+        }
+
+        // 1. Spawn Volumetric Flame Plumes (capped for smooth 60FPS)
+        if (this.flameParticles.length < 16) {
             const pX = this.x + Math.random() * this.width;
             const pY = this.y + this.height - Math.random() * 6;
             this.flameParticles.push({
                 x: pX,
                 y: pY,
-                vx: (Math.random() - 0.5) * 14,
-                vy: -Math.random() * 50 - 40,
-                size: Math.random() * 8 + 8,
-                maxLife: 0.3 + Math.random() * 0.3,
+                vx: (Math.random() - 0.5) * 16,
+                vy: -Math.random() * 55 - 45,
+                size: Math.random() * 7 + 7,
+                maxLife: 0.35 + Math.random() * 0.3,
                 life: 1.0,
                 seed: Math.random() * 10
             });
         }
 
-        // 2. Spawn Dark Smoke Wisps (capped to max 6)
-        if (this.smokeParticles.length < 6 && Math.random() < 0.4) {
+        // 2. Spawn Dark Smoke Wisps (capped for performance)
+        if (this.smokeParticles.length < 8 && Math.random() < 0.45) {
             this.smokeParticles.push({
                 x: this.x + Math.random() * this.width,
-                y: this.y + this.height * 0.25 - Math.random() * 10,
-                vx: (Math.random() - 0.5) * 18,
-                vy: -Math.random() * 25 - 18,
-                size: Math.random() * 10 + 12,
-                maxLife: 0.7 + Math.random() * 0.5,
+                y: this.y + this.height * 0.2 - Math.random() * 10,
+                vx: (Math.random() - 0.5) * 20,
+                vy: -Math.random() * 30 - 20,
+                size: Math.random() * 10 + 10,
+                maxLife: 0.8 + Math.random() * 0.5,
                 life: 1.0
             });
         }
 
-        // 3. Spawn Stylized Ember Sparks (capped to max 8)
-        if (this.embers.length < 8 && Math.random() < 0.5) {
+        // 3. Spawn Floating Ember Sparks
+        if (this.embers.length < 12 && Math.random() < 0.6) {
             this.embers.push({
                 x: this.x + Math.random() * this.width,
                 y: this.y + this.height - Math.random() * 8,
-                vx: (Math.random() - 0.5) * 24,
-                vy: -Math.random() * 60 - 35,
-                size: Math.random() * 2.0 + 1.0,
-                angle: Math.random() * Math.PI * 2,
-                rotSpeed: (Math.random() - 0.5) * 10,
-                maxLife: 0.5 + Math.random() * 0.4,
+                vx: (Math.random() - 0.5) * 28,
+                vy: -Math.random() * 70 - 40,
+                size: Math.random() * 2.2 + 0.8,
+                maxLife: 0.5 + Math.random() * 0.5,
                 life: 1.0,
-                color: Math.random() > 0.3 ? '#ffea00' : '#ff5500'
+                color: Math.random() > 0.3 ? '#fff466' : '#ff7700'
             });
         }
 
@@ -151,9 +242,9 @@ class HazardZone {
                 this.flameParticles.splice(i, 1);
                 continue;
             }
-            p.x += (p.vx + Math.sin(this.animTime * 9 + p.seed) * 15) * dt;
+            p.x += (p.vx + Math.sin(this.animTime * 10 + p.seed) * 18) * dt;
             p.y += p.vy * dt;
-            p.size += dt * 7;
+            p.size += dt * 8;
         }
 
         // Update Smoke Particles
@@ -164,9 +255,9 @@ class HazardZone {
                 this.smokeParticles.splice(i, 1);
                 continue;
             }
-            s.x += (s.vx + Math.sin(this.animTime * 4 + i) * 10) * dt;
+            s.x += (s.vx + Math.sin(this.animTime * 4 + i) * 12) * dt;
             s.y += s.vy * dt;
-            s.size += dt * 14;
+            s.size += dt * 16;
         }
 
         // Update Ember Particles
@@ -177,9 +268,8 @@ class HazardZone {
                 this.embers.splice(i, 1);
                 continue;
             }
-            e.x += (e.vx + Math.sin(this.animTime * 11 + i) * 18) * dt;
+            e.x += (e.vx + Math.sin(this.animTime * 12 + i) * 20) * dt;
             e.y += e.vy * dt;
-            e.angle += e.rotSpeed * dt;
         }
     }
 
@@ -190,135 +280,343 @@ class HazardZone {
         ctx.save();
 
         if (this.isReactorFluid) {
-            // Reactor Toxic Plasma Liquid
-            const grad = ctx.createLinearGradient(drawX, drawY, drawX, drawY + this.height);
-            grad.addColorStop(0, 'rgba(255, 0, 127, 0.85)');
-            grad.addColorStop(1, 'rgba(176, 38, 255, 0.95)');
+            // =========================================================================
+            // AAA Professional Volumetric Plasma Reactor Abyss (No Box Outlines!)
+            // =========================================================================
+            const time = this.animTime * 4;
 
-            ctx.fillStyle = grad;
-            ctx.fillRect(drawX, drawY, this.width, this.height);
+            // --- 1. Deep Liquid Abyss Body Gradient ---
+            const abyssGrad = ctx.createLinearGradient(drawX, drawY, drawX, drawY + this.height);
+            abyssGrad.addColorStop(0, '#e11d48');       // Neon Magenta top
+            abyssGrad.addColorStop(0.35, '#9333ea');    // Intense Violet mid
+            abyssGrad.addColorStop(0.75, '#4c1d95');    // Deep Purple lower
+            abyssGrad.addColorStop(1, '#090514');       // Dark void base
 
-            // Pulsing surface wave
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(drawX, drawY, this.width, 3);
+            // Calculate fine-step wave height points along surface
+            const step = 6;
+            const points = [];
+            for (let px = 0; px <= this.width; px += step) {
+                const w1 = Math.sin(time * 3.6 + px * 0.03) * 5;
+                const w2 = Math.cos(time * 5.8 + px * 0.055) * 3;
+                const w3 = Math.sin(time * 8.2 + px * 0.09) * 1.8;
+                points.push({ x: drawX + px, y: drawY + w1 + w2 + w3 });
+            }
+
+            // Fill main liquid body polygon (NO STROKE here - zero box outlines!)
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(drawX, drawY + this.height);
+            ctx.lineTo(points[0].x, points[0].y);
+
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+
+            ctx.lineTo(drawX + this.width, drawY + this.height);
+            ctx.closePath();
+
+            ctx.fillStyle = abyssGrad;
+            ctx.fill(); // ONLY FILL - ZERO STROKE!
+            ctx.restore();
+
+            // --- 2. Internal Energy Current Veins ---
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            for (let j = 0; j < 3; j++) {
+                const veinY = drawY + 15 + j * 16 + Math.sin(time * 2 + j) * 4;
+                const veinGrad = ctx.createLinearGradient(drawX, veinY, drawX + this.width, veinY);
+                veinGrad.addColorStop(0, 'rgba(34, 211, 238, 0.05)');
+                veinGrad.addColorStop(0.5, 'rgba(244, 63, 94, 0.25)');
+                veinGrad.addColorStop(1, 'rgba(34, 211, 238, 0.05)');
+
+                ctx.fillStyle = veinGrad;
+                ctx.fillRect(drawX, veinY, this.width, 4);
+            }
+            ctx.restore();
+
+            // --- 3. DEDICATED Top Surface Crest Stroke Line (ONLY TOP CREST STROKED!) ---
+            ctx.save();
+            // Outer Electric Cyan Surface Glow Line
+            ctx.strokeStyle = '#22d3ee';
+            if (!window.gamePerformanceMode) {
+                ctx.shadowColor = '#22d3ee';
+                ctx.shadowBlur = 16;
+            }
+            ctx.lineWidth = 3.5;
+
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.stroke();
+
+            // Inner White-Hot Intense Crest Highlight Line
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.2;
+            ctx.shadowBlur = 0;
+
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y - 0.5);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y - 0.5);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            // --- 4. Dynamic Rising Plasma Bubbles inside Liquid ---
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            for (let i = 0; i < this.plasmaBubbles.length; i++) {
+                const b = this.plasmaBubbles[i];
+                const bx = b.x - cameraOffset.x;
+                const by = b.y - cameraOffset.y;
+
+                const bGrad = ctx.createRadialGradient(bx - 1, by - 1, 0.5, bx, by, b.radius);
+                bGrad.addColorStop(0, '#ffffff');
+                bGrad.addColorStop(0.4, b.color);
+                bGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+                ctx.fillStyle = bGrad;
+                ctx.beginPath();
+                ctx.arc(bx, by, b.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // --- 5. Volumetric Plasma Steam Vapor Plumes ---
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            const numVapors = Math.min(6, Math.floor(this.width / 220) + 1);
+            for (let i = 0; i < numVapors; i++) {
+                const vx = drawX + ((i + 0.5) / numVapors) * this.width + Math.sin(time * 1.8 + i * 2) * 25;
+                const vy = drawY - 12 - Math.sin(time * 2.5 + i * 1.7) * 10;
+                const vSize = 22 + Math.sin(time * 3 + i) * 6;
+
+                const vGrad = ctx.createRadialGradient(vx, vy, 0, vx, vy, vSize);
+                vGrad.addColorStop(0, 'rgba(34, 211, 238, 0.35)');
+                vGrad.addColorStop(0.45, 'rgba(244, 63, 94, 0.18)');
+                vGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+                ctx.fillStyle = vGrad;
+                ctx.beginPath();
+                ctx.arc(vx, vy, vSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+
+            // --- 6. Electric Discharge Lightning Arcs on Surface ---
+            ctx.save();
+            if (Math.random() < 0.55) {
+                const arcStartX = drawX + Math.random() * (this.width - 60);
+                const arcY = drawY + (Math.random() - 0.5) * 4;
+                const arcLen = Math.random() * 45 + 25;
+
+                ctx.strokeStyle = Math.random() > 0.3 ? '#ffffff' : '#22d3ee';
+                ctx.lineWidth = 1.6;
+                if (!window.gamePerformanceMode) {
+                    ctx.shadowColor = '#22d3ee';
+                    ctx.shadowBlur = 12;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(arcStartX, arcY);
+                let currX = arcStartX;
+                let currY = arcY;
+
+                for (let j = 0; j < 5; j++) {
+                    currX += arcLen / 5;
+                    currY += (Math.random() - 0.5) * 7;
+                    ctx.lineTo(currX, currY);
+                }
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // --- 7. Surface Pop Spark Embers ---
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            for (let i = 0; i < this.embers.length; i++) {
+                const e = this.embers[i];
+                const ex = e.x - cameraOffset.x;
+                const ey = e.y - cameraOffset.y;
+                const alpha = Math.max(0, e.life);
+
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = e.color;
+                if (!window.gamePerformanceMode) {
+                    ctx.shadowColor = e.color;
+                    ctx.shadowBlur = 8;
+                }
+                ctx.beginPath();
+                ctx.arc(ex, ey, e.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
         } else {
-            // Original Stylized Sci-Fi Fire Effect (Fast 60FPS Render)
-            const time = this.animTime * 6;
+            // =========================================================================
+            // Professional Organic Fire Hazard Renderer (No Box Artifacts)
+            // =========================================================================
+            const time = this.animTime * 5;
+            const centerX = drawX + this.width / 2;
+            const baseY = drawY + this.height;
 
-            // --- STEP 1: Ambient Pulsing Heat Aura Base ---
-            const glowPulse = 0.25 + Math.sin(time * 4.5) * 0.08;
-            ctx.fillStyle = `rgba(255, 80, 0, ${glowPulse})`;
-            ctx.fillRect(drawX - 10, drawY - 15, this.width + 20, this.height + 25);
+            // --- 1. Ambient Radial Heat Aura (Smooth Gradient - No harsh box container!) ---
+            const auraRadiusX = this.width * 0.8;
+            const auraRadiusY = this.height * 0.9;
+            const auraPulse = 0.35 + Math.sin(time * 4) * 0.08;
 
-            // --- STEP 2: Dark Smoke Wisps ---
+            ctx.save();
+            ctx.globalCompositeOperation = 'screen';
+            const auraGrad = ctx.createRadialGradient(
+                centerX, baseY - this.height * 0.3, 5,
+                centerX, baseY - this.height * 0.3, Math.max(auraRadiusX, auraRadiusY)
+            );
+            auraGrad.addColorStop(0, `rgba(255, 90, 0, ${auraPulse * 0.8})`);
+            auraGrad.addColorStop(0.4, `rgba(230, 40, 0, ${auraPulse * 0.4})`);
+            auraGrad.addColorStop(0.85, `rgba(150, 15, 0, ${auraPulse * 0.12})`);
+            auraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+            ctx.fillStyle = auraGrad;
+            ctx.beginPath();
+            ctx.ellipse(centerX, baseY - this.height * 0.3, auraRadiusX + 15, auraRadiusY + 15, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // --- 2. Ground Light Reflection & Molten Coal Bed ---
+            const coalGrad = ctx.createLinearGradient(drawX, baseY, drawX, baseY - 10);
+            coalGrad.addColorStop(0, '#7a0500');
+            coalGrad.addColorStop(0.5, '#e63900');
+            coalGrad.addColorStop(1, '#ffaa00');
+
+            ctx.fillStyle = coalGrad;
+            ctx.beginPath();
+            ctx.ellipse(centerX, baseY, this.width * 0.52, 6, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // --- 3. Volumetric Dark Smoke Wisps ---
+            ctx.save();
             ctx.globalCompositeOperation = 'source-over';
             for (let i = 0; i < this.smokeParticles.length; i++) {
                 const s = this.smokeParticles[i];
                 const sx = s.x - cameraOffset.x;
                 const sy = s.y - cameraOffset.y;
                 const progress = 1.0 - s.life;
-                const alpha = Math.sin(progress * Math.PI) * 0.18;
+                const alpha = Math.sin(progress * Math.PI) * 0.22;
 
-                ctx.fillStyle = `rgba(25, 15, 20, ${alpha})`;
+                const smokeGrad = ctx.createRadialGradient(sx, sy, 0, sx, sy, s.size);
+                smokeGrad.addColorStop(0, `rgba(35, 20, 25, ${alpha})`);
+                smokeGrad.addColorStop(0.6, `rgba(20, 12, 15, ${alpha * 0.6})`);
+                smokeGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+                ctx.fillStyle = smokeGrad;
                 ctx.beginPath();
                 ctx.arc(sx, sy, s.size, 0, Math.PI * 2);
                 ctx.fill();
             }
+            ctx.restore();
 
-            // --- STEP 3: Professional 3-Tier S-Curved Flame Shapes with Split Tips ---
-            const flameWidth = 14;
-            const flameCount = Math.floor(this.width / flameWidth);
-            for (let i = 0; i < flameCount; i++) {
-                const fx = drawX + i * flameWidth;
-                const seed = i * 2.9;
+            // --- 4. Dynamic Multi-Harmonic Organic Flame Tongues ---
+            const tongueWidth = 16;
+            const numTongues = Math.max(3, Math.floor(this.width / tongueWidth) + 1);
+            const stepX = this.width / Math.max(1, numTongues - 1);
 
-                const hNoise = Math.sin(time * 3.8 + seed) * 8 + Math.cos(time * 6.5 + seed * 1.6) * 5;
-                const fHeight = Math.max(20, this.height + hNoise + 6);
-                const tipSway = Math.sin(time * 4.8 + seed) * 8;
-                const waistSway1 = Math.sin(time * 4.2 + seed * 1.3) * 5;
-                const waistSway2 = Math.cos(time * 3.9 + seed * 1.7) * 5;
+            for (let i = 0; i < numTongues; i++) {
+                const tx = drawX + i * stepX;
+                const seed = i * 3.47;
 
-                const bLeft = fx;
-                const bRight = fx + flameWidth;
-                const bY = drawY + this.height;
+                // Multi-frequency noise for organic swaying and flickering
+                const wave1 = Math.sin(time * 4.2 + seed) * 9;
+                const wave2 = Math.cos(time * 7.1 + seed * 1.8) * 6;
+                const wave3 = Math.sin(time * 11.5 + seed * 2.3) * 4;
 
-                // Main Flame Tip
-                const tipX = fx + flameWidth * 0.45 + tipSway;
-                const tipY = drawY + (this.height - fHeight);
+                const hFlicker = Math.sin(time * 5.8 + seed * 1.4) * 12 + Math.cos(time * 9.2 + seed) * 8;
+                const flameHeight = Math.max(26, this.height * 0.85 + hFlicker + 10);
 
-                // Secondary Flame Notch Tip (gives professional split flame look)
-                const subTipX = fx + flameWidth * 0.85 + tipSway * 0.6;
-                const subTipY = drawY + (this.height - fHeight * 0.68);
-                const notchX = fx + flameWidth * 0.65 + tipSway * 0.8;
-                const notchY = drawY + (this.height - fHeight * 0.52);
+                const tipSway = wave1 + wave2;
+                const waistSway1 = wave2 - wave3;
+                const waistSway2 = wave1 + wave3 * 0.8;
 
-                // S-Curve Control Points
-                const cp1X = fx - flameWidth * 0.25 + waistSway1;
-                const cp1Y = bY - fHeight * 0.35;
-                const cp2X = fx + flameWidth * 0.2 + waistSway2;
-                const cp2Y = bY - fHeight * 0.75;
-                const cp3X = fx + flameWidth * 1.1 + waistSway1 * 0.7;
-                const cp3Y = bY - fHeight * 0.4;
+                const baseLeft = tx - tongueWidth * 0.55;
+                const baseRight = tx + tongueWidth * 0.55;
 
-                // Helper to construct flame path
-                const drawFlamePath = (scaleX, scaleY, offsetX, offsetY) => {
-                    const sWidth = flameWidth * scaleX;
-                    const sLeft = fx + (flameWidth - sWidth) / 2 + offsetX;
-                    const sRight = sLeft + sWidth;
-                    const sTipX = tipX * scaleX + fx * (1 - scaleX) + offsetX;
-                    const sTipY = bY - fHeight * scaleY + offsetY;
-                    const sSubTipX = subTipX * scaleX + fx * (1 - scaleX) + offsetX;
-                    const sSubTipY = bY - fHeight * 0.68 * scaleY + offsetY;
-                    const sNotchX = notchX * scaleX + fx * (1 - scaleX) + offsetX;
-                    const sNotchY = bY - fHeight * 0.52 * scaleY + offsetY;
+                const tipX = tx + tipSway;
+                const tipY = baseY - flameHeight;
+
+                const cp1X = tx - tongueWidth * 0.4 + waistSway1;
+                const cp1Y = baseY - flameHeight * 0.38;
+                const cp2X = tx + tongueWidth * 0.35 + waistSway2;
+                const cp2Y = baseY - flameHeight * 0.72;
+
+                const cp3X = tx + tongueWidth * 0.45 + waistSway1 * 0.8;
+                const cp3Y = baseY - flameHeight * 0.42;
+
+                // Helper to construct organic smooth bezier flame path
+                const buildFlamePath = (widthScale, heightScale, shiftX) => {
+                    const wLeft = tx - (tongueWidth * 0.55 * widthScale) + shiftX;
+                    const wRight = tx + (tongueWidth * 0.55 * widthScale) + shiftX;
+                    const tX = tx + tipSway * widthScale + shiftX;
+                    const tY = baseY - flameHeight * heightScale;
 
                     ctx.beginPath();
-                    ctx.moveTo(sLeft, bY);
+                    ctx.moveTo(wLeft, baseY);
                     ctx.bezierCurveTo(
-                        cp1X * scaleX + fx * (1 - scaleX) + offsetX, bY - (bY - cp1Y) * scaleY + offsetY,
-                        cp2X * scaleX + fx * (1 - scaleX) + offsetX, bY - (bY - cp2Y) * scaleY + offsetY,
-                        sTipX, sTipY
+                        cp1X * widthScale + tx * (1 - widthScale) + shiftX, baseY - (baseY - cp1Y) * heightScale,
+                        cp2X * widthScale + tx * (1 - widthScale) + shiftX, baseY - (baseY - cp2Y) * heightScale,
+                        tX, tY
                     );
-                    ctx.quadraticCurveTo(sTipX + 2, sTipY + fHeight * 0.12 * scaleY, sNotchX, sNotchY);
-                    ctx.quadraticCurveTo(sNotchX + 1, sSubTipY + fHeight * 0.1 * scaleY, sSubTipX, sSubTipY);
                     ctx.bezierCurveTo(
-                        sSubTipX + 3, sSubTipY + fHeight * 0.18 * scaleY,
-                        cp3X * scaleX + fx * (1 - scaleX) + offsetX, bY - (bY - cp3Y) * scaleY + offsetY,
-                        sRight, bY
+                        cp2X * widthScale + tx * (1 - widthScale) + shiftX + 4, tY + (baseY - tY) * 0.3,
+                        cp3X * widthScale + tx * (1 - widthScale) + shiftX, baseY - (baseY - cp3Y) * heightScale,
+                        wRight, baseY
                     );
                     ctx.closePath();
                 };
 
-                // --- Layer 1: Outer Fiery Red/Crimson Flame ---
-                const outerGrad = ctx.createLinearGradient(fx, bY, tipX, tipY);
-                outerGrad.addColorStop(0, '#c01000');
-                outerGrad.addColorStop(0.35, '#ff4400');
-                outerGrad.addColorStop(0.75, '#ff9900');
-                outerGrad.addColorStop(1, '#ffdd22');
+                // Layer A: Outer Fiery Red/Orange Flame Body
+                ctx.save();
+                const outerGrad = ctx.createLinearGradient(tx, baseY, tipX, tipY);
+                outerGrad.addColorStop(0, '#d61c00');
+                outerGrad.addColorStop(0.3, '#ff4400');
+                outerGrad.addColorStop(0.7, '#ff9900');
+                outerGrad.addColorStop(1, 'rgba(255, 200, 0, 0.9)');
+
                 ctx.fillStyle = outerGrad;
-                drawFlamePath(1.0, 1.0, 0, 0);
+                if (!window.gamePerformanceMode) {
+                    ctx.shadowColor = '#ff3300';
+                    ctx.shadowBlur = 12;
+                }
+                buildFlamePath(1.0, 1.0, 0);
                 ctx.fill();
+                ctx.restore();
 
-                // --- Layer 2: Mid Golden Orange Flame Core ---
-                const midGrad = ctx.createLinearGradient(fx, bY, tipX, tipY);
-                midGrad.addColorStop(0, '#ff7700');
+                // Layer B: Mid Bright Amber Core
+                ctx.save();
+                const midGrad = ctx.createLinearGradient(tx, baseY, tipX, tipY);
+                midGrad.addColorStop(0, '#ff6600');
                 midGrad.addColorStop(0.5, '#ffcc00');
-                midGrad.addColorStop(1, '#ffffaa');
-                ctx.fillStyle = midGrad;
-                drawFlamePath(0.72, 0.78, 0, 0);
-                ctx.fill();
+                midGrad.addColorStop(1, '#ffff66');
 
-                // --- Layer 3: White-Hot Inner Flame Heart ---
-                const innerGrad = ctx.createLinearGradient(fx, bY, tipX, tipY);
-                innerGrad.addColorStop(0, '#ffbb00');
-                innerGrad.addColorStop(0.4, '#ffffff');
-                innerGrad.addColorStop(1, '#ffffff');
-                ctx.fillStyle = innerGrad;
-                drawFlamePath(0.42, 0.52, 0, 0);
+                ctx.fillStyle = midGrad;
+                buildFlamePath(0.68, 0.76, 0);
                 ctx.fill();
+                ctx.restore();
+
+                // Layer C: Incandescent White-Hot Base Heart
+                ctx.save();
+                const innerGrad = ctx.createLinearGradient(tx, baseY, tipX, tipY);
+                innerGrad.addColorStop(0, '#ffaa00');
+                innerGrad.addColorStop(0.45, '#ffffff');
+                innerGrad.addColorStop(1, 'rgba(255, 255, 240, 0.95)');
+
+                ctx.fillStyle = innerGrad;
+                buildFlamePath(0.38, 0.48, 0);
+                ctx.fill();
+                ctx.restore();
             }
 
-            // --- STEP 4: Additive Volumetric Fire Plumes ---
+            // --- 5. Volumetric Additive Plumes (Blend Mode 'lighter') ---
+            ctx.save();
             ctx.globalCompositeOperation = 'lighter';
             for (let i = 0; i < this.flameParticles.length; i++) {
                 const p = this.flameParticles[i];
@@ -327,27 +625,27 @@ class HazardZone {
                 const normLife = Math.max(0, p.life);
 
                 let cCore, cMid, cEdge;
-                if (normLife > 0.7) {
-                    const t = (normLife - 0.7) / 0.3;
-                    cCore = `rgba(255, 255, 240, ${0.95 * t + 0.05})`;
+                if (normLife > 0.65) {
+                    const t = (normLife - 0.65) / 0.35;
+                    cCore = `rgba(255, 255, 240, ${0.95 * t})`;
                     cMid = `rgba(255, 200, 30, ${0.85 * t})`;
-                    cEdge = `rgba(255, 80, 0, ${0.5 * t})`;
-                } else if (normLife > 0.35) {
-                    const t = (normLife - 0.35) / 0.35;
-                    cCore = `rgba(255, 210, 40, ${0.85 * t})`;
-                    cMid = `rgba(255, 110, 0, ${0.75 * t})`;
-                    cEdge = `rgba(220, 30, 40, ${0.4 * t})`;
+                    cEdge = `rgba(255, 70, 0, ${0.45 * t})`;
+                } else if (normLife > 0.3) {
+                    const t = (normLife - 0.3) / 0.35;
+                    cCore = `rgba(255, 210, 40, ${0.8 * t})`;
+                    cMid = `rgba(255, 100, 0, ${0.7 * t})`;
+                    cEdge = `rgba(200, 20, 40, ${0.35 * t})`;
                 } else {
-                    const t = normLife / 0.35;
-                    cCore = `rgba(255, 90, 0, ${0.7 * t})`;
-                    cMid = `rgba(200, 20, 50, ${0.5 * t})`;
-                    cEdge = `rgba(120, 10, 30, 0)`;
+                    const t = normLife / 0.3;
+                    cCore = `rgba(255, 80, 0, ${0.65 * t})`;
+                    cMid = `rgba(180, 15, 30, ${0.4 * t})`;
+                    cEdge = 'rgba(0, 0, 0, 0)';
                 }
 
                 const radGrad = ctx.createRadialGradient(px, py, 0, px, py, p.size);
                 radGrad.addColorStop(0, cCore);
-                radGrad.addColorStop(0.4, cMid);
-                radGrad.addColorStop(0.85, cEdge);
+                radGrad.addColorStop(0.38, cMid);
+                radGrad.addColorStop(0.82, cEdge);
                 radGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
                 ctx.fillStyle = radGrad;
@@ -356,7 +654,7 @@ class HazardZone {
                 ctx.fill();
             }
 
-            // --- STEP 5: Stylized Diamond / Star Plasma Embers ---
+            // --- 6. Physics Embers & Rising Spark Streaks ---
             for (let i = 0; i < this.embers.length; i++) {
                 const e = this.embers[i];
                 const ex = e.x - cameraOffset.x;
@@ -364,8 +662,6 @@ class HazardZone {
                 const alpha = Math.max(0, e.life);
 
                 ctx.save();
-                ctx.translate(ex, ey);
-                ctx.rotate(e.angle);
                 ctx.globalAlpha = alpha;
                 ctx.fillStyle = e.color;
                 if (!window.gamePerformanceMode) {
@@ -373,21 +669,22 @@ class HazardZone {
                     ctx.shadowBlur = 8;
                 }
 
-                const sz = e.size;
+                // Draw glowing ember dot
                 ctx.beginPath();
-                ctx.moveTo(0, -sz * 2.2);
-                ctx.lineTo(sz * 0.6, -sz * 0.6);
-                ctx.lineTo(sz * 2.2, 0);
-                ctx.lineTo(sz * 0.6, sz * 0.6);
-                ctx.lineTo(0, sz * 2.2);
-                ctx.lineTo(-sz * 0.6, sz * 0.6);
-                ctx.lineTo(-sz * 2.2, 0);
-                ctx.lineTo(-sz * 0.6, -sz * 0.6);
-                ctx.closePath();
+                ctx.arc(ex, ey, e.size, 0, Math.PI * 2);
                 ctx.fill();
+
+                // Small rising spark streak
+                ctx.strokeStyle = e.color;
+                ctx.lineWidth = e.size * 0.8;
+                ctx.beginPath();
+                ctx.moveTo(ex, ey);
+                ctx.lineTo(ex - e.vx * 0.04, ey - e.vy * 0.05);
+                ctx.stroke();
+
                 ctx.restore();
             }
-            ctx.globalAlpha = 1.0;
+            ctx.restore();
         }
 
         ctx.restore();

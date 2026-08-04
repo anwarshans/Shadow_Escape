@@ -146,36 +146,65 @@ class ExitDoor {
         this.width = 52;
         this.height = 82;
         this.isUnlocked = false;
+        this.animTime = Math.random() * 10;
     }
 
     draw(ctx, cameraOffset) {
         const drawX = this.x - cameraOffset.x;
         const drawY = this.y - cameraOffset.y;
+        this.animTime += 0.05;
 
         ctx.save();
 
-        // Security Frame
-        ctx.fillStyle = '#0a1024';
+        // 1. Dark Metallic Security Frame
+        const frameGrad = ctx.createLinearGradient(drawX, drawY, drawX + this.width, drawY + this.height);
+        frameGrad.addColorStop(0, '#1e293b');
+        frameGrad.addColorStop(0.5, '#0f172a');
+        frameGrad.addColorStop(1, '#020617');
+
+        ctx.fillStyle = frameGrad;
         ctx.fillRect(drawX, drawY, this.width, this.height);
-        ctx.strokeStyle = this.isUnlocked ? '#00ff88' : '#ff3366';
+
+        // 2. Glowing Status Border Frame
+        const statusColor = this.isUnlocked ? '#10b981' : '#ef4444';
+        ctx.strokeStyle = statusColor;
         if (!window.gamePerformanceMode) {
-            ctx.shadowColor = this.isUnlocked ? '#00ff88' : '#ff3366';
-            ctx.shadowBlur = 18;
+            ctx.shadowColor = statusColor;
+            ctx.shadowBlur = 20;
         }
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 3.5;
         ctx.strokeRect(drawX, drawY, this.width, this.height);
 
-        // Center Portal Beam
+        // 3. Center Portal Chamber / Beam
         const beamGrad = ctx.createLinearGradient(drawX, drawY, drawX, drawY + this.height);
         if (this.isUnlocked) {
-            beamGrad.addColorStop(0, 'rgba(0, 255, 136, 0.45)');
-            beamGrad.addColorStop(1, 'rgba(0, 243, 255, 0.85)');
+            beamGrad.addColorStop(0, 'rgba(16, 185, 129, 0.6)');
+            beamGrad.addColorStop(0.5, 'rgba(56, 189, 248, 0.85)');
+            beamGrad.addColorStop(1, 'rgba(16, 185, 129, 0.95)');
         } else {
-            beamGrad.addColorStop(0, 'rgba(255, 51, 102, 0.35)');
-            beamGrad.addColorStop(1, 'rgba(10, 16, 36, 0.95)');
+            beamGrad.addColorStop(0, 'rgba(239, 68, 68, 0.45)');
+            beamGrad.addColorStop(0.5, 'rgba(185, 28, 28, 0.7)');
+            beamGrad.addColorStop(1, 'rgba(15, 23, 42, 0.95)');
         }
         ctx.fillStyle = beamGrad;
-        ctx.fillRect(drawX + 5, drawY + 5, this.width - 10, this.height - 10);
+        ctx.fillRect(drawX + 6, drawY + 6, this.width - 12, this.height - 12);
+
+        // 4. Moving Laser Scanline Overlay
+        const scanY = drawY + 6 + (Math.sin(this.animTime * 2) * 0.5 + 0.5) * (this.height - 14);
+        ctx.strokeStyle = this.isUnlocked ? '#ffffff' : '#fca5a5';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(drawX + 6, scanY);
+        ctx.lineTo(drawX + this.width - 6, scanY);
+        ctx.stroke();
+
+        // 5. Corner Status Indicator LEDs
+        [ { x: drawX + 4, y: drawY + 4 }, { x: drawX + this.width - 4, y: drawY + 4 } ].forEach(led => {
+            ctx.fillStyle = statusColor;
+            ctx.beginPath();
+            ctx.arc(led.x, led.y, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+        });
 
         ctx.restore();
     }
@@ -188,24 +217,61 @@ class Checkpoint {
         this.width = 28;
         this.height = 46;
         this.activated = false;
+        this.animTime = Math.random() * 10;
     }
 
     draw(ctx, cameraOffset) {
         const drawX = this.x - cameraOffset.x;
         const drawY = this.y - cameraOffset.y;
+        this.animTime += 0.04;
 
         ctx.save();
-        ctx.fillStyle = '#1e293b';
-        ctx.fillRect(drawX + 10, drawY, 8, this.height);
 
-        ctx.fillStyle = this.activated ? '#00ff88' : '#00f3ff';
+        const activeColor = this.activated ? '#10b981' : '#38bdf8';
+
+        // 1. Telemetry Station Post / Pillar
+        const postGrad = ctx.createLinearGradient(drawX, drawY, drawX + this.width, drawY);
+        postGrad.addColorStop(0, '#334155');
+        postGrad.addColorStop(0.5, '#0f172a');
+        postGrad.addColorStop(1, '#1e293b');
+
+        ctx.fillStyle = postGrad;
+        ctx.fillRect(drawX + 10, drawY + 12, 8, this.height - 12);
+
+        // Vertical Laser Light Beam
+        ctx.strokeStyle = activeColor;
+        ctx.lineWidth = 2;
         if (!window.gamePerformanceMode) {
-            ctx.shadowColor = this.activated ? '#00ff88' : '#00f3ff';
-            ctx.shadowBlur = 14;
+            ctx.shadowColor = activeColor;
+            ctx.shadowBlur = 12;
         }
-
         ctx.beginPath();
-        ctx.arc(drawX + 14, drawY + 10, 10, 0, Math.PI * 2);
+        ctx.moveTo(drawX + 14, drawY + 14);
+        ctx.lineTo(drawX + 14, drawY + this.height);
+        ctx.stroke();
+
+        // 2. Floating Holographic Beacon Orb
+        const floatY = Math.sin(this.animTime * 3) * 3;
+        const orbX = drawX + 14;
+        const orbY = drawY + 10 + floatY;
+
+        // Pulse Ring
+        const ringPulse = 10 + Math.sin(this.animTime * 4) * 3;
+        ctx.strokeStyle = activeColor;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(orbX, orbY, ringPulse, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Core Glowing Sphere
+        const orbGrad = ctx.createRadialGradient(orbX - 2, orbY - 2, 1, orbX, orbY, 8);
+        orbGrad.addColorStop(0, '#ffffff');
+        orbGrad.addColorStop(0.4, activeColor);
+        orbGrad.addColorStop(1, 'rgba(15, 23, 42, 0.9)');
+
+        ctx.fillStyle = orbGrad;
+        ctx.beginPath();
+        ctx.arc(orbX, orbY, 7, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.restore();

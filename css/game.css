@@ -51,19 +51,22 @@ body.is-fullscreen-game .game-screen-wrapper {
     z-index: 30;
     width: 32px;
     height: 32px;
-    border: 1px solid rgba(0, 243, 255, 0.55);
+    border: 1px solid rgba(251, 191, 36, 0.55);
     border-radius: 9px;
     background: rgba(5, 8, 20, 0.82);
-    color: var(--primary-cyan);
+    color: var(--primary-gold, #fbbf24);
     font-family: var(--font-heading);
     font-size: 0.9rem;
     line-height: 1;
     cursor: pointer;
-    box-shadow: 0 0 14px rgba(0, 243, 255, 0.18);
+    box-shadow: 0 0 14px rgba(251, 191, 36, 0.25);
+    transition: all 0.2s ease;
 }
 
 .fullscreen-toggle:hover {
-    background: rgba(0, 243, 255, 0.12);
+    background: rgba(251, 191, 36, 0.2);
+    border-color: var(--primary-gold, #fbbf24);
+    box-shadow: 0 0 18px rgba(251, 191, 36, 0.5);
 }
 
 .fullscreen-toggle.exit-mode {

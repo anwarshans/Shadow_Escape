@@ -5,19 +5,7 @@
 class Renderer2D3D {
     constructor() {
         this.depth3D = 14; // 3D extrude depth in pixels
-
-        // Real-World Background Images Preloading
-        this.bgImages = [1, 2, 3, 4, 5].map(level => {
-            const src = `uploads/bg${level}.png`;
-            if (window.assetManager) {
-                return window.assetManager.getImage(src);
-            }
-            const image = new Image();
-            image.src = src;
-            image.loaded = false;
-            image.onload = () => { image.loaded = true; };
-            return image;
-        });
+        this.bgImages = [];
 
         // Theme Palettes tailored for each Level's Background Image
         this.levelThemes = {
@@ -61,17 +49,17 @@ class Renderer2D3D {
                 ambientRgb: '245, 158, 11'
             },
             4: { // Research Facility Core (High-Tech Laboratory)
-                lightAccent: '#06b6d4',
-                topGradStart: '#082f49',
-                topGradEnd: '#031926',
-                frontGradStart: '#0a192f',
-                frontGradEnd: '#040d1a',
-                sideFill: '#061528',
-                sideStroke: 'rgba(6, 182, 212, 0.35)',
-                gridStroke: 'rgba(6, 182, 212, 0.25)',
-                bgGradStart: '#061d2d',
-                bgGradEnd: '#020910',
-                ambientRgb: '6, 182, 212'
+                lightAccent: '#00f2fe',
+                topGradStart: '#051923',
+                topGradEnd: '#020b12',
+                frontGradStart: '#0a2540',
+                frontGradEnd: '#030e1a',
+                sideFill: '#041d33',
+                sideStroke: 'rgba(0, 242, 254, 0.45)',
+                gridStroke: 'rgba(0, 242, 254, 0.3)',
+                bgGradStart: '#09253b',
+                bgGradEnd: '#020912',
+                ambientRgb: '0, 242, 254'
             },
             5: { // Shadow Nexus (Reactor Core / Final Escape)
                 lightAccent: '#ff0055',
@@ -91,6 +79,27 @@ class Renderer2D3D {
 
     getTheme(levelId = 1) {
         return this.levelThemes[levelId] || this.levelThemes[1];
+    }
+
+    getBgImage(level = 1) {
+        const levelNum = Math.max(1, Math.min(5, level));
+        const src = `uploads/bg${levelNum}.png`;
+
+        if (window.assetManager) {
+            const cachedImg = window.assetManager.getImage(src);
+            if (cachedImg && (cachedImg.loaded || cachedImg.complete) && cachedImg.width > 0) {
+                return cachedImg;
+            }
+        }
+
+        if (!this.bgImages[levelNum - 1]) {
+            const img = new Image();
+            img.src = src;
+            img.loaded = false;
+            img.onload = () => { img.loaded = true; };
+            this.bgImages[levelNum - 1] = img;
+        }
+        return this.bgImages[levelNum - 1];
     }
 
     // Render 2.5D Platform Block with Level-Themed Colors & Built-In Corner Lights
@@ -191,23 +200,31 @@ class Renderer2D3D {
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
         // 2. Select Real-World Image based on current level
-        const bgIndex = Math.max(0, Math.min(this.bgImages.length - 1, currentLevel - 1));
-        const bgImg = this.bgImages[bgIndex];
+        const bgImg = this.getBgImage(currentLevel);
 
-        if (bgImg && bgImg.loaded) {
+        if (bgImg && (bgImg.loaded || bgImg.complete) && bgImg.width > 0 && bgImg.height > 0) {
             ctx.save();
-            ctx.globalAlpha = 0.65; // Smooth opacity blend with level atmosphere
+            ctx.globalAlpha = 0.75; // Crisp opacity blend with level atmosphere
             
-            // Parallax movement calculation
+            // Parallax movement calculation with guarantees against divide-by-zero / NaN
             const imgWidth = bgImg.width;
             const imgHeight = bgImg.height;
 
-            const scale = Math.max(canvasHeight / imgHeight, 1.2);
+            const scaleY = (canvasHeight * 1.25) / imgHeight;
+            const scaleX = canvasWidth / imgWidth;
+            const scale = Math.max(scaleX, scaleY, 1.25);
+
             const scaledW = imgWidth * scale;
             const scaledH = imgHeight * scale;
 
-            const startX = -((cameraOffset.x * 0.25) % scaledW);
-            const startY = -((cameraOffset.y * 0.15) % (scaledH - canvasHeight));
+            const scrollRangeY = Math.max(1, scaledH - canvasHeight);
+            const scrollRangeX = Math.max(1, scaledW);
+
+            let startX = -((cameraOffset.x * 0.25) % scrollRangeX);
+            let startY = -((cameraOffset.y * 0.15) % scrollRangeY);
+
+            if (!isFinite(startX) || isNaN(startX)) startX = 0;
+            if (!isFinite(startY) || isNaN(startY)) startY = 0;
 
             for (let x = startX - scaledW; x < canvasWidth + scaledW; x += scaledW) {
                 ctx.drawImage(bgImg, x, startY, scaledW, scaledH);

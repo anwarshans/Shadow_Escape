@@ -390,6 +390,26 @@ class SectorMapManager {
 
         this.ctx.clearRect(0, 0, w, h);
 
+        // 0. Render Tactical Radar Rings around Nodes
+        this.levels.forEach(lvl => {
+            const pos = this.calculatedNodePositions[lvl.id];
+            if (!pos) return;
+
+            this.ctx.beginPath();
+            this.ctx.arc(pos.x, pos.y, 48, 0, Math.PI * 2);
+            if (lvl.id <= this.clearedLevel) {
+                this.ctx.strokeStyle = 'rgba(16, 185, 129, 0.15)';
+                this.ctx.lineWidth = 1;
+            } else if (lvl.id === this.targetLevel) {
+                this.ctx.strokeStyle = 'rgba(251, 191, 36, 0.25)';
+                this.ctx.lineWidth = 1.5;
+            } else {
+                this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+                this.ctx.lineWidth = 1;
+            }
+            this.ctx.stroke();
+        });
+
         // 1. Draw Connecting Paths between nodes
         for (let i = 1; i < this.levels.length; i++) {
             const p1 = this.calculatedNodePositions[i];

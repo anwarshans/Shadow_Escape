@@ -522,6 +522,25 @@ class SoundEngine {
         });
     }
 
+    // Grand Victory: Triumphant multi-stage victory fanfare with brassy synth & chimes
+    playGrandVictory() {
+        if (this.isMuted || !this.ctx || this.sfxVol <= 0) return;
+        const sequence = [
+            { freq: 440.00, type: 'triangle', duration: 0.3, time: 0 },    // A4
+            { freq: 554.37, type: 'triangle', duration: 0.3, time: 120 },  // C#5
+            { freq: 659.25, type: 'triangle', duration: 0.3, time: 240 },  // E5
+            { freq: 880.00, type: 'sine',     duration: 0.6, time: 360 },  // A5
+            { freq: 1108.73, type: 'sine',    duration: 0.8, time: 520 },  // C#6
+            { freq: 1318.51, type: 'sine',    duration: 1.2, time: 700 }   // E6 grand sustain
+        ];
+        sequence.forEach(s => {
+            setTimeout(() => {
+                this.playTone(s.freq, s.type, s.duration, 0.75, 0.001, true);
+                this.playTone(s.freq * 0.5, 'sawtooth', s.duration * 0.6, 0.3, 0.001, false);
+            }, s.time);
+        });
+    }
+
     // UI Click: Snappy ringing glass button tick
     playUIClick() {
         this.playTone(1400, 'sine', 0.06, 0.45, 0.001, true);
