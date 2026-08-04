@@ -71,7 +71,6 @@
             <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation">☰</button>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#" onclick="showView('homeView'); return false;" class="nav-link active" id="navHome">Home</a></li>
-                <li><a href="#" onclick="showView('gameView'); return false;" class="nav-link" id="navPlay">Play Game</a></li>
                 <li><a href="#" onclick="openModal('modalLeaderboard'); return false;" class="nav-link">Leaderboard</a></li>
                 <li><a href="#" onclick="openModal('modalAbout'); return false;" class="nav-link">About</a></li>
                 <li><a href="#" onclick="openModal('modalContact'); return false;" class="nav-link">Contact</a></li>
@@ -100,7 +99,6 @@
                     <div class="poster-actions-row">
                         <button onclick="showView('gameView')" class="poster-play-btn">PLAY NOW &raquo;</button>
                         <div class="poster-secondary-group">
-                            <button onclick="toggleGameFullscreen()" class="poster-secondary-btn poster-fullscreen-btn" id="btnPosterFullscreen" title="Toggle Fullscreen">⤢ FULLSCREEN</button>
                             <button onclick="openStoryBriefingModal(1)" class="poster-secondary-btn" title="View Story Briefing Animation">🎬 BRIEFING</button>
                             <button onclick="openModal('modalAbout')" class="poster-secondary-btn">📖 GUIDE</button>
                             <button onclick="openModal('modalLeaderboard')" class="poster-secondary-btn">🏆 SCORES</button>
@@ -912,8 +910,8 @@
                 target.style.display = 'flex';
             }
 
-            document.getElementById('navHome').classList.toggle('active', viewId === 'homeView');
-            document.getElementById('navPlay').classList.toggle('active', viewId === 'gameView');
+            if (document.getElementById('navHome')) document.getElementById('navHome').classList.toggle('active', viewId === 'homeView');
+            if (document.getElementById('navPlay')) document.getElementById('navPlay').classList.toggle('active', viewId === 'gameView');
 
             if (viewId !== 'homeView') {
                 if (window.soundEngine) window.soundEngine.stopHomeBGM();
@@ -1045,13 +1043,6 @@
                 mobileHeaderFsBtn.setAttribute('aria-label', isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen');
                 mobileHeaderFsBtn.classList.toggle('active', isFullscreen);
             }
-
-            const posterFsBtn = document.getElementById('btnPosterFullscreen');
-            if (posterFsBtn) {
-                posterFsBtn.innerHTML = isFullscreen ? '🗗 EXIT FULLSCREEN' : '⤢ FULLSCREEN';
-                posterFsBtn.setAttribute('aria-label', isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen');
-                posterFsBtn.classList.toggle('active', isFullscreen);
-            }
         }
 
         async function requestGameFullscreen() {
@@ -1104,12 +1095,37 @@
             }
         }
 
+        async function requestHomeMobileFullscreen() {
+            await requestGameFullscreen();
+            try {
+                if (screen.orientation && screen.orientation.lock) {
+                    await screen.orientation.lock('portrait').catch(() => {
+                        if (screen.orientation.unlock) {
+                            screen.orientation.unlock();
+                        }
+                    });
+                } else if (screen.orientation && screen.orientation.unlock) {
+                    screen.orientation.unlock();
+                }
+            } catch (error) {
+                console.warn('Home portrait orientation lock/unlock handled:', error);
+            }
+        }
+
         function toggleGameFullscreen() {
             if (document.fullscreenElement) {
                 exitGameFullscreen();
+                if (screen.orientation && screen.orientation.unlock) {
+                    try { screen.orientation.unlock(); } catch (e) {}
+                }
             } else {
+                const isHomeView = (typeof currentView !== 'undefined' && currentView === 'homeView') || (document.getElementById('homeView') && document.getElementById('homeView').style.display !== 'none');
                 if (isMobileDevice()) {
-                    requestMobileGameMode();
+                    if (isHomeView) {
+                        requestHomeMobileFullscreen();
+                    } else {
+                        requestMobileGameMode();
+                    }
                 } else {
                     requestGameFullscreen();
                 }
