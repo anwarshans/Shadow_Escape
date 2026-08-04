@@ -161,7 +161,7 @@
                             <span class="intel-tag-pill">⚡ HTML5 CANVAS</span>
                             <span class="intel-tag-pill">🎮 60 FPS PHYSICS</span>
                             <span class="intel-tag-pill">🏆 5 SECTORS</span>
-                            <span class="intel-tag-pill">🔑 MASTER KEYCARD SYSTEM</span>
+                            <span class="intel-tag-pill secret-key-pill" onclick="openAdminAuthModal()" title="Admin Security Access">🔑 MASTER KEYCARD SYSTEM</span>
                         </div>
 
                         <div class="intel-story-box">
@@ -187,7 +187,7 @@
                                     <span>Bypass patrols, drones & laser grids</span>
                                 </div>
                             </div>
-                            <div class="intel-feature-box">
+                            <div class="intel-feature-box secret-key-pill" onclick="openAdminAuthModal()">
                                 <div class="intel-feature-icon">🔑</div>
                                 <div class="intel-feature-info">
                                     <strong>KEYCARDS & CRYSTALS</strong>
@@ -313,6 +313,7 @@
                         <span class="lvl-label">LEVEL</span>
                         <span class="lvl-num" id="hudLevelNum">1</span>
                     </div>
+                    <div class="dev-no-enemies-badge" id="hudDevNoEnemiesBadge" style="display: none;">🛡️ NO ENEMIES MODE</div>
 
                     <div class="hud-group right">
                         <div class="hud-item">
@@ -704,6 +705,183 @@
             </div>
         </div>
 
+        <!-- MODAL: ADMIN SECURITY AUTHENTICATION -->
+        <div class="modal-overlay" id="modalAdminAuth">
+            <div class="modal-content admin-auth-card">
+                <div class="admin-auth-header">
+                    <div class="admin-badge">
+                        <span class="admin-badge-icon">🔐</span>
+                        <span class="admin-badge-text">RESTRICTED ADMIN TERMINAL</span>
+                    </div>
+                    <button onclick="closeModal('modalAdminAuth')" class="admin-close-btn" aria-label="Close modal">✕</button>
+                </div>
+
+                <div class="admin-security-icon-wrapper">
+                    <div class="admin-key-glow-ring"></div>
+                    <div class="admin-security-icon">🔑</div>
+                </div>
+
+                <h2 class="admin-modal-title">SECURITY CLEARANCE REQUIRED</h2>
+                <p class="admin-modal-subtitle">Enter developer authorization key to bypass sector lockouts.</p>
+
+                <form id="adminAuthForm" onsubmit="handleAdminAuthSubmit(event)">
+                    <div class="admin-input-group">
+                        <label for="adminPasswordInput" class="admin-input-label">PASSCODE / OVERRIDE KEY</label>
+                        <div class="admin-input-wrapper" id="adminInputWrapper">
+                            <span class="admin-input-icon">🗝️</span>
+                            <input 
+                                type="password" 
+                                id="adminPasswordInput" 
+                                class="admin-password-input" 
+                                placeholder="Enter admin password..." 
+                                autocomplete="off" 
+                                required
+                            />
+                            <button type="button" class="admin-pwd-toggle" id="btnAdminPwdToggle" onclick="toggleAdminPasswordVisibility()" title="Show/Hide Password">👁️</button>
+                        </div>
+                    </div>
+
+                    <div id="adminAuthStatus" class="admin-auth-status" style="display: none;"></div>
+
+                    <div class="admin-modal-actions">
+                        <button type="submit" class="admin-btn admin-btn-submit">
+                            <span class="btn-icon">⚡</span> VERIFY CLEARANCE
+                        </button>
+                        <button type="button" onclick="closeModal('modalAdminAuth')" class="admin-btn admin-btn-cancel">
+                            CANCEL
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL: ADMIN LEVEL SELECTOR -->
+        <div class="modal-overlay" id="modalAdminLevelSelect">
+            <div class="modal-content admin-level-select-card">
+                <div class="admin-auth-header">
+                    <div class="admin-badge badge-gold">
+                        <span class="admin-badge-icon">👑</span>
+                        <span class="admin-badge-text">ADMIN OVERRIDE ACTIVE</span>
+                    </div>
+                    <button onclick="closeModal('modalAdminLevelSelect')" class="admin-close-btn" aria-label="Close modal">✕</button>
+                </div>
+
+                <h2 class="admin-modal-title">SELECT TARGET LEVEL / SECTOR</h2>
+                <p class="admin-modal-subtitle">Instant developer warp access. Select any level from 1 to 5.</p>
+
+                <div class="admin-level-grid">
+                    <!-- Level 1 -->
+                    <div class="admin-level-item" onclick="adminWarpToLevel(1)">
+                        <div class="level-item-header">
+                            <span class="level-num-badge">LEVEL 01</span>
+                            <span class="level-status-pill">SECTOR 1</span>
+                        </div>
+                        <div class="level-item-title">Green Valley Outskirts</div>
+                        <div class="level-item-desc">Perimeter breach, stair towers & basic patrols.</div>
+                        <button class="level-warp-btn">WARP TO LEVEL 1 &raquo;</button>
+                    </div>
+
+                    <!-- Level 2 -->
+                    <div class="admin-level-item" onclick="adminWarpToLevel(2)">
+                        <div class="level-item-header">
+                            <span class="level-num-badge">LEVEL 02</span>
+                            <span class="level-status-pill">SECTOR 2</span>
+                        </div>
+                        <div class="level-item-title">Metro Skyline District</div>
+                        <div class="level-item-desc">Rooftop snipers, laser grids & cargo transports.</div>
+                        <button class="level-warp-btn">WARP TO LEVEL 2 &raquo;</button>
+                    </div>
+
+                    <!-- Level 3 -->
+                    <div class="admin-level-item" onclick="adminWarpToLevel(3)">
+                        <div class="level-item-header">
+                            <span class="level-num-badge">LEVEL 03</span>
+                            <span class="level-status-pill">SECTOR 3</span>
+                        </div>
+                        <div class="level-item-title">Industrial Power Zone</div>
+                        <div class="level-item-desc">Reactor fluid channels, vertical shafts & guards.</div>
+                        <button class="level-warp-btn">WARP TO LEVEL 3 &raquo;</button>
+                    </div>
+
+                    <!-- Level 4 -->
+                    <div class="admin-level-item" onclick="adminWarpToLevel(4)">
+                        <div class="level-item-header">
+                            <span class="level-num-badge">LEVEL 04</span>
+                            <span class="level-status-pill">SECTOR 4</span>
+                        </div>
+                        <div class="level-item-title">Research Facility Core</div>
+                        <div class="level-item-desc">Plasma abyss staircases & heavy defense forces.</div>
+                        <button class="level-warp-btn">WARP TO LEVEL 4 &raquo;</button>
+                    </div>
+
+                    <!-- Level 5 -->
+                    <div class="admin-level-item level-item-boss" onclick="adminWarpToLevel(5)">
+                        <div class="level-item-header">
+                            <span class="level-num-badge badge-red">LEVEL 05</span>
+                            <span class="level-status-pill pill-red">FINAL SECTOR</span>
+                        </div>
+                        <div class="level-item-title">Shadow Nexus</div>
+                        <div class="level-item-desc">Elite guardians, master door & final extraction.</div>
+                        <button class="level-warp-btn btn-red">WARP TO LEVEL 5 &raquo;</button>
+                    </div>
+                </div>
+
+                <div class="admin-modal-footer">
+                    <button onclick="closeModal('modalAdminLevelSelect')" class="admin-btn admin-btn-cancel">
+                        CLOSE OVERRIDE PANEL
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL: ADMIN ENEMY MODE CONFIGURATION -->
+        <div class="modal-overlay" id="modalAdminEnemyConfig">
+            <div class="modal-content admin-enemy-config-card">
+                <div class="admin-auth-header">
+                    <div class="admin-badge badge-gold">
+                        <span class="admin-badge-icon">🛠️</span>
+                        <span class="admin-badge-text">DEVELOPER COMBAT CONFIG</span>
+                    </div>
+                    <button onclick="closeModal('modalAdminEnemyConfig')" class="admin-close-btn" aria-label="Close modal">✕</button>
+                </div>
+
+                <div class="admin-enemy-target-info">
+                    <span class="target-level-badge" id="enemyConfigLevelBadge">LEVEL 01</span>
+                    <h2 class="target-level-name" id="enemyConfigLevelTitle">Green Valley Outskirts</h2>
+                </div>
+
+                <p class="admin-modal-subtitle">Choose sector enemy threat configuration for this round:</p>
+
+                <div class="admin-enemy-options-grid">
+                    <!-- Option 1: With Enemies -->
+                    <div class="admin-enemy-option-card option-combat" onclick="confirmAdminLevelStart(false)">
+                        <div class="option-header">
+                            <h3 class="option-title">⚔️ PLAY WITH ENEMIES</h3>
+                            <span class="option-pill pill-gold">STANDARD COMBAT</span>
+                        </div>
+                        <p class="option-desc">Full tactical combat with armed security guards, flying drones & staircase snipers active.</p>
+                        <button type="button" class="option-action-btn btn-combat">LAUNCH WITH ENEMIES &raquo;</button>
+                    </div>
+
+                    <!-- Option 2: Without Enemies -->
+                    <div class="admin-enemy-option-card option-stealth" onclick="confirmAdminLevelStart(true)">
+                        <div class="option-header">
+                            <h3 class="option-title">🛡️ PLAY WITHOUT ENEMIES</h3>
+                            <span class="option-pill pill-cyan">DEV EXPLORATION</span>
+                        </div>
+                        <p class="option-desc">Safe developer mode. All patrol bots, fighters & flying drones are removed from the level.</p>
+                        <button type="button" class="option-action-btn btn-stealth">LAUNCH WITHOUT ENEMIES &raquo;</button>
+                    </div>
+                </div>
+
+                <div class="admin-modal-footer">
+                    <button type="button" onclick="closeModal('modalAdminEnemyConfig'); openModal('modalAdminLevelSelect');" class="admin-btn admin-btn-cancel">
+                        &laquo; BACK TO LEVEL SELECT
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- GAMEPLAY MODALS -->
         <div class="modal-overlay" id="pauseModal">
             <div class="modal-content pause-modal-content">
@@ -880,35 +1058,102 @@
         </div>
 
         <div class="victory-modal-overlay" id="victoryModal">
-            <!-- Dynamic Sunburst & Canvas background layers -->
+            <!-- Dynamic Sunburst, Light Rays & Canvas background animation video layers -->
             <div class="victory-sunburst"></div>
+            <div class="victory-light-beams"></div>
             <div class="victory-backdrop-glow"></div>
             <canvas id="victoryCanvas"></canvas>
 
-            <!-- High Graphics Stage Card -->
-            <div class="victory-stage-container">
+            <!-- High Graphics AAA Stage Card with 3D Tilt Effect -->
+            <div class="victory-stage-container" id="victoryStageContainer">
+                <!-- Glowing Crown Top Badge -->
                 <div class="victory-top-badge">
-                    <span>👑 GRAND VICTORY — ALL SECTORS CLEARED</span>
-                </div>
-                <h2 class="victory-title-text">FACILITY ESCAPED!</h2>
-                <p class="victory-sub-text">Congratulations! Agent Shanu bypassed all 5 security sectors and conquered the Shadow Citadel!</p>
-
-                <!-- Player Character Celebrating Graphic (Image 2 style) -->
-                <div class="victory-hero-avatar-frame">
-                    <img src="uploads/victory_hero.jpg" class="victory-hero-img" alt="Agent Shanu Celebrating Victory" />
+                    <span class="badge-icon">👑</span>
+                    <span class="badge-text">GRAND VICTORY — ALL SECTORS CLEARED</span>
+                    <span class="badge-sparkle">✨</span>
                 </div>
 
-                <!-- Animated Score Display -->
+                <!-- 3D Extruded Victory Title -->
+                <h2 class="victory-title-text" data-text="FACILITY ESCAPED!">FACILITY ESCAPED!</h2>
+                <p class="victory-sub-text">Congratulations! Agent Shanu bypassed all 5 security sectors &amp; conquered the Shadow Citadel!</p>
+
+                <!-- High Action 3D Character Celebration Stage (Video / Animated Showcase) -->
+                <div class="victory-hero-stage">
+                    <div class="victory-hero-avatar-frame" id="victoryHeroFrame">
+                        <div class="hero-energy-ring"></div>
+                        <div class="hero-light-rays"></div>
+                        <img src="uploads/victory_hero_3d.jpg" class="victory-hero-img" alt="Agent Shanu Celebrating Victory" />
+                        <div class="hero-shimmer-overlay"></div>
+                    </div>
+
+                    <!-- S-Rank / Legendary Escape Stamped Badge -->
+                    <div class="victory-rank-stamp" id="victoryRankStamp">
+                        <span class="rank-title">S-RANK</span>
+                        <span class="rank-subtitle">LEGENDARY</span>
+                    </div>
+
+                    <!-- Floating 3D Coin Graphics overlay -->
+                    <div class="victory-coins-overlay">
+                        <span class="floating-coin coin-1">🪙</span>
+                        <span class="floating-coin coin-2">🪙</span>
+                        <span class="floating-coin coin-3">🪙</span>
+                        <span class="floating-coin coin-4">🪙</span>
+                    </div>
+                </div>
+
+                <!-- Score Tally Display Card -->
                 <div class="victory-score-card">
-                    <div class="victory-score-label">FINAL SCORE</div>
+                    <div class="victory-score-header">
+                        <span class="victory-score-label">FINAL ESCAPE SCORE</span>
+                        <span class="victory-bonus-pill">+2,500 ESCAPE BONUS</span>
+                    </div>
                     <div class="victory-score-number" id="victoryScore">0</div>
                 </div>
 
-                <!-- Action Buttons -->
+                <!-- Stats Grid breakdown -->
+                <div class="victory-stats-grid">
+                    <div class="stat-tile">
+                        <span class="stat-icon">🏆</span>
+                        <div class="stat-info">
+                            <span class="stat-label">SECTORS</span>
+                            <span class="stat-value">5 / 5 CLEARED</span>
+                        </div>
+                    </div>
+                    <div class="stat-tile">
+                        <span class="stat-icon">🪙</span>
+                        <div class="stat-info">
+                            <span class="stat-label">COINS COLLECTED</span>
+                            <span class="stat-value">+1,250 COINS</span>
+                        </div>
+                    </div>
+                    <div class="stat-tile">
+                        <span class="stat-icon">⚡</span>
+                        <div class="stat-info">
+                            <span class="stat-label">ESCAPE RATING</span>
+                            <span class="stat-value">PERFECT ESCAPE</span>
+                        </div>
+                    </div>
+                    <div class="stat-tile">
+                        <span class="stat-icon">⭐</span>
+                        <div class="stat-info">
+                            <span class="stat-label">STARS EARNED</span>
+                            <span class="stat-value">⭐⭐⭐⭐⭐</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button Deck -->
                 <div class="victory-action-grid">
-                    <button class="victory-primary-btn" id="btnVictoryPlayAgain">PLAY AGAIN &raquo;</button>
-                    <button class="victory-secondary-btn" id="btnVictoryLeaderboard">🏆 VIEW LEADERBOARD</button>
-                    <button class="victory-secondary-btn" onclick="window.uiManager.hideAllModals(); showView('homeView');">MAIN MENU</button>
+                    <button class="victory-primary-btn" id="btnVictoryPlayAgain">
+                        <span>PLAY AGAIN</span>
+                        <span class="btn-arrow">»</span>
+                    </button>
+                    <button class="victory-secondary-btn" id="btnVictoryLeaderboard">
+                        <span>🏆 VIEW LEADERBOARD</span>
+                    </button>
+                    <button class="victory-secondary-btn" onclick="window.uiManager.hideAllModals(); showView('homeView');">
+                        <span>MAIN MENU</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1230,6 +1475,128 @@
                 }
             }
         }
+
+        // Developer & Admin Level Override System
+        function openAdminAuthModal() {
+            if (window.soundEngine && typeof window.soundEngine.playUIClick === 'function') {
+                window.soundEngine.playUIClick();
+            }
+            const input = document.getElementById('adminPasswordInput');
+            const statusBox = document.getElementById('adminAuthStatus');
+            const inputWrapper = document.getElementById('adminInputWrapper');
+            if (input) input.value = '';
+            if (statusBox) statusBox.style.display = 'none';
+            if (inputWrapper) inputWrapper.classList.remove('status-error-shake');
+
+            openModal('modalAdminAuth');
+
+            setTimeout(() => {
+                if (input) input.focus();
+            }, 200);
+        }
+
+        function toggleAdminPasswordVisibility() {
+            const input = document.getElementById('adminPasswordInput');
+            const btn = document.getElementById('btnAdminPwdToggle');
+            if (!input || !btn) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerText = '🙈';
+            } else {
+                input.type = 'password';
+                btn.innerText = '👁️';
+            }
+        }
+
+        function handleAdminAuthSubmit(e) {
+            if (e) e.preventDefault();
+            const input = document.getElementById('adminPasswordInput');
+            const statusBox = document.getElementById('adminAuthStatus');
+            const inputWrapper = document.getElementById('adminInputWrapper');
+            if (!input) return;
+
+            const enteredPassword = input.value.trim();
+            const REAL_PASSWORD = 'anwarshans007';
+
+            if (enteredPassword === REAL_PASSWORD) {
+                if (statusBox) {
+                    statusBox.style.display = 'flex';
+                    statusBox.className = 'admin-auth-status status-success';
+                    statusBox.innerHTML = '<span class="status-icon">✅</span> ACCESS GRANTED — AUTHORIZED OPERATOR';
+                }
+                if (inputWrapper) inputWrapper.classList.remove('status-error-shake');
+
+                if (window.soundEngine && typeof window.soundEngine.playLevelClear === 'function') {
+                    window.soundEngine.playLevelClear();
+                } else if (window.soundEngine && typeof window.soundEngine.playTone === 'function') {
+                    window.soundEngine.playTone(880, 'sine', 0.15, 0.3, 0.001, false);
+                }
+
+                setTimeout(() => {
+                    closeModal('modalAdminAuth');
+                    input.value = '';
+                    if (statusBox) statusBox.style.display = 'none';
+                    openModal('modalAdminLevelSelect');
+                }, 500);
+            } else {
+                if (statusBox) {
+                    statusBox.style.display = 'flex';
+                    statusBox.className = 'admin-auth-status status-error';
+                    statusBox.innerHTML = '<span class="status-icon">⛔</span> ACCESS DENIED — INVALID ADMIN CREDENTIALS';
+                }
+                if (inputWrapper) {
+                    inputWrapper.classList.remove('status-error-shake');
+                    void inputWrapper.offsetWidth;
+                    inputWrapper.classList.add('status-error-shake');
+                }
+
+                if (window.soundEngine && typeof window.soundEngine.playTone === 'function') {
+                    window.soundEngine.playTone(150, 'sawtooth', 0.25, 0.5, 0.001, false);
+                }
+
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        let selectedAdminLevelId = 1;
+
+        function adminWarpToLevel(levelId) {
+            if (window.soundEngine && typeof window.soundEngine.playUIClick === 'function') {
+                window.soundEngine.playUIClick();
+            }
+            selectedAdminLevelId = levelId;
+            closeModal('modalAdminLevelSelect');
+
+            const levelBadge = document.getElementById('enemyConfigLevelBadge');
+            const levelTitle = document.getElementById('enemyConfigLevelTitle');
+            const rawLevel = window.LEVELS ? window.LEVELS.find(l => l.id === levelId) : null;
+
+            if (levelBadge) levelBadge.innerText = `LEVEL 0${levelId}`;
+            if (levelTitle) {
+                const rawTitle = rawLevel ? rawLevel.title : `Level ${levelId}`;
+                levelTitle.innerText = rawTitle.replace(/^Level\s+\d+:\s*/i, '');
+            }
+
+            openModal('modalAdminEnemyConfig');
+        }
+
+        function confirmAdminLevelStart(disableEnemies) {
+            if (window.soundEngine && typeof window.soundEngine.playUIClick === 'function') {
+                window.soundEngine.playUIClick();
+            }
+            closeModal('modalAdminEnemyConfig');
+            showView('gameView');
+            if (window.gameEngine) {
+                window.gameEngine.loadLevel(selectedAdminLevelId, disableEnemies);
+            }
+        }
+
+        window.openAdminAuthModal = openAdminAuthModal;
+        window.toggleAdminPasswordVisibility = toggleAdminPasswordVisibility;
+        window.handleAdminAuthSubmit = handleAdminAuthSubmit;
+        window.adminWarpToLevel = adminWarpToLevel;
+        window.confirmAdminLevelStart = confirmAdminLevelStart;
 
         function copyContactInfo(text, msg, btnEl) {
             if (window.soundEngine) window.soundEngine.playUIClick();

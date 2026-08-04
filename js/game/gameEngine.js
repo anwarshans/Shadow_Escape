@@ -94,7 +94,7 @@ class GameEngine {
         );
     }
 
-    loadLevel(levelId) {
+    loadLevel(levelId, disableEnemies = undefined) {
         const maxLevels = (window.LEVELS && window.LEVELS.length) ? window.LEVELS.length : 5;
         if (levelId > maxLevels || levelId < 1) {
             levelId = 1;
@@ -103,6 +103,9 @@ class GameEngine {
             this.score = 0;
         }
         this.currentLevelId = levelId;
+        if (disableEnemies !== undefined) {
+            this.disableEnemies = !!disableEnemies;
+        }
         const rawLevel = window.LEVELS.find(l => l.id === levelId);
         if (!rawLevel) return;
 
@@ -117,13 +120,23 @@ class GameEngine {
         this.hazards = (this.levelData.hazards || []).map(h => new HazardZone(h.x, h.y, h.width, h.height, h.isReactorFluid));
         this.lasers = (this.levelData.lasers || []).map(l => new LaserTrap(l.x1, l.y1, l.x2, l.y2, l.interval, l.duration));
 
-        // Load Enemies
-        this.enemies = (this.levelData.enemies || []).map(e => {
-            if (e.type === 'patrol') return new PatrolBot(e.x, e.y, e.rangeLeft, e.rangeRight, e.speed || 0.9);
-            if (e.type === 'fighter') return new Fighter(e.x, e.y, e.rangeLeft, e.rangeRight, e.speed || 1.1, e.hp || 60);
-            if (e.type === 'drone' || e.type === 'flighter') return new FlyingDrone(e.x, e.y, e.rangeY, e.speed, e.pattern, e.rangeX);
-            return null;
-        }).filter(Boolean);
+        // Load Enemies (Filtered out if disableEnemies is active)
+        if (this.disableEnemies) {
+            this.enemies = [];
+        } else {
+            this.enemies = (this.levelData.enemies || []).map(e => {
+                if (e.type === 'patrol') return new PatrolBot(e.x, e.y, e.rangeLeft, e.rangeRight, e.speed || 0.9);
+                if (e.type === 'fighter') return new Fighter(e.x, e.y, e.rangeLeft, e.rangeRight, e.speed || 1.1, e.hp || 60);
+                if (e.type === 'drone' || e.type === 'flighter') return new FlyingDrone(e.x, e.y, e.rangeY, e.speed, e.pattern, e.rangeX);
+                return null;
+            }).filter(Boolean);
+        }
+
+        // Toggle Dev HUD Badge
+        const devBadge = document.getElementById('hudDevNoEnemiesBadge');
+        if (devBadge) {
+            devBadge.style.display = this.disableEnemies ? 'inline-flex' : 'none';
+        }
 
         // Collectibles
         this.crystals = (this.levelData.crystals || []).map(c => new EnergyCrystal(c.x, c.y));
