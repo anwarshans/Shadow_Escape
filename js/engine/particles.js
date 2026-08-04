@@ -27,16 +27,14 @@ class Particle {
 
     draw(ctx, cameraOffset) {
         if (this.alpha <= 0) return;
-        ctx.save();
-        ctx.globalAlpha = this.alpha;
-        ctx.fillStyle = this.color;
-
         const drawX = this.x - cameraOffset.x;
         const drawY = this.y - cameraOffset.y;
 
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+
         if (this.shape === 'text') {
             ctx.font = '900 16px var(--font-heading), sans-serif';
-            ctx.fillStyle = this.color;
             ctx.textAlign = 'center';
             ctx.fillText(this.text || '', drawX, drawY);
         } else if (this.shape === 'rect') {
@@ -46,7 +44,6 @@ class Particle {
             ctx.arc(drawX, drawY, Math.max(1, this.size * this.alpha), 0, Math.PI * 2);
             ctx.fill();
         }
-        ctx.restore();
     }
 }
 
@@ -164,22 +161,26 @@ class ParticleSystem {
 
     draw(ctx, cameraOffset) {
         // Draw Dash Ghosts
-        this.dashGhosts.forEach(g => {
+        if (this.dashGhosts.length > 0) {
             ctx.save();
-            ctx.globalAlpha = (g.life / g.lifeMax) * 0.5;
             ctx.fillStyle = '#00f3ff';
-            if (!window.gamePerformanceMode) {
-                ctx.shadowColor = '#00f3ff';
-                ctx.shadowBlur = 15;
-            }
-            const drawX = g.x - cameraOffset.x;
-            const drawY = g.y - cameraOffset.y;
-            ctx.fillRect(drawX, drawY, g.width, g.height);
+            this.dashGhosts.forEach(g => {
+                ctx.globalAlpha = (g.life / g.lifeMax) * 0.5;
+                const drawX = g.x - cameraOffset.x;
+                const drawY = g.y - cameraOffset.y;
+                ctx.fillRect(drawX, drawY, g.width, g.height);
+            });
             ctx.restore();
-        });
+        }
 
         // Draw Normal Particles
-        this.particles.forEach(p => p.draw(ctx, cameraOffset));
+        if (this.particles.length > 0) {
+            ctx.save();
+            for (let i = 0; i < this.particles.length; i++) {
+                this.particles[i].draw(ctx, cameraOffset);
+            }
+            ctx.restore();
+        }
     }
 
     reset() {

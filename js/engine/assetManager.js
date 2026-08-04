@@ -9,23 +9,14 @@ class AssetManager {
         this.totalCount = 0;
         this.isReady = false;
 
-        // Complete manifest of all game PNG image assets
-        this.manifest = [
-            // Level Parallax Backgrounds
-            'uploads/bg1.png',
-            'uploads/bg2.png',
-            'uploads/bg3.png',
-            'uploads/bg4.png',
-            'uploads/bg5.png',
-
-            // Story Mode Briefing Level Background Images
-            'uploads/animation img 1.png',
-            'uploads/animation img 2.png',
-            'uploads/animation img 3.png',
-            'uploads/animation img 4.png',
-            'uploads/animation img 5.png',
+        // Core gameplay image assets (Level backgrounds & essential UI)
+        this.coreManifest = [
+            'uploads/bg1.webp',
+            'uploads/bg2.webp',
+            'uploads/bg3.webp',
+            'uploads/bg4.webp',
+            'uploads/bg5.webp',
             
-            // Player Animation Sprites
             'uploads/player_stand.png',
             'uploads/player_slow_walk.png',
             'uploads/player_run1.png',
@@ -40,7 +31,6 @@ class AssetManager {
             'uploads/player_flight3.png',
             'uploads/player_flight4.png',
             
-            // Enemy & Hazard Sprites
             'uploads/guard.png',
             'uploads/fighter walk 1.png',
             'uploads/fighter walk 2.png',
@@ -50,25 +40,36 @@ class AssetManager {
             'uploads/fighter 3.png',
             'uploads/fighter 4.png',
             'uploads/drone.png',
-
-            // Collectibles
             'uploads/crystal.png',
 
-            // UI & Branding
             'uploads/logo.png',
-            'uploads/preview.png',
-            'uploads/org_person.png'
+            'uploads/preview.webp',
+            'uploads/org_person.webp'
         ];
+
+        this.storyManifest = [
+            'uploads/animation img 1.webp',
+            'uploads/animation img 2.webp',
+            'uploads/animation img 3.webp',
+            'uploads/animation img 4.webp',
+            'uploads/animation img 5.webp'
+        ];
+
+        this.manifest = [...this.coreManifest, ...this.storyManifest];
     }
 
     preloadAll() {
         this.totalCount = this.manifest.length;
         this.loadedCount = 0;
 
-        const promises = this.manifest.map(src => this.loadImage(src));
-        return Promise.all(promises).then(() => {
+        // Load core gameplay assets first asynchronously
+        const corePromises = this.coreManifest.map(src => this.loadImage(src));
+        
+        return Promise.all(corePromises).then(() => {
             this.isReady = true;
-            console.log(`[AssetManager] Preloaded ${this.loadedCount}/${this.totalCount} game assets.`);
+            console.log(`[AssetManager] Core assets loaded (${this.coreManifest.length}/${this.coreManifest.length}). Loading story assets...`);
+            // Non-blocking background load for story briefing images
+            this.storyManifest.forEach(src => this.loadImage(src));
         });
     }
 
@@ -80,11 +81,26 @@ class AssetManager {
         return new Promise((resolve) => {
             const img = new Image();
             img.loaded = false;
-            img.onload = () => {
-                img.loaded = true;
-                this.loadedCount++;
-                resolve(img);
+
+            const handleComplete = () => {
+                if ('decode' in img && typeof img.decode === 'function') {
+                    img.decode().then(() => {
+                        img.loaded = true;
+                        this.loadedCount++;
+                        resolve(img);
+                    }).catch(() => {
+                        img.loaded = true;
+                        this.loadedCount++;
+                        resolve(img);
+                    });
+                } else {
+                    img.loaded = true;
+                    this.loadedCount++;
+                    resolve(img);
+                }
             };
+
+            img.onload = handleComplete;
             img.onerror = () => {
                 console.warn(`[AssetManager] Warning: Image failed to load: ${src}`);
                 img.loaded = true;
@@ -96,21 +112,42 @@ class AssetManager {
     }
 
     getImage(src) {
-        if (this.cache.has(src)) {
-            return this.cache.get(src);
+        // Transparent mapping of legacy .png paths to optimized .webp paths for background and heavy images
+        let targetSrc = src;
+        if (src.includes('bg1.png')) targetSrc = 'uploads/bg1.webp';
+        else if (src.includes('bg2.png')) targetSrc = 'uploads/bg2.webp';
+        else if (src.includes('bg3.png')) targetSrc = 'uploads/bg3.webp';
+        else if (src.includes('bg4.png')) targetSrc = 'uploads/bg4.webp';
+        else if (src.includes('bg5.png')) targetSrc = 'uploads/bg5.webp';
+        else if (src.includes('preview.png')) targetSrc = 'uploads/preview.webp';
+        else if (src.includes('org_person.png')) targetSrc = 'uploads/org_person.webp';
+        else if (src.includes('animation img 1.png')) targetSrc = 'uploads/animation img 1.webp';
+        else if (src.includes('animation img 2.png')) targetSrc = 'uploads/animation img 2.webp';
+        else if (src.includes('animation img 3.png')) targetSrc = 'uploads/animation img 3.webp';
+        else if (src.includes('animation img 4.png')) targetSrc = 'uploads/animation img 4.webp';
+        else if (src.includes('animation img 5.png')) targetSrc = 'uploads/animation img 5.webp';
+
+        if (this.cache.has(targetSrc)) {
+            return this.cache.get(targetSrc);
         }
 
         // Automatic fallback cache entry
         const img = new Image();
         img.loaded = false;
-        img.onload = () => { img.loaded = true; };
+        img.onload = () => {
+            if ('decode' in img && typeof img.decode === 'function') {
+                img.decode().then(() => { img.loaded = true; }).catch(() => { img.loaded = true; });
+            } else {
+                img.loaded = true;
+            }
+        };
         img.onerror = () => { img.loaded = true; };
-        img.src = src;
-        this.cache.set(src, img);
+        img.src = targetSrc;
+        this.cache.set(targetSrc, img);
         return img;
     }
 }
 
 window.assetManager = new AssetManager();
-// Preload instantly on script parse
+// Preload core assets instantly on script parse
 window.assetManager.preloadAll();

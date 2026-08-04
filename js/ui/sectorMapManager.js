@@ -27,7 +27,7 @@ class SectorMapManager {
                 title: "GREEN VALLEY OUTSKIRTS",
                 diff: "EASY",
                 themeColor: "#10b981",
-                img: "uploads/animation img 1.png",
+                img: "uploads/animation img 1.webp",
                 cardX: 20, cardY: 34,
                 wpX: 20, wpY: 34
             },
@@ -37,7 +37,7 @@ class SectorMapManager {
                 title: "METRO SKYLINE DISTRICT",
                 diff: "NORMAL",
                 themeColor: "#00f3ff",
-                img: "uploads/animation img 2.png",
+                img: "uploads/animation img 2.webp",
                 cardX: 44, cardY: 28,
                 wpX: 44, wpY: 28
             },
@@ -47,7 +47,7 @@ class SectorMapManager {
                 title: "INDUSTRIAL POWER ZONE",
                 diff: "HARD",
                 themeColor: "#fbbf24",
-                img: "uploads/animation img 3.png",
+                img: "uploads/animation img 3.webp",
                 cardX: 72, cardY: 34,
                 wpX: 72, wpY: 34
             },
@@ -57,7 +57,7 @@ class SectorMapManager {
                 title: "RESEARCH FACILITY CORE",
                 diff: "VERY HARD",
                 themeColor: "#a855f7",
-                img: "uploads/animation img 4.png",
+                img: "uploads/animation img 4.webp",
                 cardX: 32, cardY: 72,
                 wpX: 32, wpY: 72
             },
@@ -67,7 +67,7 @@ class SectorMapManager {
                 title: "SHADOW NEXUS CITADEL",
                 diff: "EXTREME",
                 themeColor: "#ef4444",
-                img: "uploads/animation img 5.png",
+                img: "uploads/animation img 5.webp",
                 cardX: 82, cardY: 72,
                 wpX: 82, wpY: 72
             }

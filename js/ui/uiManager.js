@@ -249,6 +249,14 @@ class UIManager {
 
         this.victoryModal.classList.add('active');
 
+        // Trigger Landing Shockwave Burst on Hero Run-In
+        const shockwave = document.getElementById('victoryShockwave');
+        if (shockwave) {
+            shockwave.classList.remove('burst');
+            void shockwave.offsetWidth; // trigger reflow
+            setTimeout(() => shockwave.classList.add('burst'), 250);
+        }
+
         // Reset S-Rank stamp
         const rankStamp = document.getElementById('victoryRankStamp');
         if (rankStamp) rankStamp.classList.remove('stamped');
@@ -273,9 +281,10 @@ class UIManager {
     }
 
     setupVictoryParallaxTilt() {
-        const container = document.getElementById('victoryStageContainer');
-        const heroFrame = document.getElementById('victoryHeroFrame');
-        if (!this.victoryModal || !container) return;
+        const heroWrapper = document.getElementById('heroCharacterWrapper');
+        const heroContainer = document.getElementById('victoryHeroContainer');
+        const bottomDock = document.getElementById('victoryBottomDock');
+        if (!this.victoryModal || !heroContainer) return;
 
         const handleMove = (e) => {
             if (!this.victoryModal || !this.victoryModal.classList.contains('active')) return;
@@ -287,18 +296,20 @@ class UIManager {
             const dx = (clientX - cx) / cx; // -1 to 1
             const dy = (clientY - cy) / cy; // -1 to 1
 
-            const tiltX = -dy * 12; // deg
-            const tiltY = dx * 14;  // deg
+            const tiltX = -dy * 10; // deg
+            const tiltY = dx * 12;  // deg
 
-            container.style.transform = `scale(1) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-            if (heroFrame) {
-                heroFrame.style.transform = `translateZ(30px) rotateX(${tiltX * 0.5}deg) rotateY(${tiltY * 0.5}deg)`;
+            if (heroWrapper) {
+                heroWrapper.style.transform = `scale(1) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(30px)`;
+            }
+            if (bottomDock) {
+                bottomDock.style.transform = `translateY(0) rotateX(${tiltX * 0.3}deg) rotateY(${tiltY * 0.3}deg)`;
             }
         };
 
         const handleReset = () => {
-            if (container) container.style.transform = 'scale(1) rotateX(0deg) rotateY(0deg)';
-            if (heroFrame) heroFrame.style.transform = 'translateZ(0px) rotateX(0deg) rotateY(0deg)';
+            if (heroWrapper) heroWrapper.style.transform = 'scale(1) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+            if (bottomDock) bottomDock.style.transform = 'translateY(0) rotateX(0deg) rotateY(0deg)';
         };
 
         this.victoryModal.addEventListener('mousemove', handleMove);
@@ -555,7 +566,7 @@ class UIManager {
         const bgImage = document.getElementById('introBgImage');
         const levelId = Math.min(Math.max(levelData.id || 1, 1), 5);
         if (bgImage) {
-            bgImage.style.backgroundImage = `url("uploads/animation img ${levelId}.png")`;
+            bgImage.style.backgroundImage = `url("uploads/animation img ${levelId}.webp")`;
         }
 
         const chapterHeader = document.getElementById('introChapterHeader');

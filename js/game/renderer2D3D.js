@@ -75,6 +75,8 @@ class Renderer2D3D {
                 ambientRgb: '255, 0, 85'
             }
         };
+        this.vignetteCanvas = null;
+        this.bgGradients = {};
     }
 
     getTheme(levelId = 1) {
@@ -83,10 +85,10 @@ class Renderer2D3D {
 
     getBgImage(level = 1) {
         const levelNum = Math.max(1, Math.min(5, level));
-        const src = `uploads/bg${levelNum}.png`;
+        const srcWebp = `uploads/bg${levelNum}.webp`;
 
         if (window.assetManager) {
-            const cachedImg = window.assetManager.getImage(src);
+            const cachedImg = window.assetManager.getImage(srcWebp);
             if (cachedImg && (cachedImg.loaded || cachedImg.complete) && cachedImg.width > 0) {
                 return cachedImg;
             }
@@ -94,7 +96,7 @@ class Renderer2D3D {
 
         if (!this.bgImages[levelNum - 1]) {
             const img = new Image();
-            img.src = src;
+            img.src = srcWebp;
             img.loaded = false;
             img.onload = () => { img.loaded = true; };
             this.bgImages[levelNum - 1] = img;
@@ -183,20 +185,47 @@ class Renderer2D3D {
         ctx.restore();
     }
 
-    // Render Real-World Parallax Image Background (bg1.png - bg5.png) with Level Theme Tint
+    // Helper: Cached Vignette Overlay to eliminate radial gradient creation per frame
+    getVignetteCanvas(width, height) {
+        if (this.vignetteCanvas && this.vignetteCanvas.width === width && this.vignetteCanvas.height === height) {
+            return this.vignetteCanvas;
+        }
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = width;
+        offCanvas.height = height;
+        const offCtx = offCanvas.getContext('2d');
+
+        const vignette = offCtx.createRadialGradient(
+            width / 2, height / 2, width * 0.3,
+            width / 2, height / 2, width * 0.8
+        );
+        vignette.addColorStop(0, 'rgba(6, 7, 10, 0.15)');
+        vignette.addColorStop(0.7, 'rgba(6, 7, 10, 0.6)');
+        vignette.addColorStop(1, 'rgba(4, 5, 8, 0.92)');
+        offCtx.fillStyle = vignette;
+        offCtx.fillRect(0, 0, width, height);
+
+        this.vignetteCanvas = offCanvas;
+        return offCanvas;
+    }
+
+    // Render Real-World Parallax Image Background (bg1.webp - bg5.webp) with Level Theme Tint
     drawParallaxBackground(ctx, cameraOffset, canvasWidth, canvasHeight, currentLevel = 1) {
         const theme = this.getTheme(currentLevel);
 
         ctx.save();
 
-        // 1. Level-Matched Deep Base Gradient
-        const bgGrad = ctx.createRadialGradient(
-            canvasWidth / 2, canvasHeight / 2, 100,
-            canvasWidth / 2, canvasHeight / 2, canvasWidth
-        );
-        bgGrad.addColorStop(0, theme.bgGradStart);
-        bgGrad.addColorStop(1, theme.bgGradEnd);
-        ctx.fillStyle = bgGrad;
+        // 1. Level-Matched Deep Base Gradient (Cached per theme)
+        if (!this.bgGradients[currentLevel]) {
+            const bgGrad = ctx.createRadialGradient(
+                canvasWidth / 2, canvasHeight / 2, 100,
+                canvasWidth / 2, canvasHeight / 2, canvasWidth
+            );
+            bgGrad.addColorStop(0, theme.bgGradStart);
+            bgGrad.addColorStop(1, theme.bgGradEnd);
+            this.bgGradients[currentLevel] = bgGrad;
+        }
+        ctx.fillStyle = this.bgGradients[currentLevel];
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
         // 2. Select Real-World Image based on current level
@@ -206,7 +235,7 @@ class Renderer2D3D {
             ctx.save();
             ctx.globalAlpha = 0.75; // Crisp opacity blend with level atmosphere
             
-            // Parallax movement calculation with guarantees against divide-by-zero / NaN
+            // Parallax movement calculation
             const imgWidth = bgImg.width;
             const imgHeight = bgImg.height;
 
@@ -232,16 +261,9 @@ class Renderer2D3D {
             ctx.restore();
         }
 
-        // 3. Atmosphere Vignette
-        const vignette = ctx.createRadialGradient(
-            canvasWidth / 2, canvasHeight / 2, canvasWidth * 0.3,
-            canvasWidth / 2, canvasHeight / 2, canvasWidth * 0.8
-        );
-        vignette.addColorStop(0, 'rgba(6, 7, 10, 0.15)');
-        vignette.addColorStop(0.7, 'rgba(6, 7, 10, 0.6)');
-        vignette.addColorStop(1, 'rgba(4, 5, 8, 0.92)');
-        ctx.fillStyle = vignette;
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        // 3. Atmosphere Vignette (Using Cached Offscreen Canvas)
+        const vignetteImg = this.getVignetteCanvas(canvasWidth, canvasHeight);
+        ctx.drawImage(vignetteImg, 0, 0);
 
         // 4. Subtle Grid Overlay with Level Theme Tint
         const offsetX = (cameraOffset.x * 0.35) % 80;

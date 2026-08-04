@@ -210,8 +210,8 @@
                     </div>
 
                     <div class="poster-hero-person-wrapper">
-                        <img src="uploads/org_person.png" alt="Shadow Escape Hero Agent Shanu" class="poster-hero-img desktop-hero-img">
-                        <img src="uploads/preview.png" alt="Shadow Escape Gameplay Preview" class="poster-hero-img mobile-hero-img" onclick="showView('gameView')">
+                        <img src="uploads/org_person.webp" alt="Shadow Escape Hero Agent Shanu" class="poster-hero-img desktop-hero-img">
+                        <img src="uploads/preview.webp" alt="Shadow Escape Gameplay Preview" class="poster-hero-img mobile-hero-img" onclick="showView('gameView')">
                         <div class="poster-hero-name-tag">
                             <span class="tag-role">HERO RUNNER</span>
                             <strong class="tag-name">AGENT SHANU</strong>
@@ -232,7 +232,7 @@
                 <!-- Story Mode Cinematic Intro Screen (Full Screen Overlay with Level Theme Backgrounds) -->
                 <div class="level-intro-overlay" id="levelIntroOverlay" style="display: none;">
                     <div class="intro-bg-container">
-                        <div class="intro-bg-image" id="introBgImage" style="background-image: url('uploads/animation img 1.png');"></div>
+                        <div class="intro-bg-image" id="introBgImage" style="background-image: url('uploads/animation img 1.webp');"></div>
                         <div class="intro-bg-gradient-overlay"></div>
                         <div class="intro-bg-vignette"></div>
                         <div class="intro-bg-scanlines"></div>
@@ -532,7 +532,7 @@
                 <div class="contact-profile-section">
                     <div class="contact-avatar-wrapper">
                         <div class="avatar-ring-animated"></div>
-                        <img src="uploads/Anwarsha Logo.png" alt="Anwarsha N S" class="contact-avatar-img">
+                        <img src="uploads/Anwarsha Logo.webp" alt="Anwarsha N S" class="contact-avatar-img">
                         <div class="verified-badge" title="Verified Developer">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="20 6 9 17 4 12"></polyline>
@@ -957,7 +957,7 @@
                                 <span class="card-lvl-name">GREEN VALLEY</span>
                             </div>
                             <div class="card-thumb-wrapper">
-                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 1.png');"></div>
+                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 1.webp');"></div>
                                 <div class="card-badge-overlay">✓</div>
                             </div>
                             <div class="card-footer-bar">
@@ -973,7 +973,7 @@
                                 <span class="card-lvl-name">METRO SKYLINE</span>
                             </div>
                             <div class="card-thumb-wrapper">
-                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 2.png');"></div>
+                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 2.webp');"></div>
                                 <div class="card-badge-overlay">02</div>
                             </div>
                             <div class="card-footer-bar">
@@ -989,7 +989,7 @@
                                 <span class="card-lvl-name">POWER ZONE</span>
                             </div>
                             <div class="card-thumb-wrapper">
-                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 3.png');"></div>
+                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 3.webp');"></div>
                                 <div class="card-badge-overlay">🔒</div>
                             </div>
                             <div class="card-footer-bar">
@@ -1005,7 +1005,7 @@
                                 <span class="card-lvl-name">RESEARCH CORE</span>
                             </div>
                             <div class="card-thumb-wrapper">
-                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 4.png');"></div>
+                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 4.webp');"></div>
                                 <div class="card-badge-overlay">🔒</div>
                             </div>
                             <div class="card-footer-bar">
@@ -1021,7 +1021,7 @@
                                 <span class="card-lvl-name">SHADOW NEXUS</span>
                             </div>
                             <div class="card-thumb-wrapper">
-                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 5.png');"></div>
+                                <div class="card-thumb-img" style="background-image: url('uploads/animation img 5.webp');"></div>
                                 <div class="card-badge-overlay">🔒</div>
                             </div>
                             <div class="card-footer-bar">
@@ -1058,98 +1058,101 @@
         </div>
 
         <div class="victory-modal-overlay" id="victoryModal">
-            <!-- Dynamic Sunburst, Light Rays & Canvas background animation video layers -->
+            <!-- Dynamic Sunburst, Light Rays & Fullscreen Canvas Video Layers -->
             <div class="victory-sunburst"></div>
             <div class="victory-light-beams"></div>
             <div class="victory-backdrop-glow"></div>
+            
+            <!-- Fullscreen Ambient Track Backdrop Layer -->
+            <div class="victory-fullscreen-bg" id="victoryFullscreenBg"></div>
+
+            <!-- Fullscreen Canvas for 60 FPS Particle Physics, Confetti Cannons & 3D Coins -->
             <canvas id="victoryCanvas"></canvas>
 
-            <!-- High Graphics AAA Stage Card with 3D Tilt Effect -->
-            <div class="victory-stage-container" id="victoryStageContainer">
-                <!-- Glowing Crown Top Badge -->
+            <!-- Shockwave Impact Ring on Hero Entrance Landing -->
+            <div class="victory-shockwave" id="victoryShockwave"></div>
+
+            <!-- Top Floating Header HUD (3D Title & Crown Badge) -->
+            <div class="victory-top-hud" id="victoryTopHud">
                 <div class="victory-top-badge">
                     <span class="badge-icon">👑</span>
                     <span class="badge-text">GRAND VICTORY — ALL SECTORS CLEARED</span>
                     <span class="badge-sparkle">✨</span>
                 </div>
+                <h1 class="victory-title-text" data-text="FACILITY ESCAPED!">FACILITY ESCAPED!</h1>
+                <p class="victory-sub-text">AGENT SHANU BYPASSED ALL 5 SECURITY SECTORS &amp; CONQUERED THE SHADOW CITADEL!</p>
+            </div>
 
-                <!-- 3D Extruded Victory Title -->
-                <h2 class="victory-title-text" data-text="FACILITY ESCAPED!">FACILITY ESCAPED!</h2>
-                <p class="victory-sub-text">Congratulations! Agent Shanu bypassed all 5 security sectors &amp; conquered the Shadow Citadel!</p>
-
-                <!-- High Action 3D Character Celebration Stage (Video / Animated Showcase) -->
-                <div class="victory-hero-stage">
-                    <div class="victory-hero-avatar-frame" id="victoryHeroFrame">
-                        <div class="hero-energy-ring"></div>
-                        <div class="hero-light-rays"></div>
-                        <img src="uploads/victory_hero_3d.jpg" class="victory-hero-img" alt="Agent Shanu Celebrating Victory" />
-                        <div class="hero-shimmer-overlay"></div>
-                    </div>
-
-                    <!-- S-Rank / Legendary Escape Stamped Badge -->
-                    <div class="victory-rank-stamp" id="victoryRankStamp">
-                        <span class="rank-title">S-RANK</span>
-                        <span class="rank-subtitle">LEGENDARY</span>
-                    </div>
-
-                    <!-- Floating 3D Coin Graphics overlay -->
-                    <div class="victory-coins-overlay">
-                        <span class="floating-coin coin-1">🪙</span>
-                        <span class="floating-coin coin-2">🪙</span>
-                        <span class="floating-coin coin-3">🪙</span>
-                        <span class="floating-coin coin-4">🪙</span>
-                    </div>
+            <!-- Center Arena Stage: Massive Animated Full-Body Running & Celebrating Hero Character -->
+            <div class="victory-hero-fullscreen-container" id="victoryHeroContainer">
+                <div class="hero-energy-ring-lg"></div>
+                <div class="hero-light-rays-lg"></div>
+                
+                <!-- Animated Hero Character Image (Widescreen + Mobile responsive) -->
+                <div class="hero-character-wrapper" id="heroCharacterWrapper">
+                    <img src="uploads/victory_hero_landscape.webp" class="victory-hero-img-fullscreen hero-desktop" alt="Agent Shanu Celebrating Victory" />
+                    <img src="uploads/victory_hero_fullscreen.webp" class="victory-hero-img-fullscreen hero-mobile" alt="Agent Shanu Celebrating Victory" />
+                    <div class="hero-shimmer-overlay-lg"></div>
                 </div>
 
-                <!-- Score Tally Display Card -->
-                <div class="victory-score-card">
+                <!-- Giant S-RANK / LEGENDARY Stamp Badge -->
+                <div class="victory-rank-stamp-lg" id="victoryRankStamp">
+                    <span class="rank-title">S-RANK</span>
+                    <span class="rank-subtitle">LEGENDARY ESCAPE</span>
+                </div>
+            </div>
+
+            <!-- Bottom Floating Dock HUD (Score, Stats & Action Buttons) -->
+            <div class="victory-bottom-dock" id="victoryBottomDock">
+                <!-- Left: Score Tally Box -->
+                <div class="victory-score-dock">
                     <div class="victory-score-header">
                         <span class="victory-score-label">FINAL ESCAPE SCORE</span>
-                        <span class="victory-bonus-pill">+2,500 ESCAPE BONUS</span>
+                        <span class="victory-bonus-pill">+2,500 BONUS</span>
                     </div>
                     <div class="victory-score-number" id="victoryScore">0</div>
                 </div>
 
-                <!-- Stats Grid breakdown -->
-                <div class="victory-stats-grid">
-                    <div class="stat-tile">
+                <!-- Center: Stats Chips Grid -->
+                <div class="victory-stats-dock">
+                    <div class="stat-pill">
                         <span class="stat-icon">🏆</span>
-                        <div class="stat-info">
+                        <div class="stat-meta">
                             <span class="stat-label">SECTORS</span>
-                            <span class="stat-value">5 / 5 CLEARED</span>
+                            <span class="stat-val">5 / 5 CLEARED</span>
                         </div>
                     </div>
-                    <div class="stat-tile">
+                    <div class="stat-pill">
                         <span class="stat-icon">🪙</span>
-                        <div class="stat-info">
+                        <div class="stat-meta">
                             <span class="stat-label">COINS COLLECTED</span>
-                            <span class="stat-value">+1,250 COINS</span>
+                            <span class="stat-val">+1,250 COINS</span>
                         </div>
                     </div>
-                    <div class="stat-tile">
+                    <div class="stat-pill">
                         <span class="stat-icon">⚡</span>
-                        <div class="stat-info">
+                        <div class="stat-meta">
                             <span class="stat-label">ESCAPE RATING</span>
-                            <span class="stat-value">PERFECT ESCAPE</span>
+                            <span class="stat-val">PERFECT ESCAPE</span>
                         </div>
                     </div>
-                    <div class="stat-tile">
+                    <div class="stat-pill">
                         <span class="stat-icon">⭐</span>
-                        <div class="stat-info">
+                        <div class="stat-meta">
                             <span class="stat-label">STARS EARNED</span>
-                            <span class="stat-value">⭐⭐⭐⭐⭐</span>
+                            <span class="stat-val">⭐⭐⭐⭐⭐</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Action Button Deck -->
-                <div class="victory-action-grid">
+                <!-- Right: Action Buttons Deck -->
+                <div class="victory-actions-dock">
                     <button class="victory-primary-btn" id="btnVictoryPlayAgain">
                         <span>PLAY AGAIN</span>
                         <span class="btn-arrow">»</span>
                     </button>
                     <button class="victory-secondary-btn" id="btnVictoryLeaderboard">
-                        <span>🏆 VIEW LEADERBOARD</span>
+                        <span>🏆 LEADERBOARD</span>
                     </button>
                     <button class="victory-secondary-btn" onclick="window.uiManager.hideAllModals(); showView('homeView');">
                         <span>MAIN MENU</span>
