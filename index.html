@@ -815,14 +815,14 @@
                     </div>
 
                     <!-- Level 5 -->
-                    <div class="admin-level-item level-item-boss" onclick="adminWarpToLevel(5)">
+                    <div class="admin-level-item" onclick="adminWarpToLevel(5)">
                         <div class="level-item-header">
-                            <span class="level-num-badge badge-red">LEVEL 05</span>
-                            <span class="level-status-pill pill-red">FINAL SECTOR</span>
+                            <span class="level-num-badge">LEVEL 05</span>
+                            <span class="level-status-pill">SECTOR 5 (FINAL)</span>
                         </div>
                         <div class="level-item-title">Shadow Nexus</div>
                         <div class="level-item-desc">Elite guardians, master door & final extraction.</div>
-                        <button class="level-warp-btn btn-red">WARP TO LEVEL 5 &raquo;</button>
+                        <button class="level-warp-btn">WARP TO LEVEL 5 &raquo;</button>
                     </div>
                 </div>
 
@@ -1058,106 +1058,118 @@
         </div>
 
         <div class="victory-modal-overlay" id="victoryModal">
-            <!-- Dynamic Sunburst, Light Rays & Fullscreen Canvas Video Layers -->
-            <div class="victory-sunburst"></div>
+            <!-- Fullscreen Animated Temple Environment Backdrop Layer -->
+            <div class="victory-temple-bg-layer" id="victoryTempleBg"></div>
             <div class="victory-light-beams"></div>
             <div class="victory-backdrop-glow"></div>
-            
-            <!-- Fullscreen Ambient Track Backdrop Layer -->
-            <div class="victory-fullscreen-bg" id="victoryFullscreenBg"></div>
 
-            <!-- Fullscreen Canvas for 60 FPS Particle Physics, Confetti Cannons & 3D Coins -->
+            <!-- Canvas for 60 FPS Particle Physics, Falling Confetti & Glowing Blue Sparks -->
             <canvas id="victoryCanvas"></canvas>
 
-            <!-- Shockwave Impact Ring on Hero Entrance Landing -->
+            <!-- Landing Shockwave Burst Effect -->
             <div class="victory-shockwave" id="victoryShockwave"></div>
 
-            <!-- Top Floating Header HUD (3D Title & Crown Badge) -->
-            <div class="victory-top-hud" id="victoryTopHud">
-                <div class="victory-top-badge">
-                    <span class="badge-icon">👑</span>
-                    <span class="badge-text">GRAND VICTORY — ALL SECTORS CLEARED</span>
-                    <span class="badge-sparkle">✨</span>
-                </div>
-                <h1 class="victory-title-text" data-text="FACILITY ESCAPED!">FACILITY ESCAPED!</h1>
-                <p class="victory-sub-text">AGENT SHANU BYPASSED ALL 5 SECURITY SECTORS &amp; CONQUERED THE SHADOW CITADEL!</p>
-            </div>
-
-            <!-- Center Arena Stage: Massive Animated Full-Body Running & Celebrating Hero Character -->
-            <div class="victory-hero-fullscreen-container" id="victoryHeroContainer">
-                <div class="hero-energy-ring-lg"></div>
-                <div class="hero-light-rays-lg"></div>
-                
-                <!-- Animated Hero Character Image (Widescreen + Mobile responsive) -->
-                <div class="hero-character-wrapper" id="heroCharacterWrapper">
-                    <img src="uploads/victory_hero_landscape.webp" class="victory-hero-img-fullscreen hero-desktop" alt="Agent Shanu Celebrating Victory" />
-                    <img src="uploads/victory_hero_fullscreen.webp" class="victory-hero-img-fullscreen hero-mobile" alt="Agent Shanu Celebrating Victory" />
-                    <div class="hero-shimmer-overlay-lg"></div>
-                </div>
-
-                <!-- Giant S-RANK / LEGENDARY Stamp Badge -->
-                <div class="victory-rank-stamp-lg" id="victoryRankStamp">
-                    <span class="rank-title">S-RANK</span>
-                    <span class="rank-subtitle">LEGENDARY ESCAPE</span>
+            <!-- Top Left HUD: Crown New Record Badge Box -->
+            <div class="victory-record-badge" id="victoryRecordBadge">
+                <div class="record-crown-icon">👑</div>
+                <div class="record-info">
+                    <span class="record-label">NEW RECORD!</span>
+                    <span class="record-score-val" id="victoryRecordScore">3,930</span>
                 </div>
             </div>
 
-            <!-- Bottom Floating Dock HUD (Score, Stats & Action Buttons) -->
-            <div class="victory-bottom-dock" id="victoryBottomDock">
-                <!-- Left: Score Tally Box -->
-                <div class="victory-score-dock">
-                    <div class="victory-score-header">
-                        <span class="victory-score-label">FINAL ESCAPE SCORE</span>
-                        <span class="victory-bonus-pill">+2,500 BONUS</span>
-                    </div>
-                    <div class="victory-score-number" id="victoryScore">0</div>
+            <!-- Left / Center Stage: Joyful Hero Character Sprinting Forward out of Portal -->
+            <div class="victory-hero-sprint-container" id="victoryHeroContainer">
+                <div class="hero-portal-aura"></div>
+                <div class="hero-sprint-character" id="heroCharacterWrapper">
+                    <img src="uploads/victory_hero_yellow_shirt.jpg" class="hero-sprint-img" alt="Joyful Hero Sprinting Forward in Triumph" />
+                </div>
+            </div>
+
+            <!-- Top Right Header: 3 Gold Stars + YOU ESCAPED! 3D Title + Purple Ribbon Banner -->
+            <div class="victory-header-stage" id="victoryHeaderStage">
+                <!-- 3 Floating 3D Gold Stars -->
+                <div class="victory-stars-row">
+                    <span class="star-item star-left">⭐</span>
+                    <span class="star-item star-center">⭐</span>
+                    <span class="star-item star-right">⭐</span>
                 </div>
 
-                <!-- Center: Stats Chips Grid -->
-                <div class="victory-stats-dock">
-                    <div class="stat-pill">
-                        <span class="stat-icon">🏆</span>
-                        <div class="stat-meta">
-                            <span class="stat-label">SECTORS</span>
-                            <span class="stat-val">5 / 5 CLEARED</span>
-                        </div>
-                    </div>
-                    <div class="stat-pill">
-                        <span class="stat-icon">🪙</span>
-                        <div class="stat-meta">
-                            <span class="stat-label">COINS COLLECTED</span>
-                            <span class="stat-val">+1,250 COINS</span>
-                        </div>
-                    </div>
-                    <div class="stat-pill">
-                        <span class="stat-icon">⚡</span>
-                        <div class="stat-meta">
-                            <span class="stat-label">ESCAPE RATING</span>
-                            <span class="stat-val">PERFECT ESCAPE</span>
-                        </div>
-                    </div>
-                    <div class="stat-pill">
-                        <span class="stat-icon">⭐</span>
-                        <div class="stat-meta">
-                            <span class="stat-label">STARS EARNED</span>
-                            <span class="stat-val">⭐⭐⭐⭐⭐</span>
-                        </div>
+                <!-- 3D Extruded Title: YOU ESCAPED! -->
+                <h1 class="victory-title-escaped" data-text="YOU ESCAPED!">YOU ESCAPED!</h1>
+
+                <!-- Purple Gradient Ribbon Tagline: STAGE CLEAR -->
+                <div class="victory-purple-ribbon">
+                    <span>STAGE CLEAR</span>
+                </div>
+            </div>
+
+            <!-- Right Side Stats Card: Dark Glass Card with Gold Trim Borders -->
+            <div class="victory-right-stats-card" id="victoryRightStatsCard">
+                <!-- Main Score Header Row -->
+                <div class="stats-card-row score-row">
+                    <span class="row-label">SCORE</span>
+                    <div class="row-value-group">
+                        <span class="score-main-number" id="victoryScore">3,930</span>
+                        <span class="new-record-pill">NEW RECORD!</span>
                     </div>
                 </div>
 
-                <!-- Right: Action Buttons Deck -->
-                <div class="victory-actions-dock">
-                    <button class="victory-primary-btn" id="btnVictoryPlayAgain">
-                        <span>PLAY AGAIN</span>
-                        <span class="btn-arrow">»</span>
-                    </button>
-                    <button class="victory-secondary-btn" id="btnVictoryLeaderboard">
-                        <span>🏆 LEADERBOARD</span>
-                    </button>
-                    <button class="victory-secondary-btn" onclick="window.uiManager.hideAllModals(); showView('homeView');">
-                        <span>MAIN MENU</span>
-                    </button>
+                <div class="stats-card-divider"></div>
+
+                <!-- Crystals Collected -->
+                <div class="stats-card-row">
+                    <div class="row-title">
+                        <span class="row-icon">💎</span>
+                        <span>CRYSTALS COLLECTED</span>
+                    </div>
+                    <span class="row-val-highlight">+1,250 💎</span>
                 </div>
+
+                <!-- Stars Earned -->
+                <div class="stats-card-row">
+                    <div class="row-title">
+                        <span class="row-icon">⭐</span>
+                        <span>STARS EARNED</span>
+                    </div>
+                    <span class="row-val-stars">⭐⭐⭐⭐⭐</span>
+                </div>
+
+                <!-- Distance Covered -->
+                <div class="stats-card-row">
+                    <div class="row-title">
+                        <span class="row-icon">🏃</span>
+                        <span>DISTANCE COVERED</span>
+                    </div>
+                    <span class="row-val-text">1,842 M</span>
+                </div>
+
+                <!-- Sectors Cleared -->
+                <div class="stats-card-row">
+                    <div class="row-title">
+                        <span class="row-icon">🛡️</span>
+                        <span>SECTORS CLEARED</span>
+                    </div>
+                    <span class="row-val-green">5 / 5 ✓</span>
+                </div>
+            </div>
+
+            <!-- Bottom Action Bar: 3 Pill Buttons (Blue HOME, Green PLAY AGAIN, Gold NEXT LEVEL) -->
+            <div class="victory-bottom-action-bar" id="victoryBottomActionBar">
+                <button class="action-btn btn-home" onclick="window.uiManager.hideAllModals(); showView('homeView');">
+                    <span class="btn-icon">🏠</span>
+                    <span>HOME</span>
+                </button>
+
+                <button class="action-btn btn-play-again" id="btnVictoryPlayAgain">
+                    <span class="btn-icon">🔄</span>
+                    <span>PLAY AGAIN</span>
+                </button>
+
+                <button class="action-btn btn-next-level" id="btnVictoryNextLevel" onclick="window.uiManager.hideAllModals(); if(window.gameEngine) window.gameEngine.startLevel(1);">
+                    <span>NEXT LEVEL</span>
+                    <span class="btn-icon">⏩</span>
+                </button>
             </div>
         </div>
     </div>

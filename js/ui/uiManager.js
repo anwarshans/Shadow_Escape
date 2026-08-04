@@ -496,14 +496,16 @@ class UIManager {
 
     animateVictoryScore(targetScore = 0) {
         const scoreElem = document.getElementById('victoryScore');
+        const recordScoreElem = document.getElementById('victoryRecordScore');
         const rankStamp = document.getElementById('victoryRankStamp');
-        if (!scoreElem) return;
 
-        scoreElem.innerText = '0';
+        const finalVal = parseInt(targetScore, 10) || 3930;
+
+        if (scoreElem) scoreElem.innerText = '0';
+        if (recordScoreElem) recordScoreElem.innerText = '0';
 
         if (this.scoreCounterInterval) clearInterval(this.scoreCounterInterval);
 
-        const finalVal = parseInt(targetScore, 10) || 7890;
         const duration = 1800; // ms
         const steps = 40;
         const stepTime = duration / steps;
@@ -516,7 +518,6 @@ class UIManager {
                 current = finalVal;
                 clearInterval(this.scoreCounterInterval);
 
-                // Trigger S-RANK Stamp Drop Animation & Celebration Fanfare
                 if (rankStamp) {
                     setTimeout(() => {
                         rankStamp.classList.add('stamped');
@@ -527,9 +528,15 @@ class UIManager {
                 }
             }
 
-            scoreElem.innerText = current.toLocaleString();
-            scoreElem.classList.add('pulse');
-            setTimeout(() => scoreElem.classList.remove('pulse'), 120);
+            const formatted = current.toLocaleString();
+            if (scoreElem) {
+                scoreElem.innerText = formatted;
+                scoreElem.classList.add('pulse');
+                setTimeout(() => scoreElem.classList.remove('pulse'), 120);
+            }
+            if (recordScoreElem) {
+                recordScoreElem.innerText = formatted;
+            }
 
             if (window.soundEngine && typeof window.soundEngine.playTone === 'function' && current < finalVal) {
                 window.soundEngine.playTone(600 + (current % 500), 'sine', 0.03, 0.12, 0.001, false);
