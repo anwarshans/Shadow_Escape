@@ -4769,7 +4769,7 @@
     .victory-modal-overlay {
         grid-template-columns: 1.1fr 1fr;
         grid-template-rows: auto 1fr auto;
-        padding: 0.5rem 1rem 0.6rem 1rem;
+        padding: max(0.4rem, env(safe-area-inset-top)) max(0.8rem, env(safe-area-inset-right)) max(0.5rem, env(safe-area-inset-bottom)) max(0.8rem, env(safe-area-inset-left));
         gap: 0.4rem;
         overflow: hidden;
     }
@@ -4798,81 +4798,168 @@
         margin-bottom: 0.1rem;
     }
     .star-item {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
     .star-center {
-        font-size: 1.8rem;
+        font-size: 1.7rem;
     }
     .victory-title-escaped {
-        font-size: clamp(1.3rem, 3.2vw, 2.1rem);
-        letter-spacing: 1.5px;
+        font-size: clamp(1.2rem, 3.2vw, 2rem);
+        letter-spacing: 1.2px;
         margin: 0 0 0.15rem 0;
     }
     .victory-purple-ribbon {
-        font-size: 0.7rem;
-        padding: 0.25rem 1rem;
-        letter-spacing: 1.5px;
+        font-size: 0.68rem;
+        padding: 0.2rem 0.8rem;
+        letter-spacing: 1.2px;
         border-radius: 10px;
     }
     .victory-right-stats-card {
         grid-column: 2;
         grid-row: 2;
-        width: 95%;
+        width: 96%;
         max-width: 360px;
-        padding: 0.55rem 0.85rem;
+        padding: 0.5rem 0.75rem;
         margin-top: 0;
         border-radius: 16px;
         backdrop-filter: blur(15px);
         -webkit-backdrop-filter: blur(15px);
     }
     .stats-card-row {
-        padding: 0.2rem 0;
+        padding: 0.18rem 0;
     }
     .stats-card-row.score-row {
-        padding-bottom: 0.35rem;
+        padding-bottom: 0.3rem;
     }
     .row-label {
-        font-size: 0.82rem;
+        font-size: 0.8rem;
     }
     .score-main-number {
-        font-size: 1.35rem;
+        font-size: 1.3rem;
     }
     .new-record-pill {
         font-size: 0.55rem;
-        padding: 0.15rem 0.45rem;
+        padding: 0.12rem 0.4rem;
     }
     .row-title {
-        font-size: 0.68rem;
+        font-size: 0.66rem;
     }
     .row-icon {
-        font-size: 0.9rem;
+        font-size: 0.88rem;
     }
     .row-val-highlight, .row-val-text, .row-val-green {
-        font-size: 0.82rem;
+        font-size: 0.8rem;
     }
     .row-val-stars {
-        font-size: 0.8rem;
+        font-size: 0.78rem;
     }
     .victory-bottom-action-bar {
         grid-column: 1 / -1;
         grid-row: 3;
         flex-direction: row;
-        gap: 0.6rem;
+        gap: 0.45rem;
         width: 100%;
-        max-width: 520px;
+        max-width: 580px;
         margin-top: 0.2rem;
     }
     .action-btn {
         flex: 1;
         min-width: 0;
-        height: 40px;
-        padding: 0 0.6rem;
-        font-size: 0.78rem;
-        letter-spacing: 0.8px;
+        height: 42px;
+        padding: 0 0.35rem;
+        font-size: clamp(0.62rem, 1.8vw, 0.78rem);
+        letter-spacing: 0.4px;
         border-radius: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        box-sizing: border-box;
+    }
+    .btn-leaderboard {
+        letter-spacing: 0.2px;
     }
     .action-btn .btn-icon {
+        font-size: clamp(0.85rem, 2vw, 1.05rem);
+        flex-shrink: 0;
+    }
+}
+
+/* Ultra-Compact Tuning for Low-Height Mobile Landscape Screens (Height <= 540px) */
+@media (max-height: 540px) and (orientation: landscape) {
+    .victory-modal-overlay {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto 1fr auto;
+        padding: max(0.25rem, env(safe-area-inset-top)) max(0.6rem, env(safe-area-inset-right)) max(0.25rem, env(safe-area-inset-bottom)) max(0.6rem, env(safe-area-inset-left));
+        gap: 0.2rem;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .victory-record-badge {
+        padding: 0.15rem 0.5rem;
+    }
+    .record-score-val {
+        font-size: 0.9rem;
+    }
+    .victory-header-stage {
+        margin-bottom: 0;
+        max-width: 320px;
+    }
+    .star-item {
         font-size: 1.05rem;
+    }
+    .star-center {
+        font-size: 1.35rem;
+    }
+    .victory-title-escaped {
+        font-size: clamp(1rem, 2.6vw, 1.45rem);
+        letter-spacing: 1px;
+        margin: 0 0 0.05rem 0;
+    }
+    .victory-purple-ribbon {
+        font-size: 0.58rem;
+        padding: 0.12rem 0.6rem;
+        letter-spacing: 1px;
+        border-radius: 8px;
+    }
+    .victory-right-stats-card {
+        max-width: 320px;
+        padding: 0.35rem 0.65rem;
+        border-radius: 12px;
+    }
+    .stats-card-row {
+        padding: 0.08rem 0;
+    }
+    .stats-card-row.score-row {
+        padding-bottom: 0.15rem;
+    }
+    .score-main-number {
+        font-size: 1.15rem;
+    }
+    .row-label {
+        font-size: 0.72rem;
+    }
+    .row-title {
+        font-size: 0.6rem;
+    }
+    .row-val-highlight, .row-val-text, .row-val-green {
+        font-size: 0.75rem;
+    }
+    .row-val-stars {
+        font-size: 0.7rem;
+    }
+    .victory-bottom-action-bar {
+        margin-top: 0.1rem;
+        gap: 0.35rem;
+        max-width: 500px;
+    }
+    .action-btn {
+        height: 36px;
+        font-size: clamp(0.58rem, 1.6vw, 0.7rem);
+        padding: 0 0.25rem;
+        border-radius: 10px;
+    }
+    .action-btn .btn-icon {
+        font-size: 0.85rem;
     }
 }
 
@@ -4882,12 +4969,14 @@
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto auto;
         overflow-y: auto;
-        padding: 0.8rem;
-        gap: 0.6rem;
+        -webkit-overflow-scrolling: touch;
+        padding: max(0.8rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) max(0.8rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+        gap: 0.55rem;
     }
     .victory-header-stage {
         grid-column: 1;
         grid-row: 2;
+        max-width: 100%;
     }
     .victory-right-stats-card {
         grid-column: 1;
@@ -4898,7 +4987,28 @@
     .victory-bottom-action-bar {
         grid-column: 1;
         grid-row: 4;
+        flex-wrap: nowrap;
+        width: 100%;
+        gap: 0.4rem;
+        margin-top: 0.3rem;
+    }
+    .action-btn {
+        height: 44px;
+        font-size: clamp(0.64rem, 2.8vw, 0.8rem);
+        padding: 0 0.3rem;
+    }
+}
+
+@media (max-width: 380px) and (orientation: portrait) {
+    .victory-bottom-action-bar {
         flex-wrap: wrap;
+    }
+    .action-btn {
+        flex: 1 1 45%;
+        min-width: 110px;
+    }
+    .btn-leaderboard {
+        flex: 1 1 100%;
     }
 }
 

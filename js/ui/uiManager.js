@@ -178,14 +178,16 @@ class UIManager {
         const btnRestart = document.getElementById('btnRestart');
         if (btnRestart) btnRestart.addEventListener('click', () => {
             this.hideAllModals();
-            window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
+            if (typeof showView === 'function') showView('gameView');
+            if (window.gameEngine) window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
         });
 
         // Game Over Restart
         const btnGameOverRestart = document.getElementById('btnGameOverRestart');
         if (btnGameOverRestart) btnGameOverRestart.addEventListener('click', () => {
             this.hideAllModals();
-            window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
+            if (typeof showView === 'function') showView('gameView');
+            if (window.gameEngine) window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
         });
 
         // Level Clear Next Stage
@@ -200,6 +202,7 @@ class UIManager {
                     this.showVictoryModal(window.gameEngine ? window.gameEngine.score : 0);
                 }
             } else {
+                if (typeof showView === 'function') showView('gameView');
                 if (window.gameEngine) window.gameEngine.loadLevel(nextLvl);
             }
         });
@@ -208,14 +211,16 @@ class UIManager {
         const btnReplaySector = document.getElementById('btnReplaySector');
         if (btnReplaySector) btnReplaySector.addEventListener('click', () => {
             this.hideAllModals();
-            window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
+            if (typeof showView === 'function') showView('gameView');
+            if (window.gameEngine) window.gameEngine.loadLevel(window.gameEngine.currentLevelId);
         });
 
         // Victory Modal Buttons
         const btnVictoryPlayAgain = document.getElementById('btnVictoryPlayAgain');
         if (btnVictoryPlayAgain) btnVictoryPlayAgain.addEventListener('click', () => {
             this.hideAllModals();
-            window.gameEngine.loadLevel(1);
+            if (typeof showView === 'function') showView('gameView');
+            if (window.gameEngine) window.gameEngine.loadLevel(1);
         });
 
         const btnVictoryLeaderboard = document.getElementById('btnVictoryLeaderboard');

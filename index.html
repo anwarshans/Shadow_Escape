@@ -1301,8 +1301,12 @@
                 document.body.classList.add('in-game-view');
                 showGameFullscreenControl();
                 triggerCombatHintPopup();
-                if (window.gameEngine && !window.gameEngine.currentLevelId) {
-                    window.gameEngine.loadLevel(1);
+                if (window.gameEngine) {
+                    if (window.gameEngine.state === 'VICTORY') {
+                        window.gameEngine.loadLevel(1);
+                    } else if (window.gameEngine.state !== 'PLAYING' && window.gameEngine.state !== 'INTRO') {
+                        window.gameEngine.loadLevel(window.gameEngine.currentLevelId || 1);
+                    }
                 }
             } else {
                 document.body.classList.remove('game-active');
