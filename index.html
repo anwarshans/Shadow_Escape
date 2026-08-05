@@ -154,11 +154,11 @@
                         <div class="poster-mobile-callsign-card" id="mobileCallsignCard">
                             <div class="mobile-callsign-header">
                                 <span class="mobile-callsign-label"><span class="pulse-dot"></span> OPERATIVE CALLSIGN</span>
-                                <span class="callsign-status-badge" id="mobileCallsignSaveStatus">DEFAULT // SHANU</span>
+                                <span class="callsign-status-badge" id="mobileCallsignSaveStatus">ENTER CALLSIGN</span>
                             </div>
                             <div class="mobile-callsign-input-row">
                                 <span class="mobile-callsign-prefix">AGENT //</span>
-                                <input type="text" id="mobilePlayerNameInput" class="mobile-callsign-input" value="shanu" maxlength="18" placeholder="Enter Player Name..." autocomplete="off" spellcheck="false" aria-label="Mobile Player Name Input">
+                                <input type="text" id="mobilePlayerNameInput" class="mobile-callsign-input" value="" maxlength="18" placeholder="shanu" autocomplete="off" spellcheck="false" aria-label="Mobile Player Name Input">
                                 <button id="btnSaveMobilePlayerName" class="mobile-callsign-save-btn" title="Save Player Callsign">SAVE</button>
                             </div>
                         </div>
@@ -231,11 +231,11 @@
                         <div class="poster-hero-name-tag" id="homeHeroNameTag">
                             <div class="tag-header-row">
                                 <span class="tag-role">HERO RUNNER</span>
-                                <span class="callsign-status-badge" id="callsignSaveStatus">DEFAULT // SHANU</span>
+                                <span class="callsign-status-badge" id="callsignSaveStatus">ENTER CALLSIGN</span>
                             </div>
                             <div class="tag-input-row">
                                 <span class="tag-prefix">AGENT //</span>
-                                <input type="text" id="homePlayerNameInput" class="hero-tag-input" value="shanu" maxlength="18" placeholder="Enter Name..." autocomplete="off" spellcheck="false" aria-label="Player Name Input">
+                                <input type="text" id="homePlayerNameInput" class="hero-tag-input" value="" maxlength="18" placeholder="shanu" autocomplete="off" spellcheck="false" aria-label="Player Name Input">
                                 <button id="btnSavePlayerName" class="hero-tag-save-btn" title="Save Player Callsign">SAVE</button>
                             </div>
                         </div>
@@ -349,7 +349,15 @@
                             <span class="hud-value" id="hudScoreVal">0</span>
                         </div>
 
-                        <!-- Action Controls: Fullscreen Toggle & Pause Menu -->
+                        <!-- Action Controls: Music Toggle, Fullscreen Toggle & Pause Menu -->
+                        <button class="hud-music-btn" id="btnGameMusicToggle" onclick="window.soundEngine && window.soundEngine.toggleGameMusic()" title="Play Music (playing music.mp4)" aria-label="Play Music">
+                            <span class="music-note-icon">🎵</span>
+                            <span class="hud-music-waves" aria-hidden="true">
+                                <span class="w1"></span>
+                                <span class="w2"></span>
+                                <span class="w3"></span>
+                            </span>
+                        </button>
                         <button class="fullscreen-toggle" id="btnFullscreenToggle" type="button" aria-label="Enter fullscreen" title="Toggle Fullscreen" hidden>⤢</button>
                         <button class="hud-pause-btn" id="btnGamePauseToggle" onclick="window.gameEngine && window.gameEngine.togglePause()" title="Escape / Pause Menu" aria-label="Pause Menu">☰</button>
                     </div>
@@ -1263,11 +1271,15 @@
                 document.body.classList.remove('game-active');
                 document.body.classList.remove('in-game-view');
                 hideGameFullscreenControl();
+                if (window.soundEngine && typeof window.soundEngine.stopCustomGameMusic === 'function') {
+                    window.soundEngine.stopCustomGameMusic();
+                }
             }
 
             if (viewId === 'homeView') {
                 if (window.soundEngine) {
                     window.soundEngine.stopBGM();
+                    window.soundEngine.stopCustomGameMusic();
                     window.soundEngine.startHomeBGM();
                 }
                 if (window.uiManager) window.uiManager.hideAllModals();
@@ -1926,7 +1938,7 @@
             // 3. Populate Global Leaderboard (Top 5 Players)
             const globalTbody = document.getElementById('tableGlobalLeaderboard');
             if (globalTbody) {
-                const activePlayer = window.storage ? window.storage.getPlayerName() : 'shanu';
+                const activePlayer = window.storage ? window.storage.getPlayerName() : '';
                 const board = window.storage ? window.storage.getLeaderboard() : [];
                 
                 // Keep top 5
@@ -1939,7 +1951,7 @@
                     else if (rank === 2) badgeClass = 'top-2';
                     else if (rank === 3) badgeClass = 'top-3';
 
-                    const isCurrentPlayer = r.name.toLowerCase() === activePlayer.toLowerCase();
+                    const isCurrentPlayer = Boolean(activePlayer) && (r.name.toLowerCase() === activePlayer.toLowerCase());
                     const displayName = isCurrentPlayer ? `${r.name} <span class="user-you-tag">(YOU)</span>` : r.name;
                     const rowStyle = isCurrentPlayer ? 'background: rgba(251, 191, 36, 0.16); font-weight: 700; border-left: 3px solid var(--primary-gold);' : '';
 

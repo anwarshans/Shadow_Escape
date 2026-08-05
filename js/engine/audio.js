@@ -12,7 +12,9 @@ class SoundEngine {
         this.isPlayingBGM = false;
         this.isPlayingHomeBGM = false;
         this.isPlayingStoryMusic = false;
+        this.isPlayingCustomSong = false;
         this.pendingHomeBgm = false;
+        this.playingMusicAudio = null;
 
         this.bgmTimeout = null;
         this.homeBgmTimeout = null;
@@ -60,6 +62,7 @@ class SoundEngine {
             this.stopBGM();
             this.stopHomeBGM();
             this.stopStoryMusic();
+            this.stopCustomGameMusic();
         } else {
             this.ensureContext();
             const homeView = document.getElementById('homeView');
@@ -636,6 +639,7 @@ class SoundEngine {
     // PROFESSIONAL HOME SCREEN BACKGROUND SONG (BGM): THE STRANGLERS - GOLDEN BROWN
     // =========================================================================
     startHomeBGM() {
+        this.stopCustomGameMusic();
         if (this.isMuted || this.musicVol <= 0) return;
 
         if (this.ctx && this.ctx.state === 'suspended') {
@@ -693,7 +697,7 @@ class SoundEngine {
     }
 
     // =========================================================================
-    // IN-GAME BACKGROUND MUSIC (BGM) - Disabled per user preference for silent gameplay
+    // IN-GAME BACKGROUND MUSIC (BGM) - Play song from uploads/playing music.mp4
     // =========================================================================
     startBGM() {
         this.stopHomeBGM();
@@ -701,6 +705,72 @@ class SoundEngine {
         if (this.bgmTimeout) {
             clearTimeout(this.bgmTimeout);
             this.bgmTimeout = null;
+        }
+    }
+
+    toggleGameMusic() {
+        if (this.isMuted) {
+            this.isMuted = false;
+            this.saveSettings();
+        }
+        this.ensureContext();
+
+        if (!this.playingMusicAudio) {
+            this.playingMusicAudio = new Audio('uploads/playing music.mp4');
+            this.playingMusicAudio.loop = true;
+        }
+
+        this.playingMusicAudio.volume = Math.min(1.0, (this.musicVol || 0.85));
+
+        if (this.playingMusicAudio.paused) {
+            this.stopHomeBGM();
+            this.stopStoryMusic();
+
+            const playPromise = this.playingMusicAudio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    this.isPlayingCustomSong = true;
+                    this.updateMusicButtonUI(true);
+                }).catch(e => {
+                    console.warn('Custom game song playback info:', e);
+                    this.isPlayingCustomSong = false;
+                    this.updateMusicButtonUI(false);
+                });
+            } else {
+                this.isPlayingCustomSong = true;
+                this.updateMusicButtonUI(true);
+            }
+        } else {
+            this.playingMusicAudio.pause();
+            this.isPlayingCustomSong = false;
+            this.updateMusicButtonUI(false);
+        }
+
+        return this.isPlayingCustomSong;
+    }
+
+    stopCustomGameMusic() {
+        if (this.playingMusicAudio) {
+            try {
+                this.playingMusicAudio.pause();
+            } catch (e) {}
+        }
+        this.isPlayingCustomSong = false;
+        this.updateMusicButtonUI(false);
+    }
+
+    updateMusicButtonUI(isPlaying) {
+        const btn = document.getElementById('btnGameMusicToggle');
+        if (btn) {
+            if (isPlaying) {
+                btn.classList.add('playing');
+                btn.setAttribute('title', 'Pause Music (playing music.mp4)');
+                btn.setAttribute('aria-label', 'Pause Music');
+            } else {
+                btn.classList.remove('playing');
+                btn.setAttribute('title', 'Play Music (playing music.mp4)');
+                btn.setAttribute('aria-label', 'Play Music');
+            }
         }
     }
 
@@ -726,6 +796,7 @@ class SoundEngine {
     // DEDICATED STORY BRIEFING PAGE MUSIC TRACKS (Synthesized for Levels 1 - 5)
     // =========================================================================
     playStoryBriefingMusic(levelId = 1) {
+        this.stopCustomGameMusic();
         if (this.isMuted || !this.ctx || this.musicVol <= 0) return;
         this.ensureContext();
         this.stopStoryMusic();

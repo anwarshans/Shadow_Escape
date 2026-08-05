@@ -717,6 +717,110 @@ body.is-fullscreen-game .game-screen-wrapper {
     transform: scale(1.08);
 }
 
+/* Custom Game Play Music Toggle Button */
+.hud-music-btn {
+    background: rgba(16, 20, 36, 0.88);
+    border: 1.5px solid var(--primary-cyan, #00f3ff);
+    color: var(--primary-cyan, #00f3ff);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 0 14px rgba(0, 243, 255, 0.35);
+    user-select: none;
+    touch-action: manipulation;
+    transition: transform var(--transition-fast, 0.2s), background var(--transition-fast, 0.2s), box-shadow var(--transition-fast, 0.2s), color var(--transition-fast, 0.2s), border-color var(--transition-fast, 0.2s);
+    flex-shrink: 0;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.hud-music-btn:hover, .hud-music-btn:active {
+    background: rgba(0, 243, 255, 0.2);
+    border-color: #00f3ff;
+    color: #ffffff;
+    box-shadow: 0 0 24px rgba(0, 243, 255, 0.75);
+    transform: scale(1.08);
+}
+
+.hud-music-btn.playing {
+    border-color: var(--accent-gold, #fbbf24);
+    color: var(--accent-gold, #fbbf24);
+    background: rgba(251, 191, 36, 0.15);
+    box-shadow: 0 0 18px rgba(251, 191, 36, 0.6);
+    animation: hudMusicPulse 1.6s infinite ease-in-out;
+}
+
+.hud-music-btn.playing:hover, .hud-music-btn.playing:active {
+    background: var(--accent-gold, #fbbf24);
+    color: #050608;
+    box-shadow: 0 0 26px rgba(251, 191, 36, 0.85);
+}
+
+@keyframes hudMusicPulse {
+    0%, 100% {
+        box-shadow: 0 0 14px rgba(251, 191, 36, 0.4), 0 0 6px rgba(0, 243, 255, 0.25);
+    }
+    50% {
+        box-shadow: 0 0 22px rgba(251, 191, 36, 0.85), 0 0 12px rgba(0, 243, 255, 0.5);
+        transform: scale(1.05);
+    }
+}
+
+.hud-music-btn .music-note-icon {
+    font-size: 0.95rem;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.hud-music-btn.playing .music-note-icon {
+    animation: musicNoteSpin 3s infinite linear;
+}
+
+@keyframes musicNoteSpin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(15deg) scale(1.12); }
+    100% { transform: rotate(0deg) scale(1); }
+}
+
+.hud-music-waves {
+    display: none;
+    align-items: flex-end;
+    gap: 1.5px;
+    height: 10px;
+    margin-left: 2px;
+}
+
+.hud-music-btn.playing .hud-music-waves {
+    display: inline-flex;
+}
+
+.hud-music-waves span {
+    width: 2px;
+    background: var(--accent-gold, #fbbf24);
+    border-radius: 1px;
+}
+
+.hud-music-btn.playing:hover .hud-music-waves span {
+    background: #050608;
+}
+
+.hud-music-waves .w1 { animation: eqAnim 0.5s infinite ease-in-out alternate; }
+.hud-music-waves .w2 { animation: eqAnim 0.7s infinite ease-in-out alternate 0.15s; }
+.hud-music-waves .w3 { animation: eqAnim 0.45s infinite ease-in-out alternate 0.3s; }
+
+@keyframes eqAnim {
+    0% { height: 2px; }
+    100% { height: 10px; }
+}
+
 /* Mobile Virtual Touch Controls Overlay - AAA Professional Arcade Layout */
 .touch-controls {
     display: none;
@@ -1158,6 +1262,22 @@ body.is-fullscreen-game .game-screen-wrapper {
 
     .hud-value {
         font-size: 0.72rem;
+    }
+
+    .hud-music-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.82rem;
+        border-radius: 6px;
+    }
+
+    .hud-music-btn .music-note-icon {
+        font-size: 0.82rem;
+    }
+
+    .hud-music-waves {
+        height: 8px;
+        gap: 1px;
     }
 
     .touch-controls {

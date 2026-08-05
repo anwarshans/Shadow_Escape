@@ -68,8 +68,10 @@ class UIManager {
         const mobileStatus = document.getElementById('mobileCallsignSaveStatus');
 
         const syncNameUI = (rawName, isSaved = false) => {
-            const currentName = (rawName && rawName.trim()) ? rawName.trim() : (window.storage ? window.storage.getPlayerName() : 'shanu');
-            const uppercaseName = currentName.toUpperCase();
+            const storedName = window.storage ? window.storage.getPlayerName() : '';
+            const currentName = rawName !== undefined ? rawName.trim() : storedName;
+            const displayName = currentName || 'SHANU';
+            const uppercaseName = displayName.toUpperCase();
             
             if (desktopInput && desktopInput.value !== currentName) desktopInput.value = currentName;
             if (mobileInput && mobileInput.value !== currentName) mobileInput.value = currentName;
@@ -80,12 +82,12 @@ class UIManager {
 
             const updateStatus = (statusElem) => {
                 if (!statusElem) return;
-                if (isSaved) {
+                if (isSaved && currentName) {
                     statusElem.innerText = 'SAVED ✔';
                     statusElem.style.color = '#10b981';
                     statusElem.style.borderColor = 'rgba(16, 185, 129, 0.4)';
-                } else if (currentName.toLowerCase() === 'shanu') {
-                    statusElem.innerText = 'DEFAULT // SHANU';
+                } else if (!currentName) {
+                    statusElem.innerText = 'ENTER CALLSIGN';
                     statusElem.style.color = 'var(--text-muted)';
                     statusElem.style.borderColor = 'rgba(255, 255, 255, 0.15)';
                 } else {
@@ -99,12 +101,11 @@ class UIManager {
             updateStatus(mobileStatus);
         };
 
-        const initialName = window.storage ? window.storage.getPlayerName() : 'shanu';
+        const initialName = window.storage ? window.storage.getPlayerName() : '';
         syncNameUI(initialName, false);
 
         const handleSave = (valToSave) => {
             let val = (valToSave || '').trim();
-            if (!val) val = 'shanu';
             if (window.storage) {
                 window.storage.setPlayerName(val);
             }
@@ -313,10 +314,16 @@ class UIManager {
     }
 
     showGameOverModal() {
+        if (window.soundEngine && typeof window.soundEngine.stopCustomGameMusic === 'function') {
+            window.soundEngine.stopCustomGameMusic();
+        }
         if (this.gameOverModal) this.gameOverModal.classList.add('active');
     }
 
     showLevelClearModal(levelId, score) {
+        if (window.soundEngine && typeof window.soundEngine.stopCustomGameMusic === 'function') {
+            window.soundEngine.stopCustomGameMusic();
+        }
         const timeSec = window.gameEngine ? Math.floor(window.gameEngine.levelTimer) : 0;
         const crystals = window.gameEngine ? window.gameEngine.crystalsCollected : 0;
 
@@ -330,6 +337,9 @@ class UIManager {
     }
 
     showVictoryModal(totalScore = 0) {
+        if (window.soundEngine && typeof window.soundEngine.stopCustomGameMusic === 'function') {
+            window.soundEngine.stopCustomGameMusic();
+        }
         if (!this.victoryModal) this.victoryModal = document.getElementById('victoryModal');
         if (!this.victoryModal) return;
 

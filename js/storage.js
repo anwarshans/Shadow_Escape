@@ -8,13 +8,13 @@ class StorageManager {
     constructor() {
         this.defaultLeaderboard = [
             { name: 'Shadow_X', score: 28450, time: '01:45' },
-            { name: 'shanu', score: 22150, time: '02:15' },
+            { name: 'Alpha_Hunter', score: 22150, time: '02:15' },
             { name: 'Cipher_Ghost', score: 17300, time: '02:40' },
             { name: 'Vortex_Runner', score: 15100, time: '03:05' },
             { name: 'Neon_Blade', score: 12800, time: '03:30' }
         ];
         this.defaultData = {
-            playerName: 'shanu',
+            playerName: '',
             unlockedLevel: 1,
             highScore: 0,
             totalCrystals: 0,
@@ -40,9 +40,6 @@ class StorageManager {
                 ...parsed, 
                 settings: { ...this.defaultData.settings, ...(parsed.settings || {}) } 
             };
-            if (!loadedData.playerName || !loadedData.playerName.trim()) {
-                loadedData.playerName = 'shanu';
-            }
             if (!Array.isArray(loadedData.leaderboard) || loadedData.leaderboard.length === 0) {
                 loadedData.leaderboard = [ ...this.defaultLeaderboard ];
             }
@@ -62,13 +59,11 @@ class StorageManager {
     }
 
     getPlayerName() {
-        const name = (this.data && this.data.playerName) ? this.data.playerName.trim() : 'shanu';
-        return name || 'shanu';
+        return (this.data && this.data.playerName) ? this.data.playerName.trim() : '';
     }
 
     setPlayerName(name) {
         let cleanName = (name || '').trim();
-        if (!cleanName) cleanName = 'shanu';
         cleanName = cleanName.substring(0, 18);
         this.data.playerName = cleanName;
         this.save();
@@ -84,7 +79,7 @@ class StorageManager {
     }
 
     recordLeaderboardEntry(playerName, score, totalTimeSec = 0) {
-        const cleanName = (playerName || this.getPlayerName()).trim() || 'shanu';
+        const cleanName = (playerName || this.getPlayerName()).trim() || 'Agent';
         const board = this.getLeaderboard();
 
         // Format time string MM:SS
