@@ -1091,11 +1091,15 @@
         </div>
 
         <div class="victory-modal-overlay" id="victoryModal">
-            <!-- Fullscreen Video Element: winning video.mp4 -->
-            <video id="victoryVideo" class="victory-video-element" src="uploads/winning video.mp4" playsinline loop muted preload="auto"></video>
-            
-            <!-- Video Overlay for legibility & contrast -->
-            <div class="victory-video-overlay"></div>
+            <!-- Fullscreen Video Element: winning_video.mp4 -->
+            <video id="victoryVideo" class="victory-video-element" autoplay playsinline muted preload="auto" poster="uploads/winning_standing_pose.png">
+                <source src="uploads/winning_video.mp4" type="video/mp4">
+                <source src="uploads/winning video.mp4" type="video/mp4">
+            </video>
+
+            <!-- Fullscreen Stopping Image: winning standing pose.png (Fades in when video finishes) -->
+            <img id="victoryEndImg" class="victory-end-img" src="uploads/winning_standing_pose.png" alt="Winning Standing Pose" />
+
             <div class="victory-light-beams"></div>
 
             <!-- Canvas for 60 FPS Particle Physics, Falling Confetti & Glowing Blue Sparks -->
@@ -1267,6 +1271,12 @@
                 document.body.classList.add('in-game-view');
                 showGameFullscreenControl();
                 triggerCombatHintPopup();
+                if (window.gameEngine) {
+                    const savedUnlocked = (window.storage && window.storage.getUnlockedLevel) ? window.storage.getUnlockedLevel() : 1;
+                    if (window.gameEngine.currentLevelId < savedUnlocked) {
+                        window.gameEngine.loadLevel(savedUnlocked);
+                    }
+                }
             } else {
                 document.body.classList.remove('game-active');
                 document.body.classList.remove('in-game-view');
@@ -1813,12 +1823,12 @@
             const statTotalTimeEl = document.getElementById('statTotalTime');
             if (statTotalTimeEl) statTotalTimeEl.innerText = `${totM}:${totS}`;
 
-            // Progress Bar
-            const percent = Math.min(100, Math.round((unlockedLvl / 5) * 100));
+            // Progress Bar (Based on actual levels completed count)
+            const percent = Math.min(100, Math.round((levelsCompletedCount / 5) * 100));
             const progressFillBar = document.getElementById('progressFillBar');
             if (progressFillBar) progressFillBar.style.width = `${percent}%`;
             const progressText = document.getElementById('progressText');
-            if (progressText) progressText.innerText = `${percent}% CLEARED (${unlockedLvl} / 5 LEVELS UNLOCKED)`;
+            if (progressText) progressText.innerText = `${percent}% CLEARED (${levelsCompletedCount} / 5 LEVELS CLEARED)`;
 
             // Agent Rank Tier calculation
             let rankTitle = "CYBER ROOKIE";
@@ -1860,7 +1870,8 @@
                 cardsContainer.innerHTML = levelInfoList.map(lvl => {
                     const isUnlocked = lvl.id <= unlockedLvl;
                     const timeSec = levelTimes[lvl.id];
-                    const isCompleted = !!timeSec;
+                    // Level is ONLY completed if recorded time exists AND player has progressed past it or finished level 5
+                    const isCompleted = isUnlocked && Boolean(timeSec && timeSec > 0 && (lvl.id < unlockedLvl || (lvl.id === 5 && timeSec > 0)));
 
                     let statusClass = 'locked';
                     let statusLabel = '🔒 LOCKED';
@@ -1872,17 +1883,17 @@
                         statusLabel = '🔓 UNLOCKED';
                     }
 
-                    // Format level best time
+                    // Format level best time (Only display time if level was actually completed)
                     let timeDisplay = '—';
-                    if (timeSec) {
+                    if (isCompleted && timeSec) {
                         const m = Math.floor(timeSec / 60).toString().padStart(2, '0');
                         const s = (timeSec % 60).toString().padStart(2, '0');
                         timeDisplay = `${m}:${s}`;
                     }
 
-                    // Star Rating calculation (1 to 3 stars based on speedrun time)
+                    // Star Rating calculation (1 to 3 stars based on speedrun time - ONLY if completed)
                     let starsHtml = '';
-                    if (isCompleted) {
+                    if (isCompleted && timeSec) {
                         let starCount = 1;
                         if (timeSec <= lvl.parTime) starCount = 3;
                         else if (timeSec <= lvl.parTime * 1.5) starCount = 2;
@@ -1904,8 +1915,11 @@
                         `;
                     }
 
+                    const launchHandler = isUnlocked ? `onclick="launchLevelFromLeaderboard(${lvl.id})"` : '';
+                    const cardTitle = isUnlocked ? `title="Click to Play ${lvl.name}"` : `title="Level Locked"`;
+
                     return `
-                        <div class="level-card ${statusClass}" style="--lvl-bg: url('uploads/animation img ${lvl.id}.webp');">
+                        <div class="level-card ${statusClass}" ${launchHandler} ${cardTitle} style="--lvl-bg: url('uploads/animation img ${lvl.id}.webp'); ${isUnlocked ? 'cursor: pointer;' : ''}">
                             <div class="level-card-bg-thumb"></div>
                             <div class="level-card-main">
                                 <div class="level-info-group">
@@ -1924,7 +1938,7 @@
                                         ${statusLabel}
                                     </span>
                                     ${starsHtml}
-                                    <div class="level-time-box" title="Best Speedrun Time">
+                                    <div class="level-time-box" title="${isCompleted ? 'Best Speedrun Time' : 'Not Cleared Yet'}">
                                         <span class="time-box-icon">⏱️</span>
                                         <span class="time-box-val">${timeDisplay}</span>
                                     </div>

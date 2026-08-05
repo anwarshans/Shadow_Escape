@@ -49,6 +49,9 @@ class GameEngine {
         this.refreshPerformanceMode();
         window.addEventListener('resize', () => this.resizeCanvas());
 
+        const savedUnlocked = (window.storage && window.storage.getUnlockedLevel) ? window.storage.getUnlockedLevel() : 1;
+        this.currentLevelId = Math.min(Math.max(savedUnlocked, 1), 5);
+
         this.loadLevel(this.currentLevelId);
         this.startLoop();
     }
@@ -447,10 +450,6 @@ class GameEngine {
         const maxLevels = (window.LEVELS && window.LEVELS.length) ? window.LEVELS.length : 5;
         if (this.currentLevelId >= maxLevels) {
             this.state = 'VICTORY';
-            if (window.storage) {
-                const activePlayer = window.storage.getPlayerName();
-                window.storage.recordLeaderboardEntry(activePlayer, this.score, this.levelTimer);
-            }
             if (window.uiManager) window.uiManager.showVictoryModal(this.score);
         } else {
             if (window.uiManager) window.uiManager.showLevelClearModal(this.currentLevelId, this.score);

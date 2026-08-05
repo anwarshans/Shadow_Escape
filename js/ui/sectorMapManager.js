@@ -131,6 +131,16 @@ class SectorMapManager {
         this.timeSec = timeSec;
         this.crystals = crystals;
 
+        // Update Prepare/Next Button label for Level 5 Completion
+        const btnNext = document.getElementById('btnNextLevel');
+        if (btnNext) {
+            if (this.clearedLevel >= 5) {
+                btnNext.innerHTML = 'CLAIM FINAL VICTORY <span class="btn-arrow-right">🏆</span>';
+            } else {
+                btnNext.innerHTML = 'PREPARE MISSION <span class="btn-arrow-right">➔</span>';
+            }
+        }
+
         // Update HUD Values
         const scoreElem = document.getElementById('levelClearScore');
         if (scoreElem) scoreElem.innerText = score.toLocaleString();

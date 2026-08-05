@@ -193,11 +193,14 @@ class UIManager {
         if (btnNextLevel) btnNextLevel.addEventListener('click', () => {
             this.hideAllModals();
             const maxLvl = (window.LEVELS && window.LEVELS.length) ? window.LEVELS.length : 5;
-            const nextLvl = window.gameEngine.currentLevelId + 1;
-            if (nextLvl > maxLvl) {
-                window.gameEngine.loadLevel(1);
+            const currentLvl = window.gameEngine ? window.gameEngine.currentLevelId : 1;
+            const nextLvl = currentLvl + 1;
+            if (currentLvl >= maxLvl || nextLvl > maxLvl) {
+                if (typeof this.showVictoryModal === 'function') {
+                    this.showVictoryModal(window.gameEngine ? window.gameEngine.score : 0);
+                }
             } else {
-                window.gameEngine.loadLevel(nextLvl);
+                if (window.gameEngine) window.gameEngine.loadLevel(nextLvl);
             }
         });
 
@@ -345,16 +348,74 @@ class UIManager {
 
         this.victoryModal.classList.add('active');
 
-        // Play Winning Video 'winning video.mp4'
+        // Dynamically update Victory Stats Card with real game data
+        const currentCrystals = window.gameEngine ? window.gameEngine.crystalsCollected : 0;
+        const totalCrystals = window.storage ? window.storage.getTotalCrystals() : currentCrystals;
+        const levelTimes = window.storage ? window.storage.getLevelTimes() : {};
+        let clearedCount = 0;
+        Object.values(levelTimes).forEach(t => { if (t) clearedCount++; });
+        if (clearedCount === 0) clearedCount = 5; // Default if completed all levels
+
+        const crystalsElem = document.querySelector('#victoryRightStatsCard .row-val-highlight');
+        if (crystalsElem) crystalsElem.innerText = `+${Math.max(currentCrystals, totalCrystals)} 💎`;
+
+        const sectorsElem = document.querySelector('#victoryRightStatsCard .row-val-green');
+        if (sectorsElem) sectorsElem.innerText = `${clearedCount} / 5 ✓`;
+
+        // Check if new high score
+        const oldHigh = window.storage ? (window.storage.data.highScore || 0) : 0;
+        const isNewRecord = totalScore > 0 && totalScore >= oldHigh;
+        const recordPill = document.querySelector('#victoryRightStatsCard .new-record-pill');
+        if (recordPill) recordPill.style.display = isNewRecord ? 'inline-block' : 'none';
+        const recordBadge = document.getElementById('victoryRecordBadge');
+        if (recordBadge) recordBadge.style.display = isNewRecord ? 'inline-flex' : 'none';
+
+        // Play Winning Video 'winning_video.mp4' from 0:00 and show 'winning_standing_pose.png' on finish
         const victoryVid = document.getElementById('victoryVideo');
+        const victoryEndImg = document.getElementById('victoryEndImg');
+
+        if (victoryEndImg) {
+            victoryEndImg.classList.remove('show');
+        }
+
         if (victoryVid) {
-            victoryVid.currentTime = 0;
-            const playPromise = victoryVid.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    victoryVid.muted = true;
-                    victoryVid.play();
-                });
+            victoryVid.loop = false;
+            victoryVid.muted = true;
+
+            const resetToBeginningAndPlay = () => {
+                try {
+                    victoryVid.currentTime = 0;
+                } catch (e) {}
+                const playPromise = victoryVid.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch((err) => {
+                        console.warn('Playback retry muted:', err);
+                        victoryVid.muted = true;
+                        victoryVid.play();
+                    });
+                }
+            };
+
+            victoryVid.onended = () => {
+                try { victoryVid.pause(); } catch (e) {}
+                if (victoryEndImg) {
+                    victoryEndImg.classList.add('show');
+                }
+            };
+
+            try {
+                victoryVid.pause();
+                try { victoryVid.currentTime = 0; } catch (e) {}
+                victoryVid.load();
+
+                if (victoryVid.readyState >= 1) {
+                    resetToBeginningAndPlay();
+                } else {
+                    victoryVid.addEventListener('loadedmetadata', resetToBeginningAndPlay, { once: true });
+                    resetToBeginningAndPlay();
+                }
+            } catch (err) {
+                console.warn('Victory video play exception:', err);
             }
         }
 

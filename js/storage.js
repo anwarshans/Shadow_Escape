@@ -33,12 +33,13 @@ class StorageManager {
     load() {
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
-            if (!raw) return { ...this.defaultData, leaderboard: [ ...this.defaultLeaderboard ] };
+            if (!raw) return { ...this.defaultData, levelTimes: {}, leaderboard: [ ...this.defaultLeaderboard ] };
             const parsed = JSON.parse(raw);
             const loadedData = { 
                 ...this.defaultData, 
                 ...parsed, 
-                settings: { ...this.defaultData.settings, ...(parsed.settings || {}) } 
+                levelTimes: (parsed && typeof parsed.levelTimes === 'object' && parsed.levelTimes !== null) ? { ...parsed.levelTimes } : {},
+                settings: { ...this.defaultData.settings, ...(parsed && parsed.settings || {}) } 
             };
             if (!Array.isArray(loadedData.leaderboard) || loadedData.leaderboard.length === 0) {
                 loadedData.leaderboard = [ ...this.defaultLeaderboard ];
@@ -46,23 +47,27 @@ class StorageManager {
             return loadedData;
         } catch (e) {
             console.warn('LocalStorage error, fallback to defaults:', e);
-            return { ...this.defaultData, leaderboard: [ ...this.defaultLeaderboard ] };
+            return { ...this.defaultData, levelTimes: {}, leaderboard: [ ...this.defaultLeaderboard ] };
         }
     }
 
     save() {
         try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
+            if (this.data) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
+            }
         } catch (e) {
             console.error('Failed to save to LocalStorage:', e);
         }
     }
 
     getPlayerName() {
+        if (!this.data) this.data = this.load();
         return (this.data && this.data.playerName) ? this.data.playerName.trim() : '';
     }
 
     setPlayerName(name) {
+        if (!this.data) this.data = this.load();
         let cleanName = (name || '').trim();
         cleanName = cleanName.substring(0, 18);
         this.data.playerName = cleanName;
@@ -71,6 +76,7 @@ class StorageManager {
     }
 
     getLeaderboard() {
+        if (!this.data) this.data = this.load();
         if (!Array.isArray(this.data.leaderboard) || this.data.leaderboard.length === 0) {
             this.data.leaderboard = [ ...this.defaultLeaderboard ];
             this.save();
@@ -79,6 +85,7 @@ class StorageManager {
     }
 
     recordLeaderboardEntry(playerName, score, totalTimeSec = 0) {
+        if (!this.data) this.data = this.load();
         const cleanName = (playerName || this.getPlayerName()).trim() || 'Agent';
         const board = this.getLeaderboard();
 
@@ -131,17 +138,22 @@ class StorageManager {
     }
 
     getUnlockedLevel() {
+        if (!this.data) this.data = this.load();
         return this.data.unlockedLevel || 1;
     }
 
     unlockLevel(levelNum) {
-        if (levelNum > this.data.unlockedLevel) {
-            this.data.unlockedLevel = Math.min(levelNum, 5);
+        if (!this.data) this.data = this.load();
+        const currentUnlocked = this.data.unlockedLevel || 1;
+        const newUnlocked = Math.min(Math.max(levelNum, currentUnlocked), 5);
+        if (newUnlocked > currentUnlocked) {
+            this.data.unlockedLevel = newUnlocked;
             this.save();
         }
     }
 
     updateHighScore(score) {
+        if (!this.data) this.data = this.load();
         let isNewHigh = false;
         if (score > (this.data.highScore || 0)) {
             this.data.highScore = score;
@@ -153,16 +165,32 @@ class StorageManager {
     }
 
     addCrystals(count) {
-        this.data.totalCrystals = (this.data.totalCrystals || 0) + count;
+        if (!this.data) this.data = this.load();
+        this.data.totalCrystals = (this.data.totalCrystals || 0) + (count || 0);
         this.save();
     }
 
     saveLevelTime(levelId, timeInSeconds) {
+        if (!this.data) this.data = this.load();
+        if (!this.data.levelTimes || typeof this.data.levelTimes !== 'object') {
+            this.data.levelTimes = {};
+        }
+        const validTime = Math.max(1, Math.floor(timeInSeconds));
         const currentBest = this.data.levelTimes[levelId];
-        if (!currentBest || timeInSeconds < currentBest) {
-            this.data.levelTimes[levelId] = timeInSeconds;
+        if (!currentBest || validTime < currentBest) {
+            this.data.levelTimes[levelId] = validTime;
             this.save();
         }
+    }
+
+    getLevelTimes() {
+        if (!this.data) this.data = this.load();
+        return (this.data && this.data.levelTimes && typeof this.data.levelTimes === 'object') ? { ...this.data.levelTimes } : {};
+    }
+
+    getTotalCrystals() {
+        if (!this.data) this.data = this.load();
+        return (this.data && this.data.totalCrystals) ? this.data.totalCrystals : 0;
     }
 
     getSettings() {

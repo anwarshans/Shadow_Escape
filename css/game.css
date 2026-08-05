@@ -717,29 +717,31 @@ body.is-fullscreen-game .game-screen-wrapper {
     transform: scale(1.08);
 }
 
-/* Custom Game Play Music Toggle Button */
+/* Custom Game Play Music Toggle Button - Side Positioned for 100% Unobstructed Player View */
 .hud-music-btn {
-    background: rgba(16, 20, 36, 0.88);
-    border: 1.5px solid var(--primary-cyan, #00f3ff);
+    background: rgba(10, 12, 24, 0.72);
+    border: 1px solid rgba(0, 243, 255, 0.45);
     color: var(--primary-cyan, #00f3ff);
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    font-size: 0.95rem;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 0.85rem;
     line-height: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     pointer-events: auto;
-    box-shadow: 0 0 14px rgba(0, 243, 255, 0.35);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
     user-select: none;
     touch-action: manipulation;
-    transition: transform var(--transition-fast, 0.2s), background var(--transition-fast, 0.2s), box-shadow var(--transition-fast, 0.2s), color var(--transition-fast, 0.2s), border-color var(--transition-fast, 0.2s);
+    transition: transform var(--transition-fast, 0.2s), background var(--transition-fast, 0.2s), box-shadow var(--transition-fast, 0.2s), color var(--transition-fast, 0.2s), opacity 0.2s ease;
     flex-shrink: 0;
     padding: 0;
     position: relative;
     overflow: hidden;
+    opacity: 0.82;
+    margin-left: 2px;
 }
 
 .hud-music-btn:hover, .hud-music-btn:active {
@@ -1265,18 +1267,19 @@ body.is-fullscreen-game .game-screen-wrapper {
     }
 
     .hud-music-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 0.82rem;
-        border-radius: 6px;
+        width: 25px;
+        height: 25px;
+        font-size: 0.75rem;
+        border-radius: 5px;
+        margin-left: 1px;
     }
 
     .hud-music-btn .music-note-icon {
-        font-size: 0.82rem;
+        font-size: 0.75rem;
     }
 
     .hud-music-waves {
-        height: 8px;
+        height: 7px;
         gap: 1px;
     }
 
