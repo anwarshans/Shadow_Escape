@@ -49,9 +49,7 @@ class GameEngine {
         this.refreshPerformanceMode();
         window.addEventListener('resize', () => this.resizeCanvas());
 
-        const savedUnlocked = (window.storage && window.storage.getUnlockedLevel) ? window.storage.getUnlockedLevel() : 1;
-        this.currentLevelId = Math.min(Math.max(savedUnlocked, 1), 5);
-
+        this.currentLevelId = 1;
         this.loadLevel(this.currentLevelId);
         this.startLoop();
     }

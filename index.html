@@ -1271,11 +1271,8 @@
                 document.body.classList.add('in-game-view');
                 showGameFullscreenControl();
                 triggerCombatHintPopup();
-                if (window.gameEngine) {
-                    const savedUnlocked = (window.storage && window.storage.getUnlockedLevel) ? window.storage.getUnlockedLevel() : 1;
-                    if (window.gameEngine.currentLevelId < savedUnlocked) {
-                        window.gameEngine.loadLevel(savedUnlocked);
-                    }
+                if (window.gameEngine && !window.gameEngine.currentLevelId) {
+                    window.gameEngine.loadLevel(1);
                 }
             } else {
                 document.body.classList.remove('game-active');
