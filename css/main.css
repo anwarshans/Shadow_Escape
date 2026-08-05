@@ -339,14 +339,14 @@ body::after {
 
 .mobile-header-btn {
     font-family: var(--font-heading);
-    font-size: 0.85rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: var(--primary-gold, #fbbf24);
-    background: rgba(251, 191, 36, 0.12);
-    border: 1.5px solid rgba(251, 191, 36, 0.4);
-    width: 34px;
-    height: 34px;
-    border-radius: 9px;
+    background: rgba(251, 191, 36, 0.14);
+    border: 1.5px solid rgba(251, 191, 36, 0.45);
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: inline-flex;
@@ -356,7 +356,7 @@ body::after {
     line-height: 1;
     user-select: none;
     padding: 0;
-    box-shadow: 0 0 10px rgba(251, 191, 36, 0.15);
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.2);
     outline: none;
 }
 
@@ -568,13 +568,13 @@ h1, h2, h3, h4 {
     }
 
     .mobile-header-actions {
-        gap: 5px;
+        gap: 8px;
     }
 
     .mobile-header-btn, .mobile-nav-toggle {
-        width: 31px !important;
-        height: 31px !important;
-        font-size: 0.82rem !important;
-        border-radius: 8px !important;
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 0.98rem !important;
+        border-radius: 10px !important;
     }
 }

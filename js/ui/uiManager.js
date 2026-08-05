@@ -54,6 +54,92 @@ class UIManager {
         this.victoryModal = document.getElementById('victoryModal');
 
         this.setupEventListeners();
+        this.initPlayerNameControl();
+    }
+
+    initPlayerNameControl() {
+        const desktopInput = document.getElementById('homePlayerNameInput');
+        const desktopBtnSave = document.getElementById('btnSavePlayerName');
+        const desktopStatus = document.getElementById('callsignSaveStatus');
+        const heroTagName = document.getElementById('homeHeroTagName');
+
+        const mobileInput = document.getElementById('mobilePlayerNameInput');
+        const mobileBtnSave = document.getElementById('btnSaveMobilePlayerName');
+        const mobileStatus = document.getElementById('mobileCallsignSaveStatus');
+
+        const syncNameUI = (rawName, isSaved = false) => {
+            const currentName = (rawName && rawName.trim()) ? rawName.trim() : (window.storage ? window.storage.getPlayerName() : 'shanu');
+            const uppercaseName = currentName.toUpperCase();
+            
+            if (desktopInput && desktopInput.value !== currentName) desktopInput.value = currentName;
+            if (mobileInput && mobileInput.value !== currentName) mobileInput.value = currentName;
+
+            if (heroTagName) {
+                heroTagName.innerText = `AGENT ${uppercaseName}`;
+            }
+
+            const updateStatus = (statusElem) => {
+                if (!statusElem) return;
+                if (isSaved) {
+                    statusElem.innerText = 'SAVED ✔';
+                    statusElem.style.color = '#10b981';
+                    statusElem.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+                } else if (currentName.toLowerCase() === 'shanu') {
+                    statusElem.innerText = 'DEFAULT // SHANU';
+                    statusElem.style.color = 'var(--text-muted)';
+                    statusElem.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                } else {
+                    statusElem.innerText = 'CUSTOM CALLSIGN';
+                    statusElem.style.color = 'var(--primary-gold)';
+                    statusElem.style.borderColor = 'rgba(251, 191, 36, 0.4)';
+                }
+            };
+
+            updateStatus(desktopStatus);
+            updateStatus(mobileStatus);
+        };
+
+        const initialName = window.storage ? window.storage.getPlayerName() : 'shanu';
+        syncNameUI(initialName, false);
+
+        const handleSave = (valToSave) => {
+            let val = (valToSave || '').trim();
+            if (!val) val = 'shanu';
+            if (window.storage) {
+                window.storage.setPlayerName(val);
+            }
+            syncNameUI(val, true);
+            if (typeof window.populateLeaderboard === 'function') {
+                window.populateLeaderboard();
+            }
+        };
+
+        [ { input: desktopInput, btn: desktopBtnSave }, { input: mobileInput, btn: mobileBtnSave } ].forEach(pair => {
+            if (!pair.input) return;
+
+            if (pair.btn) {
+                pair.btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    handleSave(pair.input.value);
+                });
+            }
+
+            pair.input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSave(pair.input.value);
+                    pair.input.blur();
+                }
+            });
+
+            pair.input.addEventListener('input', () => {
+                syncNameUI(pair.input.value, false);
+            });
+
+            pair.input.addEventListener('blur', () => {
+                handleSave(pair.input.value);
+            });
+        });
     }
 
     setupEventListeners() {
@@ -249,7 +335,20 @@ class UIManager {
 
         this.victoryModal.classList.add('active');
 
-        // Trigger Landing Shockwave Burst on Hero Run-In
+        // Play Winning Video 'winning video.mp4'
+        const victoryVid = document.getElementById('victoryVideo');
+        if (victoryVid) {
+            victoryVid.currentTime = 0;
+            const playPromise = victoryVid.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    victoryVid.muted = true;
+                    victoryVid.play();
+                });
+            }
+        }
+
+        // Trigger Landing Shockwave Burst Effect
         const shockwave = document.getElementById('victoryShockwave');
         if (shockwave) {
             shockwave.classList.remove('burst');
@@ -679,6 +778,11 @@ class UIManager {
         }
         if (window.soundEngine && typeof window.soundEngine.stopStoryMusic === 'function') {
             window.soundEngine.stopStoryMusic();
+        }
+
+        const victoryVid = document.getElementById('victoryVideo');
+        if (victoryVid) {
+            try { victoryVid.pause(); } catch (e) {}
         }
 
         [this.pauseModal, this.gameOverModal, this.levelClearModal, this.victoryModal].forEach(m => {

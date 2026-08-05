@@ -42,13 +42,27 @@ class InputHandler {
     }
 
     setupTouchListeners() {
+        const triggerHaptic = () => {
+            try {
+                if (navigator.vibrate) {
+                    navigator.vibrate(12);
+                }
+            } catch (err) {}
+        };
+
         const bindBtn = (id, keyName) => {
             const btn = document.getElementById(id);
             if (!btn) return;
 
             const handleStart = (e) => {
                 if (e.cancelable) e.preventDefault();
+                if (!this.touch[keyName]) {
+                    triggerHaptic();
+                }
                 this.touch[keyName] = true;
+                btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
+
                 if (keyName === 'jump') {
                     this.jumpPressed = true;
                 }
@@ -58,6 +72,8 @@ class InputHandler {
             const handleEnd = (e) => {
                 if (e.cancelable) e.preventDefault();
                 this.touch[keyName] = false;
+                btn.classList.remove('active');
+                btn.setAttribute('aria-pressed', 'false');
             };
 
             btn.addEventListener('touchstart', handleStart, { passive: false });
@@ -69,12 +85,79 @@ class InputHandler {
             btn.addEventListener('contextmenu', (e) => e.preventDefault());
         };
 
+        const setupLeftClusterSlideSteering = () => {
+            const leftCluster = document.querySelector('.left-cluster');
+            const btnLeft = document.getElementById('btnTouchLeft');
+            const btnRight = document.getElementById('btnTouchRight');
+            if (!leftCluster || !btnLeft || !btnRight) return;
+
+            const processTouches = (e) => {
+                if (e.cancelable) e.preventDefault();
+
+                let touchLeftActive = false;
+                let touchRightActive = false;
+
+                const leftRect = btnLeft.getBoundingClientRect();
+                const rightRect = btnRight.getBoundingClientRect();
+
+                // Hit padding around buttons for smooth continuous touch steering
+                const hitPadding = 25;
+
+                for (let i = 0; i < e.touches.length; i++) {
+                    const t = e.touches[i];
+                    const tx = t.clientX;
+                    const ty = t.clientY;
+
+                    // Check Left Button Hitbox
+                    if (
+                        tx >= leftRect.left - hitPadding &&
+                        tx <= leftRect.right + hitPadding &&
+                        ty >= leftRect.top - hitPadding &&
+                        ty <= leftRect.bottom + hitPadding
+                    ) {
+                        touchLeftActive = true;
+                    }
+
+                    // Check Right Button Hitbox
+                    if (
+                        tx >= rightRect.left - hitPadding &&
+                        tx <= rightRect.right + hitPadding &&
+                        ty >= rightRect.top - hitPadding &&
+                        ty <= rightRect.bottom + hitPadding
+                    ) {
+                        touchRightActive = true;
+                    }
+                }
+
+                // If moving from false to true, trigger subtle haptic
+                if ((touchLeftActive && !this.touch.left) || (touchRightActive && !this.touch.right)) {
+                    triggerHaptic();
+                }
+
+                this.touch.left = touchLeftActive;
+                this.touch.right = touchRightActive;
+
+                btnLeft.classList.toggle('active', touchLeftActive);
+                btnLeft.setAttribute('aria-pressed', touchLeftActive ? 'true' : 'false');
+
+                btnRight.classList.toggle('active', touchRightActive);
+                btnRight.setAttribute('aria-pressed', touchRightActive ? 'true' : 'false');
+            };
+
+            leftCluster.addEventListener('touchstart', processTouches, { passive: false });
+            leftCluster.addEventListener('touchmove', processTouches, { passive: false });
+            leftCluster.addEventListener('touchend', processTouches, { passive: false });
+            leftCluster.addEventListener('touchcancel', processTouches, { passive: false });
+        };
+
         const attachControls = () => {
             bindBtn('btnTouchLeft', 'left');
             bindBtn('btnTouchRight', 'right');
             bindBtn('btnTouchJump', 'jump');
             bindBtn('btnTouchDash', 'dash');
             bindBtn('btnTouchFlight', 'flight');
+
+            setupLeftClusterSlideSteering();
 
             const canvas = document.getElementById('gameCanvas');
             if (canvas) {

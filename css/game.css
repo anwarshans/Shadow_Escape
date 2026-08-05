@@ -721,11 +721,11 @@ body.is-fullscreen-game .game-screen-wrapper {
 .touch-controls {
     display: none;
     position: absolute;
-    bottom: max(20px, env(safe-area-inset-bottom, 20px));
+    bottom: max(36px, env(safe-area-inset-bottom, 36px));
     left: 0;
     width: 100%;
-    padding-left: max(24px, env(safe-area-inset-left, 24px));
-    padding-right: max(24px, env(safe-area-inset-right, 24px));
+    padding-left: max(36px, env(safe-area-inset-left, 36px));
+    padding-right: max(36px, env(safe-area-inset-right, 36px));
     box-sizing: border-box;
     justify-content: space-between;
     align-items: flex-end;
@@ -739,7 +739,7 @@ body.is-fullscreen-game .game-screen-wrapper {
 .touch-cluster {
     display: flex;
     align-items: flex-end;
-    gap: 10px;
+    gap: 14px;
     pointer-events: auto;
     touch-action: none;
 }
@@ -748,36 +748,36 @@ body.is-fullscreen-game .game-screen-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
     pointer-events: auto;
     touch-action: none;
 }
 
 .touch-btn {
     position: relative;
-    width: 60px;
-    height: 60px;
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, rgba(30, 36, 56, 0.95) 0%, rgba(10, 14, 26, 0.98) 100%);
-    border: 2px solid var(--primary-gold, #fbbf24);
+    background: radial-gradient(circle at 35% 35%, rgba(32, 40, 64, 0.96) 0%, rgba(10, 14, 26, 0.98) 100%);
+    border: 2.5px solid var(--primary-gold, #fbbf24);
     color: var(--primary-gold, #fbbf24);
     font-family: var(--font-heading);
-    font-size: 1.25rem;
+    font-size: 1.45rem;
     font-weight: 900;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 
-                0 0 20px rgba(251, 191, 36, 0.45), 
-                inset 0 1px 1px rgba(255, 255, 255, 0.3),
-                inset 0 0 15px rgba(251, 191, 36, 0.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85), 
+                0 0 24px rgba(251, 191, 36, 0.5), 
+                inset 0 1.5px 2px rgba(255, 255, 255, 0.4),
+                inset 0 0 18px rgba(251, 191, 36, 0.2);
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
     touch-action: none;
     will-change: transform, box-shadow;
-    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
-    backdrop-filter: blur(10px);
+    transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.1s ease, background 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+    backdrop-filter: blur(12px);
     cursor: pointer;
     overflow: hidden;
 }
@@ -786,84 +786,97 @@ body.is-fullscreen-game .game-screen-wrapper {
 .touch-btn::after {
     content: '';
     position: absolute;
-    top: 2px; left: 12%; right: 12%;
-    height: 38%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 100%);
+    top: 2px; left: 10%; right: 10%;
+    height: 40%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0) 100%);
     border-radius: 50% 50% 0 0;
     pointer-events: none;
 }
 
 .touch-btn:active, .touch-btn.active {
-    transform: scale(0.92) translateY(2px);
+    transform: scale(0.90) translateY(3px);
     background: radial-gradient(circle at 50% 50%, var(--primary-gold, #fbbf24) 0%, #d97706 100%);
     color: #050608;
-    box-shadow: 0 0 32px rgba(251, 191, 36, 0.95), inset 0 0 12px rgba(0, 0, 0, 0.5);
-    border-color: #fef08a;
+    box-shadow: 0 0 40px rgba(251, 191, 36, 1), inset 0 0 14px rgba(0, 0, 0, 0.6);
+    border-color: #ffffff;
 }
 
 /* Directional Buttons (Left ◄ / Right ►) */
 .touch-btn.directional-btn {
-    border-color: rgba(251, 191, 36, 0.85);
+    border-color: rgba(251, 191, 36, 0.95);
     color: #fbbf24;
+    background: radial-gradient(circle at 35% 35%, rgba(45, 36, 18, 0.96) 0%, rgba(12, 10, 5, 0.98) 100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85), 
+                0 0 25px rgba(251, 191, 36, 0.55), 
+                inset 0 1.5px 2px rgba(255, 255, 255, 0.35),
+                inset 0 0 18px rgba(251, 191, 36, 0.2);
+    text-shadow: 0 0 14px rgba(251, 191, 36, 0.9);
 }
 
-/* Power / Speed Dash Button (⚡) - Immediate Right of Right Arrow Button */
+.touch-btn.directional-btn:active, .touch-btn.directional-btn.active {
+    background: radial-gradient(circle at 50% 50%, #fbbf24 0%, #d97706 100%);
+    color: #050608;
+    box-shadow: 0 0 40px rgba(251, 191, 36, 1), inset 0 0 14px rgba(0, 0, 0, 0.6);
+    border-color: #ffffff;
+}
+
+/* Power / Speed Dash Button (⚡) */
 .touch-btn.dash-btn, .touch-btn.power-btn {
     border-color: #f59e0b;
     color: #fbbf24;
-    background: radial-gradient(circle at 35% 35%, rgba(45, 28, 12, 0.95) 0%, rgba(15, 9, 3, 0.98) 100%);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 
-                0 0 24px rgba(245, 158, 11, 0.6), 
-                inset 0 1px 1px rgba(255, 255, 255, 0.3),
-                inset 0 0 15px rgba(245, 158, 11, 0.2);
-    text-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+    background: radial-gradient(circle at 35% 35%, rgba(55, 32, 12, 0.96) 0%, rgba(18, 10, 3, 0.98) 100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85), 
+                0 0 26px rgba(245, 158, 11, 0.65), 
+                inset 0 1.5px 2px rgba(255, 255, 255, 0.35),
+                inset 0 0 18px rgba(245, 158, 11, 0.25);
+    text-shadow: 0 0 14px rgba(245, 158, 11, 0.9);
 }
 
 .touch-btn.dash-btn:active, .touch-btn.dash-btn.active,
 .touch-btn.power-btn:active, .touch-btn.power-btn.active {
     background: radial-gradient(circle at 50% 50%, #fbbf24 0%, #d97706 100%);
     color: #000000;
-    box-shadow: 0 0 36px rgba(245, 158, 11, 1), inset 0 0 12px rgba(0, 0, 0, 0.5);
-    border-color: #fff;
+    box-shadow: 0 0 42px rgba(245, 158, 11, 1), inset 0 0 14px rgba(0, 0, 0, 0.6);
+    border-color: #ffffff;
 }
 
 /* Fight / Attack Button (⚔️) */
 .touch-btn.attack-btn, .touch-btn.flight-btn {
     border-color: #00f3ff;
     color: #00f3ff;
-    background: radial-gradient(circle at 35% 35%, rgba(10, 36, 50, 0.95) 0%, rgba(4, 14, 22, 0.98) 100%);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 
-                0 0 24px rgba(0, 243, 255, 0.55), 
-                inset 0 1px 1px rgba(255, 255, 255, 0.3),
-                inset 0 0 15px rgba(0, 243, 255, 0.2);
-    text-shadow: 0 0 12px rgba(0, 243, 255, 0.8);
+    background: radial-gradient(circle at 35% 35%, rgba(12, 42, 58, 0.96) 0%, rgba(4, 16, 24, 0.98) 100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85), 
+                0 0 26px rgba(0, 243, 255, 0.6), 
+                inset 0 1.5px 2px rgba(255, 255, 255, 0.35),
+                inset 0 0 18px rgba(0, 243, 255, 0.25);
+    text-shadow: 0 0 14px rgba(0, 243, 255, 0.9);
 }
 
 .touch-btn.attack-btn:active, .touch-btn.attack-btn.active,
 .touch-btn.flight-btn:active, .touch-btn.flight-btn.active {
     background: radial-gradient(circle at 50% 50%, #00f3ff 0%, #0284c7 100%);
     color: #000000;
-    box-shadow: 0 0 36px rgba(0, 243, 255, 1), inset 0 0 12px rgba(0, 0, 0, 0.5);
-    border-color: #bae6fd;
+    box-shadow: 0 0 42px rgba(0, 243, 255, 1), inset 0 0 14px rgba(0, 0, 0, 0.6);
+    border-color: #ffffff;
 }
 
 /* Jump Button (▲) */
 .touch-btn.jump-btn {
     border-color: #10b981;
     color: #34d399;
-    background: radial-gradient(circle at 35% 35%, rgba(10, 42, 28, 0.95) 0%, rgba(4, 18, 12, 0.98) 100%);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 
-                0 0 24px rgba(16, 185, 129, 0.55), 
-                inset 0 1px 1px rgba(255, 255, 255, 0.3),
-                inset 0 0 15px rgba(16, 185, 129, 0.2);
-    text-shadow: 0 0 12px rgba(52, 211, 153, 0.8);
+    background: radial-gradient(circle at 35% 35%, rgba(12, 48, 32, 0.96) 0%, rgba(4, 20, 12, 0.98) 100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85), 
+                0 0 26px rgba(16, 185, 129, 0.6), 
+                inset 0 1.5px 2px rgba(255, 255, 255, 0.35),
+                inset 0 0 18px rgba(16, 185, 129, 0.25);
+    text-shadow: 0 0 14px rgba(52, 211, 153, 0.9);
 }
 
 .touch-btn.jump-btn:active, .touch-btn.jump-btn.active {
     background: radial-gradient(circle at 50% 50%, #34d399 0%, #059669 100%);
     color: #000000;
-    box-shadow: 0 0 36px rgba(16, 185, 129, 1), inset 0 0 12px rgba(0, 0, 0, 0.5);
-    border-color: #a7f3d0;
+    box-shadow: 0 0 42px rgba(16, 185, 129, 1), inset 0 0 14px rgba(0, 0, 0, 0.6);
+    border-color: #ffffff;
 }
 
 /* Mobile Rotation Overlay */
@@ -1072,14 +1085,14 @@ body.is-fullscreen-game .game-screen-wrapper {
         height: 10px;
     }
     .touch-btn {
-        width: 54px;
-        height: 54px;
-        font-size: 1.05rem;
+        width: 66px;
+        height: 66px;
+        font-size: 1.4rem;
     }
     .touch-controls {
-        bottom: max(18px, env(safe-area-inset-bottom, 18px));
-        padding-left: max(24px, env(safe-area-inset-left, 24px));
-        padding-right: max(24px, env(safe-area-inset-right, 24px));
+        bottom: max(32px, env(safe-area-inset-bottom, 32px));
+        padding-left: max(32px, env(safe-area-inset-left, 32px));
+        padding-right: max(32px, env(safe-area-inset-right, 32px));
     }
 }
 
@@ -1148,23 +1161,23 @@ body.is-fullscreen-game .game-screen-wrapper {
     }
 
     .touch-controls {
-        bottom: max(16px, env(safe-area-inset-bottom, 16px));
-        padding-left: max(16px, env(safe-area-inset-left, 16px));
-        padding-right: max(16px, env(safe-area-inset-right, 16px));
+        bottom: max(30px, env(safe-area-inset-bottom, 30px));
+        padding-left: max(24px, env(safe-area-inset-left, 24px));
+        padding-right: max(24px, env(safe-area-inset-right, 24px));
     }
 
     .touch-cluster {
-        gap: 10px;
+        gap: 12px;
     }
 
     .vertical-action-stack {
-        gap: 8px;
+        gap: 10px;
     }
 
     .touch-btn {
-        width: 46px;
-        height: 46px;
-        font-size: 0.98rem;
+        width: 58px;
+        height: 58px;
+        font-size: 1.25rem;
     }
 }
 

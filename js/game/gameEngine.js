@@ -440,11 +440,17 @@ class GameEngine {
             window.storage.addCrystals(this.crystalsCollected);
             window.storage.saveLevelTime(this.currentLevelId, Math.floor(this.levelTimer));
             window.storage.updateHighScore(this.score);
+            const activePlayer = window.storage.getPlayerName();
+            window.storage.recordLeaderboardEntry(activePlayer, this.score, this.levelTimer);
         }
 
         const maxLevels = (window.LEVELS && window.LEVELS.length) ? window.LEVELS.length : 5;
         if (this.currentLevelId >= maxLevels) {
             this.state = 'VICTORY';
+            if (window.storage) {
+                const activePlayer = window.storage.getPlayerName();
+                window.storage.recordLeaderboardEntry(activePlayer, this.score, this.levelTimer);
+            }
             if (window.uiManager) window.uiManager.showVictoryModal(this.score);
         } else {
             if (window.uiManager) window.uiManager.showLevelClearModal(this.currentLevelId, this.score);

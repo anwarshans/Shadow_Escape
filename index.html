@@ -144,9 +144,25 @@
                             <span class="pill-text">THE GAME</span>
                             <span class="pill-line"></span>
                         </div>
-                    </div>                    <!-- Bevelled Hex Action Buttons Row -->
+                    </div>
+
+                    <!-- Bevelled Hex Action Buttons Row -->
                     <div class="poster-actions-row">
                         <button onclick="showView('gameView')" class="poster-play-btn">PLAY NOW &raquo;</button>
+
+                        <!-- Mobile Player Name Customizer Card (Placed directly below Play Now button) -->
+                        <div class="poster-mobile-callsign-card" id="mobileCallsignCard">
+                            <div class="mobile-callsign-header">
+                                <span class="mobile-callsign-label"><span class="pulse-dot"></span> OPERATIVE CALLSIGN</span>
+                                <span class="callsign-status-badge" id="mobileCallsignSaveStatus">DEFAULT // SHANU</span>
+                            </div>
+                            <div class="mobile-callsign-input-row">
+                                <span class="mobile-callsign-prefix">AGENT //</span>
+                                <input type="text" id="mobilePlayerNameInput" class="mobile-callsign-input" value="shanu" maxlength="18" placeholder="Enter Player Name..." autocomplete="off" spellcheck="false" aria-label="Mobile Player Name Input">
+                                <button id="btnSaveMobilePlayerName" class="mobile-callsign-save-btn" title="Save Player Callsign">SAVE</button>
+                            </div>
+                        </div>
+
                         <div class="poster-secondary-group">
                             <button onclick="openStoryBriefingModal(1)" class="poster-secondary-btn" title="View Story Briefing Animation">🎬 BRIEFING</button>
                             <button onclick="openModal('modalAbout')" class="poster-secondary-btn">📖 GUIDE</button>
@@ -212,9 +228,16 @@
                     <div class="poster-hero-person-wrapper">
                         <img src="uploads/org_person.webp" alt="Shadow Escape Hero Agent Shanu" class="poster-hero-img desktop-hero-img">
                         <img src="uploads/preview.webp" alt="Shadow Escape Gameplay Preview" class="poster-hero-img mobile-hero-img" onclick="showView('gameView')">
-                        <div class="poster-hero-name-tag">
-                            <span class="tag-role">HERO RUNNER</span>
-                            <strong class="tag-name">AGENT SHANU</strong>
+                        <div class="poster-hero-name-tag" id="homeHeroNameTag">
+                            <div class="tag-header-row">
+                                <span class="tag-role">HERO RUNNER</span>
+                                <span class="callsign-status-badge" id="callsignSaveStatus">DEFAULT // SHANU</span>
+                            </div>
+                            <div class="tag-input-row">
+                                <span class="tag-prefix">AGENT //</span>
+                                <input type="text" id="homePlayerNameInput" class="hero-tag-input" value="shanu" maxlength="18" placeholder="Enter Name..." autocomplete="off" spellcheck="false" aria-label="Player Name Input">
+                                <button id="btnSavePlayerName" class="hero-tag-save-btn" title="Save Player Callsign">SAVE</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1060,10 +1083,12 @@
         </div>
 
         <div class="victory-modal-overlay" id="victoryModal">
-            <!-- Seamless Fullscreen 3D Video Backdrop Layer with Hero Sprinting & Glowing Crystals -->
-            <div class="victory-temple-bg-layer" id="victoryTempleBg"></div>
+            <!-- Fullscreen Video Element: winning video.mp4 -->
+            <video id="victoryVideo" class="victory-video-element" src="uploads/winning video.mp4" playsinline loop muted preload="auto"></video>
+            
+            <!-- Video Overlay for legibility & contrast -->
+            <div class="victory-video-overlay"></div>
             <div class="victory-light-beams"></div>
-            <div class="victory-backdrop-glow"></div>
 
             <!-- Canvas for 60 FPS Particle Physics, Falling Confetti & Glowing Blue Sparks -->
             <canvas id="victoryCanvas"></canvas>
@@ -1148,7 +1173,7 @@
                 </div>
             </div>
 
-            <!-- Bottom Action Bar: 3 Pill Buttons (Blue HOME, Green PLAY AGAIN, Gold NEXT LEVEL) -->
+            <!-- Bottom Action Bar: 3 Professional Buttons (HOME, PLAY AGAIN, LEADERBOARD - No Next Level button on 5th level) -->
             <div class="victory-bottom-action-bar" id="victoryBottomActionBar">
                 <button class="action-btn btn-home" onclick="window.uiManager.hideAllModals(); showView('homeView');">
                     <span class="btn-icon">🏠</span>
@@ -1160,9 +1185,9 @@
                     <span>PLAY AGAIN</span>
                 </button>
 
-                <button class="action-btn btn-next-level" id="btnVictoryNextLevel" onclick="window.uiManager.hideAllModals(); if(window.gameEngine) window.gameEngine.startLevel(1);">
-                    <span>NEXT LEVEL</span>
-                    <span class="btn-icon">⏩</span>
+                <button class="action-btn btn-leaderboard" id="btnVictoryLeaderboard">
+                    <span class="btn-icon">🏆</span>
+                    <span>LEADERBOARD</span>
                 </button>
             </div>
         </div>
@@ -1713,6 +1738,10 @@
                     if (window.soundEngine) window.soundEngine.playUIHover();
                 });
             });
+
+            if (typeof populateLeaderboard === 'function') {
+                populateLeaderboard();
+            }
         });
 
         function switchLeaderboardTab(tabId) {
@@ -1864,7 +1893,7 @@
                     }
 
                     return `
-                        <div class="level-card ${statusClass}" style="--lvl-bg: url('uploads/animation img ${lvl.id}.png');">
+                        <div class="level-card ${statusClass}" style="--lvl-bg: url('uploads/animation img ${lvl.id}.webp');">
                             <div class="level-card-bg-thumb"></div>
                             <div class="level-card-main">
                                 <div class="level-info-group">
@@ -1878,7 +1907,10 @@
                                     </div>
                                 </div>
                                 <div class="level-meta-group">
-                                    <span class="level-status-pill ${statusClass}">${statusLabel}</span>
+                                    <span class="level-status-pill ${statusClass}">
+                                        <span class="status-pulse-dot"></span>
+                                        ${statusLabel}
+                                    </span>
                                     ${starsHtml}
                                     <div class="level-time-box" title="Best Speedrun Time">
                                         <span class="time-box-icon">⏱️</span>
@@ -1891,19 +1923,14 @@
                 }).join('');
             }
 
-            // 3. Populate Global Leaderboard
+            // 3. Populate Global Leaderboard (Top 5 Players)
             const globalTbody = document.getElementById('tableGlobalLeaderboard');
             if (globalTbody) {
-                const runners = [
-                    { name: 'Shadow_X', score: 28450, time: '01:45', isUser: false },
-                    { name: 'Agent_Shanu (You)', score: Math.max(highScore, 19520), time: '02:15', isUser: true },
-                    { name: 'Cipher_Ghost', score: 17300, time: '02:40', isUser: false },
-                    { name: 'Vortex_Runner', score: 15100, time: '03:05', isUser: false },
-                    { name: 'Neon_Blade', score: 12800, time: '03:30', isUser: false }
-                ];
-
-                // Sort high scores descending
-                runners.sort((a, b) => b.score - a.score);
+                const activePlayer = window.storage ? window.storage.getPlayerName() : 'shanu';
+                const board = window.storage ? window.storage.getLeaderboard() : [];
+                
+                // Keep top 5
+                const runners = board.slice(0, 5);
 
                 globalTbody.innerHTML = runners.map((r, idx) => {
                     const rank = idx + 1;
@@ -1912,14 +1939,16 @@
                     else if (rank === 2) badgeClass = 'top-2';
                     else if (rank === 3) badgeClass = 'top-3';
 
-                    const rowStyle = r.isUser ? 'background: rgba(251, 191, 36, 0.12); font-weight: 700;' : '';
+                    const isCurrentPlayer = r.name.toLowerCase() === activePlayer.toLowerCase();
+                    const displayName = isCurrentPlayer ? `${r.name} <span class="user-you-tag">(YOU)</span>` : r.name;
+                    const rowStyle = isCurrentPlayer ? 'background: rgba(251, 191, 36, 0.16); font-weight: 700; border-left: 3px solid var(--primary-gold);' : '';
 
                     return `
                         <tr style="${rowStyle}">
                             <td><span class="rank-badge ${badgeClass}">${rank}</span></td>
-                            <td><b style="color: ${r.isUser ? 'var(--primary-gold)' : '#ffffff'};">${r.name}</b></td>
-                            <td style="color: var(--primary-gold); font-family: var(--font-heading);">${r.score.toLocaleString()}</td>
-                            <td style="color: var(--text-muted); font-family: var(--font-heading);">${r.time}</td>
+                            <td><b style="color: ${isCurrentPlayer ? 'var(--primary-gold)' : '#ffffff'};">${displayName}</b></td>
+                            <td style="color: var(--primary-gold); font-family: var(--font-heading);">${(r.score || 0).toLocaleString()}</td>
+                            <td style="color: var(--text-muted); font-family: var(--font-heading);">${r.time || '—'}</td>
                         </tr>
                     `;
                 }).join('');
