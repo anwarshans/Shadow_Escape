@@ -370,7 +370,20 @@ class UIManager {
         const recordBadge = document.getElementById('victoryRecordBadge');
         if (recordBadge) recordBadge.style.display = isNewRecord ? 'inline-flex' : 'none';
 
-        // Play Winning Video 'winning_video.mp4' from 0:00 and show 'winning_standing_pose.png' on finish
+        // 1. Play Continuous Winning Music BGM & Triumphant Fanfare
+        if (window.soundEngine) {
+            if (typeof window.soundEngine.ensureContext === 'function') {
+                window.soundEngine.ensureContext();
+            }
+            if (typeof window.soundEngine.startHomeBGM === 'function') {
+                window.soundEngine.startHomeBGM();
+            }
+            if (typeof window.soundEngine.playGrandVictory === 'function') {
+                window.soundEngine.playGrandVictory();
+            }
+        }
+
+        // 2. Play Winning Video 'winning_video.mp4' WITH VIDEO SOUND (Unmuted) from 0:00
         const victoryVid = document.getElementById('victoryVideo');
         const victoryEndImg = document.getElementById('victoryEndImg');
 
@@ -380,27 +393,44 @@ class UIManager {
 
         if (victoryVid) {
             victoryVid.loop = false;
-            victoryVid.muted = true;
+            victoryVid.muted = false; // ENABLE VIDEO SOUND AUDIO!
+            victoryVid.volume = 1.0;
 
             const resetToBeginningAndPlay = () => {
                 try {
                     victoryVid.currentTime = 0;
                 } catch (e) {}
+
+                // Attempt unmuted play with sound
+                victoryVid.muted = false;
+                victoryVid.volume = 1.0;
+
                 const playPromise = victoryVid.play();
                 if (playPromise !== undefined) {
                     playPromise.catch((err) => {
-                        console.warn('Playback retry muted:', err);
+                        console.warn('Unmuted autoplay blocked by browser policy, starting muted then unmuting on touch/click:', err);
                         victoryVid.muted = true;
-                        victoryVid.play();
+                        victoryVid.play().then(() => {
+                            const unmuteOnInteraction = () => {
+                                victoryVid.muted = false;
+                                victoryVid.volume = 1.0;
+                                document.removeEventListener('click', unmuteOnInteraction);
+                                document.removeEventListener('touchstart', unmuteOnInteraction);
+                            };
+                            document.addEventListener('click', unmuteOnInteraction, { once: true });
+                            document.addEventListener('touchstart', unmuteOnInteraction, { once: true });
+                        });
                     });
                 }
             };
 
+            // On Video Finish: Pause video & fade in ending image silently without extra SFX
             victoryVid.onended = () => {
                 try { victoryVid.pause(); } catch (e) {}
                 if (victoryEndImg) {
                     victoryEndImg.classList.add('show');
                 }
+                // (No sound effect played on image display as requested)
             };
 
             try {
@@ -774,10 +804,11 @@ class UIManager {
 
         if (this.introTimeout) clearTimeout(this.introTimeout);
 
-        overlay.classList.remove('fade-out');
+        // STAGE 1: Smooth Fade-to-Black over current screen (Menu/Gameplay)
+        overlay.classList.remove('fade-out-scene', 'fade-out-black', 'scene-reveal', 'fade-out');
         overlay.style.display = 'flex';
         void overlay.offsetWidth;
-        overlay.classList.add('active');
+        overlay.classList.add('fade-in-black');
 
         if (window.soundEngine) {
             if (typeof window.soundEngine.playStoryBriefingMusic === 'function') {
@@ -787,6 +818,13 @@ class UIManager {
             }
         }
 
+        // STAGE 2: After the screen completes fading to black (500ms), reveal the story briefing scene from black
+        setTimeout(() => {
+            if (overlay.classList.contains('fade-in-black') || overlay.classList.contains('active')) {
+                overlay.classList.add('scene-reveal');
+            }
+        }, 520);
+
         let dismissed = false;
         const dismissIntro = () => {
             if (dismissed) return;
@@ -795,20 +833,31 @@ class UIManager {
             if (window.soundEngine && typeof window.soundEngine.stopStoryMusic === 'function') {
                 window.soundEngine.stopStoryMusic();
             }
-            overlay.classList.add('fade-out');
-            overlay.classList.remove('active');
+
+            // STAGE 3: Fade story scene elements back to solid black
+            overlay.classList.remove('scene-reveal');
+            overlay.classList.add('fade-out-scene');
+
             setTimeout(() => {
-                overlay.style.display = 'none';
-                overlay.classList.remove('fade-out');
+                // Start game rendering behind the solid black curtain
                 if (onStartGame) onStartGame();
-            }, 400);
+
+                // STAGE 4: Smooth Fade-Out of Black Curtain to reveal the game canvas / screen
+                overlay.classList.remove('fade-in-black', 'fade-out-scene');
+                overlay.classList.add('fade-out-black');
+
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    overlay.classList.remove('fade-out-black', 'active');
+                }, 500);
+            }, 450);
         };
 
         overlay.onclick = dismissIntro;
 
         this.introTimeout = setTimeout(() => {
             dismissIntro();
-        }, 4000);
+        }, 5500);
     }
 
     openStoryBriefingModal(levelId = 1) {
@@ -862,7 +911,7 @@ class UIManager {
         const overlay = document.getElementById('levelIntroOverlay');
         if (overlay) {
             overlay.style.display = 'none';
-            overlay.classList.remove('fade-out');
+            overlay.classList.remove('active', 'fade-out', 'fade-in-black', 'fade-out-black', 'fade-out-scene', 'scene-reveal');
         }
     }
 }
