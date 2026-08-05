@@ -861,6 +861,10 @@ class UIManager {
     }
 
     openStoryBriefingModal(levelId = 1) {
+        if (typeof window.showComingSoonPop === 'function') {
+            window.showComingSoonPop('STORY BRIEFING', 'Story Briefing Mode is coming soon! Stay tuned.');
+            return;
+        }
         let levelData = null;
         if (window.LEVELS && Array.isArray(window.LEVELS)) {
             levelData = window.LEVELS.find(l => l.id === levelId);

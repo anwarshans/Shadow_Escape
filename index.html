@@ -103,6 +103,18 @@
     </script>
 </head>
 <body>
+    <!-- Global Coming Soon Pop Toast Notification -->
+    <div id="comingSoonPop" class="coming-soon-pop" aria-live="polite" role="status">
+        <div class="coming-soon-pop-content">
+            <div class="coming-soon-icon">🎬</div>
+            <div class="coming-soon-text-group">
+                <div class="coming-soon-title" id="comingSoonPopTitle">STORY BRIEFING // COMING SOON</div>
+                <div class="coming-soon-sub" id="comingSoonPopSub">Story Briefing Mode is coming soon! Stay tuned.</div>
+            </div>
+            <button class="coming-soon-close-btn" onclick="closeComingSoonPop()" aria-label="Close notification" title="Close">✕</button>
+        </div>
+    </div>
+
     <div class="app-container">
         <!-- Navigation Header -->
         <header class="navbar">
@@ -164,7 +176,7 @@
                         </div>
 
                         <div class="poster-secondary-group">
-                            <button onclick="openStoryBriefingModal(1)" class="poster-secondary-btn" title="View Story Briefing Animation">🎬 BRIEFING</button>
+                            <button onclick="openStoryBriefingModal(1)" class="poster-secondary-btn" title="Story Briefing - Coming Soon">🎬 BRIEFING</button>
                             <button onclick="openModal('modalAbout')" class="poster-secondary-btn">📖 GUIDE</button>
                             <button onclick="openModal('modalLeaderboard')" class="poster-secondary-btn">🏆 SCORES</button>
                             <button onclick="toggleAudioMute()" class="poster-secondary-btn mobile-home-music-btn" id="btnPosterMobileMusic" title="Toggle Music">🎵 MUSIC</button>
@@ -419,6 +431,24 @@
                 </svg>
                 <span>ROTATE & PLAY</span>
             </button>
+        </div>
+
+        <!-- MODAL: FULLSCREEN PROMPT ON WEBSITE OPEN -->
+        <div class="modal-overlay" id="modalFullscreenPrompt">
+            <div class="modal-content fullscreen-prompt-card">
+                <button class="modal-close-cyber-btn" onclick="closeModal('modalFullscreenPrompt')" aria-label="Close Modal" title="Close">✕</button>
+                <div class="fullscreen-prompt-icon-badge" onclick="triggerFullscreenFromPrompt()" title="Click for Full Screen">⤢</div>
+                <h3 class="fullscreen-prompt-title">FULLSCREEN RECOMMENDED</h3>
+                <p class="fullscreen-prompt-desc">Click below to enter full screen mode for maximum screen space & immersion!</p>
+                <div class="fullscreen-prompt-actions">
+                    <button class="fullscreen-prompt-btn-main" onclick="triggerFullscreenFromPrompt()">
+                        <span class="fs-icon">⤢</span> CLICK FOR FULL SCREEN
+                    </button>
+                    <button class="fullscreen-prompt-btn-dismiss" onclick="closeModal('modalFullscreenPrompt')">
+                        NOT NOW
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- MODAL: LEADERBOARD & STATS -->
@@ -1483,9 +1513,33 @@
             }
         }
 
+        function triggerFullscreenFromPrompt() {
+            if (window.soundEngine && typeof window.soundEngine.playUIClick === 'function') {
+                window.soundEngine.playUIClick();
+            }
+            closeModal('modalFullscreenPrompt');
+            toggleGameFullscreen();
+        }
+
         document.addEventListener('fullscreenchange', () => {
-            document.body.classList.toggle('is-fullscreen-game', Boolean(document.fullscreenElement));
+            const isFullscreen = Boolean(document.fullscreenElement);
+            document.body.classList.toggle('is-fullscreen-game', isFullscreen);
             updateFullscreenToggleLabel();
+            if (isFullscreen) {
+                const promptModal = document.getElementById('modalFullscreenPrompt');
+                if (promptModal && promptModal.classList.contains('active')) {
+                    closeModal('modalFullscreenPrompt');
+                }
+            }
+        });
+
+        // Show Fullscreen Prompt when website opens
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!document.fullscreenElement) {
+                setTimeout(() => {
+                    openModal('modalFullscreenPrompt');
+                }, 400);
+            }
         });
 
         window.addEventListener('keydown', (event) => {
@@ -1785,10 +1839,41 @@
             }
         }
 
-        function openStoryBriefingModal(levelId = 1) {
-            if (window.uiManager) {
-                window.uiManager.openStoryBriefingModal(levelId);
+        let comingSoonPopTimer = null;
+        function showComingSoonPop(featureTitle = 'STORY BRIEFING', featureSub = 'Story Briefing Mode is coming soon! Stay tuned.') {
+            if (window.soundEngine && typeof window.soundEngine.playUIClick === 'function') {
+                window.soundEngine.playUIClick();
             }
+            const pop = document.getElementById('comingSoonPop');
+            const titleEl = document.getElementById('comingSoonPopTitle');
+            const subEl = document.getElementById('comingSoonPopSub');
+            if (pop) {
+                if (titleEl) titleEl.textContent = featureTitle ? `${featureTitle} // COMING SOON` : 'COMING SOON';
+                if (subEl) subEl.textContent = featureSub || 'This feature is currently under development!';
+                
+                pop.classList.remove('shake');
+                void pop.offsetWidth; // Trigger reflow for re-animation
+                pop.classList.add('show', 'shake');
+                
+                if (comingSoonPopTimer) clearTimeout(comingSoonPopTimer);
+                comingSoonPopTimer = setTimeout(() => {
+                    pop.classList.remove('show', 'shake');
+                }, 3000);
+            }
+        }
+        window.showComingSoonPop = showComingSoonPop;
+
+        function closeComingSoonPop() {
+            const pop = document.getElementById('comingSoonPop');
+            if (pop) {
+                pop.classList.remove('show', 'shake');
+            }
+            if (comingSoonPopTimer) clearTimeout(comingSoonPopTimer);
+        }
+        window.closeComingSoonPop = closeComingSoonPop;
+
+        function openStoryBriefingModal(levelId = 1) {
+            showComingSoonPop('STORY BRIEFING', 'Story Briefing Mode is coming soon! Stay tuned.');
         }
 
         function populateLeaderboard() {
