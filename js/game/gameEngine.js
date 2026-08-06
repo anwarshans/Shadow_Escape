@@ -8,7 +8,7 @@ class GameEngine {
         this.ctx = null;
         this.performanceMode = false;
         this.sceneZoom = 1.08;
-        this.mobileSceneZoom = 1.28;
+        this.mobileSceneZoom = 1.48;
 
         this.currentLevelId = 1;
         this.levelData = null;
@@ -74,7 +74,12 @@ class GameEngine {
     }
 
     getSceneZoom() {
-        return this.isMobileViewport ? this.mobileSceneZoom : this.sceneZoom;
+        if (!this.isMobileViewport) return this.sceneZoom;
+        const aspect = (window.innerWidth && window.innerHeight) ? (window.innerWidth / window.innerHeight) : (16 / 9);
+        if (aspect > 1.77) {
+            return Math.max(1.48, Math.min(1.72, 1.48 * (aspect / 1.77)));
+        }
+        return this.mobileSceneZoom;
     }
 
     isVisible(entity, cameraOffset, padding = 120) {
@@ -154,7 +159,7 @@ class GameEngine {
         this.state = 'INTRO';
 
         if (window.particleSystem) window.particleSystem.reset();
-        if (window.soundEngine) window.soundEngine.startBGM();
+        if (window.soundEngine && !window.soundEngine.isMuted) window.soundEngine.playGameMusic();
 
         if (window.uiManager && typeof window.uiManager.showLevelIntro === 'function') {
             window.uiManager.showLevelIntro(this.levelData, () => {

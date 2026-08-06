@@ -144,25 +144,153 @@
         <main id="homeView" class="spa-view home-view poster-view">
             <div class="poster-container">
                 
-                <!-- Left Column: Poster Title, Actions & Feature Pillars -->
-                <div class="poster-left-content">
-                    <div class="poster-tagline">AN ADVENTURE. ONE ESCAPE. ZERO REGRETS.</div>
-                    
-                    <div class="poster-title-wrapper">
-                        <div class="poster-title-shadow">SHADOW</div>
-                        <div class="poster-title-escape">ESCAPE</div>
-                        <div class="poster-subtitle-pill">
-                            <span class="pill-line"></span>
-                            <span class="pill-text">THE GAME</span>
-                            <span class="pill-line"></span>
+                <!-- 1. DESKTOP / LAPTOP VIEW: ORIGINAL CLASSIC 2-COLUMN MODEL -->
+                <div class="poster-desktop-layout">
+                    <!-- Left Column: Poster Title, Actions & Feature Pillars -->
+                    <div class="poster-left-content">
+                        <div class="poster-tagline">AN ADVENTURE. ONE ESCAPE. ZERO REGRETS.</div>
+                        
+                        <div class="poster-title-img-wrapper">
+                            <div class="title-glow-aura"></div>
+                            <img src="uploads/title home.png" alt="Shadow Escape Official Title Graphic" class="poster-desktop-title-img">
+                        </div>
+
+                        <!-- Bevelled Hex Action Buttons Row -->
+                        <div class="poster-actions-row">
+                            <button onclick="showView('gameView')" class="poster-play-btn">
+                                <span class="play-btn-glow-aura"></span>
+                                <span class="play-btn-text">PLAY NOW</span>
+                                <svg class="play-btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            </button>
+
+                            <div class="poster-secondary-group">
+                                <button onclick="openStoryBriefingModal(1)" class="poster-secondary-btn" title="Story Briefing">
+                                    <svg class="sec-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                    <span>BRIEFING</span>
+                                </button>
+                                <button onclick="openModal('modalAbout')" class="poster-secondary-btn" title="Game Guide">
+                                    <svg class="sec-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                                    <span>GUIDE</span>
+                                </button>
+                                <button onclick="openModal('modalLeaderboard')" class="poster-secondary-btn" title="High Scores">
+                                    <svg class="sec-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"/><path d="M18 4H6v7a6 6 0 0 0 12 0V4z"/></svg>
+                                    <span>SCORES</span>
+                                </button>
+                                <button onclick="toggleAudioMute()" class="poster-secondary-btn" title="Toggle Music">
+                                    <svg class="sec-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                                    <span>MUSIC</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Rich Mission Intel & Specs Showcase Card -->
+                        <div class="poster-intel-card">
+                            <div class="hud-corner top-left"></div>
+                            <div class="hud-corner top-right"></div>
+                            <div class="hud-corner bottom-left"></div>
+                            <div class="hud-corner bottom-right"></div>
+
+                            <div class="intel-badge-row">
+                                <span class="intel-tag-pill"><span class="chip-pulse-dot"></span> HTML5 CANVAS</span>
+                                <span class="intel-tag-pill"><span class="chip-pulse-dot"></span> 60 FPS PHYSICS</span>
+                                <span class="intel-tag-pill"><span class="chip-pulse-dot"></span> 5 SECTORS</span>
+                                <span class="intel-tag-pill secret-key-pill" onclick="openAdminAuthModal()" title="Admin Security Access"><span class="chip-pulse-dot gold"></span> MASTER KEYCARD SYSTEM</span>
+                            </div>
+
+                            <div class="intel-story-box">
+                                <div class="intel-story-title"><span class="live-status-dot"></span> TACTICAL MISSION BRIEFING // SECTOR 07</div>
+                                <p class="intel-story-text">
+                                    You wake up inside <b>Sector 7</b> of an abandoned subterranean research facility following a containment breach. Human security guards patrol corridors, automated laser grids block checkpoints, and facility lockdown is imminent. Escape through all 5 security sectors before total lockdown!
+                                </p>
+                            </div>
+
+                            <!-- 3 Feature Highlights Grid -->
+                            <div class="intel-features-grid">
+                                <div class="intel-feature-box">
+                                    <div class="intel-feature-icon-badge">
+                                        <svg class="feature-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                    </div>
+                                    <div class="intel-feature-info">
+                                        <strong>DYNAMIC PLATFORMING</strong>
+                                        <span>Wall jumps, dashes & 60 FPS physics</span>
+                                    </div>
+                                </div>
+                                <div class="intel-feature-box">
+                                    <div class="intel-feature-icon-badge">
+                                        <svg class="feature-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                                    </div>
+                                    <div class="intel-feature-info">
+                                        <strong>GUARDS & HAZARDS</strong>
+                                        <span>Bypass patrols, drones & laser grids</span>
+                                    </div>
+                                </div>
+                                <div class="intel-feature-box secret-key-pill" onclick="openAdminAuthModal()">
+                                    <div class="intel-feature-icon-badge">
+                                        <svg class="feature-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                                    </div>
+                                    <div class="intel-feature-info">
+                                        <strong>KEYCARDS & CRYSTALS</strong>
+                                        <span>Retrieve master keys & power crystals</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Column: Full-Bleed Hero Persona & Top-Right Crest Badge -->
+                    <div class="poster-right-content">
+                        <div class="poster-crest-badge">
+                            <img src="uploads/logo.png" alt="Shadow Escape Shield Crest" class="crest-logo-img">
+                            <div class="crest-text-box">
+                                <span class="crest-title">SHADOW ESCAPE</span>
+                                <span class="crest-sub">THE GAME</span>
+                            </div>
+                        </div>
+
+                        <div class="poster-hero-person-wrapper">
+                            <div class="hero-pedestal-light"></div>
+                            <div class="hero-ambient-halo"></div>
+                            <img src="uploads/player home.png" alt="Shadow Escape Hero Agent Shanu" class="poster-hero-img desktop-hero-img">
+
+                            <div class="poster-hero-name-tag" id="homeHeroNameTag">
+                                <div class="tag-header-row">
+                                    <span class="tag-role">HERO RUNNER</span>
+                                    <span class="callsign-status-badge" id="callsignSaveStatus">ENTER CALLSIGN</span>
+                                </div>
+                                <div class="tag-input-row">
+                                    <span class="tag-prefix">AGENT //</span>
+                                    <input type="text" id="homePlayerNameInput" class="hero-tag-input" value="" maxlength="18" placeholder="enter your name" autocomplete="off" spellcheck="false" aria-label="Player Name Input">
+                                    <button id="btnSavePlayerName" class="hero-tag-save-btn" title="Save Player Callsign">SAVE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. MOBILE VIEW: INTERACTIVE COMPOSITE BANNER MODEL (Title & Player Zoomable) -->
+                <div class="poster-mobile-layout">
+                    <!-- AAA Interactive Composite Hero Banner -->
+                    <div class="composite-hero-banner" id="heroBannerCompositeMobile">
+                        <!-- Base Mobile Background Image (Clean background without title/player text printed) -->
+                        <img src="uploads/mobile home bg.png" alt="Shadow Escape Mobile Hero Banner Background" class="banner-bg-img">
+
+                        <!-- Layer 1: Title Graphic Overlay (Interactive 3D Hover & Glow Effect) -->
+                        <div class="banner-title-overlay" title="Shadow Escape Title Graphic">
+                            <img src="uploads/title home.png" alt="Shadow Escape Title Graphic" class="title-overlay-img">
+                        </div>
+
+                        <!-- Layer 2: Player Persona Overlay (Interactive 3D Hover & Glow Effect) -->
+                        <div class="banner-player-overlay" title="Shadow Escape Hero Agent Shanu">
+                            <img src="uploads/player home.png" alt="Shadow Escape Hero Agent Shanu" class="player-overlay-img">
                         </div>
                     </div>
 
-                    <!-- Bevelled Hex Action Buttons Row -->
+                    <!-- Action Buttons Row on Mobile -->
                     <div class="poster-actions-row">
                         <button onclick="showView('gameView')" class="poster-play-btn">PLAY NOW &raquo;</button>
 
-                        <!-- Mobile Player Name Customizer Card (Placed directly below Play Now button) -->
+                        <!-- Mobile Operative Callsign Card -->
                         <div class="poster-mobile-callsign-card" id="mobileCallsignCard">
                             <div class="mobile-callsign-header">
                                 <span class="mobile-callsign-label"><span class="pulse-dot"></span> OPERATIVE CALLSIGN</span>
@@ -183,7 +311,7 @@
                         </div>
                     </div>
 
-                    <!-- Rich Mission Intel & Specs Showcase Card -->
+                    <!-- Rich Mission Intel Showcase Card on Mobile -->
                     <div class="poster-intel-card">
                         <div class="intel-badge-row">
                             <span class="intel-tag-pill">⚡ HTML5 CANVAS</span>
@@ -199,7 +327,7 @@
                             </p>
                         </div>
 
-                        <!-- 3 Feature Highlights Grid (Balanced 3-Column Layout) -->
+                        <!-- 3 Feature Highlights Grid -->
                         <div class="intel-features-grid">
                             <div class="intel-feature-box">
                                 <div class="intel-feature-icon">🏃</div>
@@ -221,34 +349,6 @@
                                     <strong>KEYCARDS & CRYSTALS</strong>
                                     <span>Retrieve master keys & power crystals</span>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Right Column: Full-Bleed Hero Persona & Top-Right Crest Badge -->
-                <div class="poster-right-content">
-                    <div class="poster-crest-badge">
-                        <img src="uploads/logo.png" alt="Shadow Escape Shield Crest" class="crest-logo-img">
-                        <div class="crest-text-box">
-                            <span class="crest-title">SHADOW ESCAPE</span>
-                            <span class="crest-sub">THE GAME</span>
-                        </div>
-                    </div>
-
-                    <div class="poster-hero-person-wrapper">
-                        <img src="uploads/org_person.webp" alt="Shadow Escape Hero Agent Shanu" class="poster-hero-img desktop-hero-img">
-                        <img src="uploads/preview.webp" alt="Shadow Escape Gameplay Preview" class="poster-hero-img mobile-hero-img" onclick="showView('gameView')">
-                        <div class="poster-hero-name-tag" id="homeHeroNameTag">
-                            <div class="tag-header-row">
-                                <span class="tag-role">HERO RUNNER</span>
-                                <span class="callsign-status-badge" id="callsignSaveStatus">ENTER CALLSIGN</span>
-                            </div>
-                            <div class="tag-input-row">
-                                <span class="tag-prefix">AGENT //</span>
-                                <input type="text" id="homePlayerNameInput" class="hero-tag-input" value="" maxlength="18" placeholder="enter your name" autocomplete="off" spellcheck="false" aria-label="Player Name Input">
-                                <button id="btnSavePlayerName" class="hero-tag-save-btn" title="Save Player Callsign">SAVE</button>
                             </div>
                         </div>
                     </div>
@@ -1706,8 +1806,118 @@
         window.openAdminAuthModal = openAdminAuthModal;
         window.toggleAdminPasswordVisibility = toggleAdminPasswordVisibility;
         window.handleAdminAuthSubmit = handleAdminAuthSubmit;
-        window.adminWarpToLevel = adminWarpToLevel;
         window.confirmAdminLevelStart = confirmAdminLevelStart;
+
+        // =========================================================
+        // INTERACTIVE 3D PARALLAX & GLOW SYSTEM FOR BANNER & TITLE LOGO
+        // =========================================================
+        function initBannerInteractiveOverlays() {
+            const titleOverlay = document.querySelector('.banner-title-overlay');
+            const playerOverlay = document.querySelector('.banner-player-overlay');
+            const desktopTitleWrapper = document.querySelector('.poster-title-img-wrapper');
+
+            [titleOverlay, playerOverlay].forEach(overlay => {
+                if (!overlay) return;
+                const img = overlay.querySelector('img');
+
+                overlay.addEventListener('mousemove', (e) => {
+                    const rect = overlay.getBoundingClientRect();
+                    const cx = rect.left + rect.width / 2;
+                    const cy = rect.top + rect.height / 2;
+                    const tiltY = Math.round(((e.clientX - cx) / (rect.width / 2)) * 12 * 10) / 10;
+                    const tiltX = Math.round(-((e.clientY - cy) / (rect.height / 2)) * 12 * 10) / 10;
+                    if (img) {
+                        img.style.transform = `perspective(1000px) rotateY(${tiltY}deg) rotateX(${tiltX}deg) scale(1.03)`;
+                        img.style.filter = `drop-shadow(0 0 25px rgba(251, 191, 36, 0.95)) drop-shadow(0 0 45px rgba(254, 240, 138, 0.6))`;
+                    }
+                });
+
+                overlay.addEventListener('mouseleave', () => {
+                    if (img) {
+                        img.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1)`;
+                        img.style.filter = `drop-shadow(0 0 0px transparent)`;
+                    }
+                });
+
+                overlay.addEventListener('touchstart', () => {
+                    if (window.soundEngine && typeof window.soundEngine.playUIClick === 'function') {
+                        window.soundEngine.playUIClick();
+                    }
+                    if (img) {
+                        img.style.transform = `perspective(1000px) scale(1.04)`;
+                        img.style.filter = `drop-shadow(0 0 30px rgba(251, 191, 36, 1))`;
+                    }
+                }, { passive: true });
+
+                overlay.addEventListener('touchend', () => {
+                    setTimeout(() => {
+                        if (img) {
+                            img.style.transform = `perspective(1000px) scale(1)`;
+                            img.style.filter = `drop-shadow(0 0 0px transparent)`;
+                        }
+                    }, 300);
+                });
+            });
+
+            // Interactive 3D Parallax & Dynamic Golden Spotlight Backdrop tracking for Desktop Title Logo
+            if (desktopTitleWrapper) {
+                const titleImg = desktopTitleWrapper.querySelector('.poster-desktop-title-img');
+                const auraGlow = desktopTitleWrapper.querySelector('.title-glow-aura');
+
+                desktopTitleWrapper.addEventListener('mousemove', (e) => {
+                    const rect = desktopTitleWrapper.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left;
+                    const mouseY = e.clientY - rect.top;
+                    const px = Math.round((mouseX / rect.width) * 100);
+                    const py = Math.round((mouseY / rect.height) * 100);
+
+                    const cx = rect.left + rect.width / 2;
+                    const cy = rect.top + rect.height / 2;
+                    const tiltY = Math.round(((e.clientX - cx) / (rect.width / 2)) * 14 * 10) / 10;
+                    const tiltX = Math.round(-((e.clientY - cy) / (rect.height / 2)) * 14 * 10) / 10;
+
+                    if (titleImg) {
+                        titleImg.style.transform = `perspective(1000px) rotateY(${tiltY}deg) rotateX(${tiltX}deg) translateY(-6px) scale(1.06)`;
+                        titleImg.style.filter = `drop-shadow(0 0 30px rgba(251, 191, 36, 0.55)) drop-shadow(0 15px 30px rgba(0, 0, 0, 0.95))`;
+                    }
+                    if (auraGlow) {
+                        auraGlow.style.background = `radial-gradient(ellipse at ${px}% ${py}%, rgba(254, 240, 138, 0.55) 0%, rgba(251, 191, 36, 0.4) 30%, rgba(217, 119, 6, 0.15) 60%, transparent 85%)`;
+                        auraGlow.style.transform = `translate(${tiltY * 1.5}px, ${-tiltX * 1.5}px) scale(1.08)`;
+                        auraGlow.style.opacity = '0.75';
+                    }
+                });
+
+                desktopTitleWrapper.addEventListener('mouseleave', () => {
+                    if (titleImg) {
+                        titleImg.style.transform = `perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1)`;
+                        titleImg.style.filter = `drop-shadow(0 0 20px rgba(251, 191, 36, 0.4)) drop-shadow(0 15px 30px rgba(0, 0, 0, 0.95))`;
+                    }
+                    if (auraGlow) {
+                        auraGlow.style.background = `radial-gradient(ellipse at center, rgba(251, 191, 36, 0.35) 0%, rgba(217, 119, 6, 0.2) 40%, rgba(146, 64, 14, 0.08) 65%, transparent 80%)`;
+                        auraGlow.style.transform = `translate(0, 0) scale(1)`;
+                        auraGlow.style.opacity = '0.45';
+                    }
+                });
+
+                desktopTitleWrapper.addEventListener('click', () => {
+                    if (window.soundEngine && typeof window.soundEngine.playUIClick === 'function') {
+                        window.soundEngine.playUIClick();
+                    }
+                    if (titleImg) {
+                        titleImg.style.transform = `perspective(1000px) scale(1.08)`;
+                        setTimeout(() => {
+                            titleImg.style.transform = `perspective(1000px) scale(1.05)`;
+                        }, 180);
+                    }
+                });
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initBannerInteractiveOverlays);
+        } else {
+            initBannerInteractiveOverlays();
+        }
 
         function copyContactInfo(text, msg, btnEl) {
             if (window.soundEngine) window.soundEngine.playUIClick();

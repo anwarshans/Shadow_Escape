@@ -65,8 +65,11 @@ class SoundEngine {
             this.stopCustomGameMusic();
         } else {
             this.ensureContext();
+            const gameView = document.getElementById('gameView');
             const homeView = document.getElementById('homeView');
-            if (homeView && homeView.style.display !== 'none') {
+            if (gameView && gameView.style.display !== 'none') {
+                this.playGameMusic();
+            } else if (homeView && homeView.style.display !== 'none') {
                 this.startHomeBGM();
             }
         }
@@ -706,13 +709,13 @@ class SoundEngine {
             clearTimeout(this.bgmTimeout);
             this.bgmTimeout = null;
         }
+        if (!this.isMuted) {
+            this.playGameMusic();
+        }
     }
 
-    toggleGameMusic() {
-        if (this.isMuted) {
-            this.isMuted = false;
-            this.saveSettings();
-        }
+    playGameMusic() {
+        if (this.isMuted) return;
         this.ensureContext();
 
         if (!this.playingMusicAudio) {
@@ -721,18 +724,17 @@ class SoundEngine {
         }
 
         this.playingMusicAudio.volume = Math.min(1.0, (this.musicVol || 0.85));
+        this.stopHomeBGM();
+        this.stopStoryMusic();
 
         if (this.playingMusicAudio.paused) {
-            this.stopHomeBGM();
-            this.stopStoryMusic();
-
             const playPromise = this.playingMusicAudio.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
                     this.isPlayingCustomSong = true;
                     this.updateMusicButtonUI(true);
                 }).catch(e => {
-                    console.warn('Custom game song playback info:', e);
+                    console.warn('Game song playback info:', e);
                     this.isPlayingCustomSong = false;
                     this.updateMusicButtonUI(false);
                 });
@@ -741,11 +743,21 @@ class SoundEngine {
                 this.updateMusicButtonUI(true);
             }
         } else {
-            this.playingMusicAudio.pause();
-            this.isPlayingCustomSong = false;
-            this.updateMusicButtonUI(false);
+            this.isPlayingCustomSong = true;
+            this.updateMusicButtonUI(true);
         }
+    }
 
+    toggleGameMusic() {
+        if (!this.playingMusicAudio || this.playingMusicAudio.paused || this.isMuted) {
+            if (this.isMuted) {
+                this.isMuted = false;
+                this.saveSettings();
+            }
+            this.playGameMusic();
+        } else {
+            this.stopCustomGameMusic();
+        }
         return this.isPlayingCustomSong;
     }
 
@@ -760,15 +772,25 @@ class SoundEngine {
     }
 
     updateMusicButtonUI(isPlaying) {
+        if (typeof window.updateAudioButtonUI === 'function') {
+            window.updateAudioButtonUI(this.isMuted);
+        }
         const btn = document.getElementById('btnGameMusicToggle');
         if (btn) {
-            if (isPlaying) {
+            if (!this.isMuted && isPlaying) {
                 btn.classList.add('playing');
-                btn.setAttribute('title', 'Pause Music (playing music.mp4)');
-                btn.setAttribute('aria-label', 'Pause Music');
+                btn.classList.remove('muted');
+                btn.setAttribute('title', 'Mute Sound & Music');
+                btn.setAttribute('aria-label', 'Mute Sound & Music');
+            } else if (this.isMuted) {
+                btn.classList.remove('playing');
+                btn.classList.add('muted');
+                btn.setAttribute('title', 'Unmute Sound & Music');
+                btn.setAttribute('aria-label', 'Unmute Sound & Music');
             } else {
                 btn.classList.remove('playing');
-                btn.setAttribute('title', 'Play Music (playing music.mp4)');
+                btn.classList.remove('muted');
+                btn.setAttribute('title', 'Play Music');
                 btn.setAttribute('aria-label', 'Play Music');
             }
         }
