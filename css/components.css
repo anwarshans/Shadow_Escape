@@ -4285,49 +4285,35 @@
     box-sizing: border-box;
 }
 
-/* Ambient Blurred Backdrop for Perfect Aspect-Ratio Letterbox Filling on All Mobile & Screen Ratios */
-.victory-modal-overlay::before {
-    content: '';
-    position: absolute;
-    top: -5%;
-    left: -5%;
-    width: 110%;
-    height: 110%;
-    background: url('../uploads/winning_standing_pose.png') center center / cover no-repeat;
-    filter: blur(30px) brightness(0.38) saturate(1.2);
-    pointer-events: none;
-    z-index: 0;
-}
-
 .victory-modal-overlay.active {
     opacity: 1;
     visibility: visible;
 }
 
-/* Fullscreen Video Element: winning_video.mp4 (Complete Video View with object-fit: contain) */
+/* Fullscreen Video Element: winning_video.mp4 (Full Bleed Mobile Cover Fit) */
 .victory-video-element {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center center;
     pointer-events: none;
     z-index: 1;
-    background: transparent;
+    background: #030612 url('../uploads/winning_standing_pose.png') center center / cover no-repeat;
     opacity: 1;
     visibility: visible;
 }
 
-/* Fullscreen Stopping Image: winning standing pose.png (Complete Image View with object-fit: contain) */
+/* Fullscreen Stopping Image: winning standing pose.png (Full Bleed Mobile Cover Fit) */
 .victory-end-img {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center center;
     pointer-events: none;
     z-index: 2;
