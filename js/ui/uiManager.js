@@ -53,6 +53,11 @@ class UIManager {
         this.levelClearModal = document.getElementById('levelClearModal');
         this.victoryModal = document.getElementById('victoryModal');
 
+        const victoryVid = document.getElementById('victoryVideo');
+        if (victoryVid) {
+            try { victoryVid.pause(); victoryVid.currentTime = 0; } catch (e) {}
+        }
+
         this.setupEventListeners();
         this.initPlayerNameControl();
     }
