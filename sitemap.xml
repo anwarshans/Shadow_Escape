@@ -3,23 +3,24 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://shadowescapegame.vercel.app/</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://shadowescapegame.vercel.app/uploads/preview.jpg</image:loc>
-      <image:title>Shadow Escape - Shadow Escape Adventure Game Online | Anwarsha's Game | Shanu's Game | Anwarsha N S's Game</image:title>
-      <image:caption>Shadow Escape Cover Image for Anwarsha's game, Shanu's game, and Anwarsha N S's game</image:caption>
+      <image:title>Shadow Escape - Shadow Escape Adventure Game Online | Shadow Escape Browser Game | Anwarsha's Game | Shanu's Game | Anwarsha N S's Game</image:title>
+      <image:caption>Shadow Escape Cover Image for shadow escape online game, Anwarsha's game, Shanu's game, and Anwarsha N S's game</image:caption>
     </image:image>
   </url>
   <url>
     <loc>https://shadowescapegame.vercel.app/index.html</loc>
-    <lastmod>2026-08-04</lastmod>
+    <lastmod>2026-08-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
     <image:image>
       <image:loc>https://shadowescapegame.vercel.app/uploads/preview.jpg</image:loc>
-      <image:title>Shadow Escape Adventure Game Online Cover Photo</image:title>
+      <image:title>Shadow Escape - Shadow Escape Game | Online Game | Adventure Game Online</image:title>
+      <image:caption>Shadow Escape Adventure Game Online Official Poster by developer Anwarsha N S</image:caption>
     </image:image>
   </url>
 </urlset>

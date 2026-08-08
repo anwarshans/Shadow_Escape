@@ -1,12 +1,13 @@
 {
-  "name": "Shadow Escape - Shadow Escape Adventure Game Online | Anwarsha's Game | Shanu's Game | Anwarsha N S's Game",
+  "name": "Shadow Escape - Shadow Escape Adventure Game Online | Anwarsha N S's Game | Shanu's Game",
   "short_name": "ShadowEscape",
-  "description": "Play Shadow Escape, the premier shadow escape adventure game online created by Anwarsha N S (Anwarsha's game / Shanu's game / Anwarsha N S's game). 2.5D cyber platformer shadow escape online.",
+  "description": "Play Shadow Escape, the premier shadow escape adventure game online created by Anwarsha N S (Anwarsha's game / Shanu's game / Anwarsha N S's game). Action-packed 2.5D shadow escape browser game online.",
   "start_url": "index.html",
   "display": "standalone",
   "orientation": "landscape",
   "background_color": "#070814",
   "theme_color": "#00f3ff",
+  "categories": ["games", "action", "adventure"],
   "icons": [
     {
       "src": "uploads/preview.png",
